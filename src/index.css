@@ -3,9 +3,11 @@
 @tailwind utilities;
 
 @layer base {
-  body {
+  html, body {
     @apply bg-[#FAF8FF] text-slate-900 font-sans;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 }
 
