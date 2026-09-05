@@ -65,21 +65,21 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
           ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-sm border-b border-slate-200/80 dark:border-slate-800' 
           : 'bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800'
       }`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 sm:h-20">
+        <div className="w-full px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-20 gap-2">
             
             {/* Brand Logo with exact uploaded asset */}
-            <div className="flex items-center gap-6">
-              <Link to="/" onClick={closeAll} className="flex items-center gap-2 group">
+            <div className="flex items-center gap-3 xl:gap-5 flex-shrink-0">
+              <Link to="/" onClick={closeAll} className="flex items-center gap-2 group flex-shrink-0">
                 <img
                   src={BRAND.logo}
                   alt={BRAND.brandName}
-                  className="h-9 sm:h-11 w-auto object-contain transition-transform group-hover:scale-105"
+                  className="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105 rounded-lg"
                 />
               </Link>
 
               {/* Desktop Nav Items */}
-              <nav className="hidden lg:flex items-center gap-1">
+              <nav className="hidden xl:flex items-center gap-1">
                 <Link to="/events" className={navItemClass('/events')}>
                   Discover
                 </Link>
@@ -92,7 +92,7 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                 <Link to="/coding" className={navItemClass('/coding')}>
                   Coding
                 </Link>
-                <Link to="/learn-play" className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-slate-800 transition-colors">
+                <Link to="/learn-play" className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold rounded-xl text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-slate-800 transition-colors">
                   <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Learn & Play
                 </Link>
                 <Link to="/learn" className={navItemClass('/learn')}>
@@ -104,20 +104,20 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                 <Link to="/community" className={navItemClass('/community')}>
                   Community
                 </Link>
-                <Link to="/student/wallet" className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl bg-amber-50 dark:bg-amber-950/70 text-amber-800 dark:text-amber-200 border border-amber-200 dark:border-amber-800 hover:bg-amber-100 transition-all font-mono">
+                <Link to="/student/wallet" className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold rounded-xl bg-amber-50 dark:bg-amber-950/70 text-amber-800 dark:text-amber-200 border border-amber-200 dark:border-amber-800 hover:bg-amber-100 transition-all font-mono">
                   <Coins className="w-3.5 h-3.5 text-amber-600" /> Wallet
                 </Link>
-                <Link to="/explore" className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl bg-purple-50 dark:bg-purple-950/70 text-brand-700 dark:text-brand-300 border border-purple-200 dark:border-purple-800 hover:bg-purple-100 transition-all shadow-2xs">
-                  <Grid className="w-3.5 h-3.5 text-brand-600" /> Explore All
+                <Link to="/explore" className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold rounded-xl bg-purple-50 dark:bg-purple-950/70 text-brand-700 dark:text-brand-300 border border-purple-200 dark:border-purple-800 hover:bg-purple-100 transition-all shadow-2xs">
+                  <Grid className="w-3.5 h-3.5 text-brand-600" /> Explore
                 </Link>
-                <Link to="/project-showcase" className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl bg-purple-50 dark:bg-purple-950/70 text-brand-700 dark:text-brand-300 border border-purple-200 dark:border-purple-800 hover:bg-purple-100 transition-all shadow-2xs">
+                <Link to="/project-showcase" className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold rounded-xl bg-purple-50 dark:bg-purple-950/70 text-brand-700 dark:text-brand-300 border border-purple-200 dark:border-purple-800 hover:bg-purple-100 transition-all shadow-2xs">
                   <Sparkles className="w-3.5 h-3.5 text-brand-600" /> Showcase
                 </Link>
               </nav>
             </div>
 
             {/* Right Action Bar */}
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2 sm:gap-2.5 flex-shrink-0">
               
               {/* Command Palette Trigger (Ctrl + K) */}
               <button
