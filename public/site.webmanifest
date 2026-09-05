@@ -1,0 +1,21 @@
+{
+  "name": "All College Events (ACE)",
+  "short_name": "ACE",
+  "icons": [
+    {
+      "src": "https://ace-web-qa.s3.ap-south-1.amazonaws.com/profiles/3ca21ffa-55ec-4402-bf76-8d8d02081bc3-Group-74.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://ace-web-qa.s3.ap-south-1.amazonaws.com/profiles/3ca21ffa-55ec-4402-bf76-8d8d02081bc3-Group-74.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#7F00FF",
+  "background_color": "#FAF8FF",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait"
+}
