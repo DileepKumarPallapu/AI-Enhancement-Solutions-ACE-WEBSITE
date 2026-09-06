@@ -267,14 +267,24 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                         My Student Space
                       </div>
 
-                      <Link to="/dashboard/profile" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-1.5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                      <Link to="/dashboard/profile" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-1.5 text-brand-600 bg-purple-50 dark:bg-purple-950/60 rounded-xl font-bold transition-colors">
                         <UserCheck className="w-4 h-4 text-brand-600" />
-                        <span>View Profile & Skills</span>
+                        <span>Edit Profile & Avatar Studio</span>
                       </Link>
 
                       <Link to="/student" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-1.5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
                         <Compass className="w-4 h-4 text-purple-600" />
                         <span>Student Dashboard</span>
+                      </Link>
+
+                      <Link to="/auth/register" onClick={closeAll} className="flex items-center justify-between px-3 py-1.5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                        <span className="flex items-center gap-2.5">
+                          <PlusCircle className="w-4 h-4 text-emerald-500" />
+                          <span>Register New Account</span>
+                        </span>
+                        <span className="text-[9px] font-bold text-amber-600 bg-amber-50 dark:bg-amber-950 px-1.5 py-0.5 rounded">
+                          +500 Coins
+                        </span>
                       </Link>
 
                       <Link to="/student/wallet" onClick={closeAll} className="flex items-center justify-between px-3 py-1.5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">

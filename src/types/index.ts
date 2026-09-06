@@ -148,6 +148,21 @@ export interface StudentProfile {
   referralCode: string;
   pointsEarned: number;
   followingCount: number;
+
+  // Extended Profile & Picture Details
+  phone?: string;
+  bio?: string;
+  tagline?: string;
+  bannerUrl?: string;
+  bannerTheme?: string;
+  githubUrl?: string;
+  linkedinUrl?: string;
+  portfolioUrl?: string;
+  twitterUrl?: string;
+  leetcodeUrl?: string;
+  cgpa?: string;
+  studentIdNumber?: string;
+  resumeFileName?: string;
 }
 
 export interface ReferralInvitation {
