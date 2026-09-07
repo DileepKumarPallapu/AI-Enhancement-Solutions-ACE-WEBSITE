@@ -225,6 +225,19 @@ import { EventComparisonPage } from './pages/EventComparisonPage';
 import { LocationPage } from './pages/LocationPage';
 import { AboutPage, ContactPage, FaqPage, PrivacyPage } from './pages/StaticPages';
 
+// ACE 30X AI Autonomous Student Success Engine
+import { PersonalAICommandCenterPage } from './pages/student/PersonalAICommandCenterPage';
+import { GoalEnginePage } from './pages/student/GoalEnginePage';
+import { TodaysActionsPage } from './pages/student/TodaysActionsPage';
+import { SkillGapAnalyzerPage } from './pages/student/SkillGapAnalyzerPage';
+import { CareerSimulatorPage } from './pages/student/CareerSimulatorPage';
+import { DailyBriefPage } from './pages/student/DailyBriefPage';
+import { StudentJourneyAnalyticsPage } from './pages/student/StudentJourneyAnalyticsPage';
+import { MentorAIAssistantPage } from './pages/mentor/MentorAIAssistantPage';
+import { CollegeAIIntelligencePage } from './pages/college/CollegeAIIntelligencePage';
+import { AIGovernanceDashboardPage } from './pages/admin/AIGovernanceDashboardPage';
+import { AIPrivacySettingsPage } from './pages/settings/AIPrivacySettingsPage';
+
 export function App() {
   const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false);
 
@@ -509,6 +522,20 @@ export function App() {
                                 <Route path="/u/:username" element={<PublicUserProfilePage />} />
                                 <Route path="/interviews" element={<InterviewSchedulePage />} />
                                 <Route path="/career" element={<CareerCenterPage />} />
+
+                                                                {/* ACE 30X AI Autonomous Student Success Engine */}
+                                <Route path="/student/ai" element={<PersonalAICommandCenterPage />} />
+                                <Route path="/student/goals" element={<GoalEnginePage />} />
+                                <Route path="/student/today" element={<TodaysActionsPage />} />
+                                <Route path="/student/skill-gap" element={<SkillGapAnalyzerPage />} />
+                                <Route path="/student/career-simulator" element={<CareerSimulatorPage />} />
+                                <Route path="/student/brief" element={<DailyBriefPage />} />
+                                <Route path="/student/weekly-review" element={<WeeklyReviewPage />} />
+                                <Route path="/student/analytics" element={<StudentJourneyAnalyticsPage />} />
+                                <Route path="/mentor/ai" element={<MentorAIAssistantPage />} />
+                                <Route path="/college/ai" element={<CollegeAIIntelligencePage />} />
+                                <Route path="/admin/ai" element={<AIGovernanceDashboardPage />} />
+                                <Route path="/settings/ai" element={<AIPrivacySettingsPage />} />
 
                                 {/* Catch-all 404 handler */}
                               <Route path="*" element={<NotFoundPage />} />
