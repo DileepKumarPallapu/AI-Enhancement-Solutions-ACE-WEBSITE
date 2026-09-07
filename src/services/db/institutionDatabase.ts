@@ -9,8 +9,8 @@ import {
 } from '../../types/institution';
 import { INDIA_STATES, INDIA_DISTRICTS, INITIAL_INSTITUTIONS } from './institutionData';
 
-const STORAGE_KEY_INSTITUTIONS = 'ace_institutions_v1';
-const STORAGE_KEY_REQUESTS = 'ace_institution_requests_v1';
+const STORAGE_KEY_INSTITUTIONS = 'ace_institutions_v3';
+const STORAGE_KEY_REQUESTS = 'ace_institution_requests_v3';
 
 class InstitutionDatabaseService {
   private institutions: Institution[] = [];
@@ -26,7 +26,13 @@ class InstitutionDatabaseService {
     try {
       const storedInst = localStorage.getItem(STORAGE_KEY_INSTITUTIONS);
       if (storedInst) {
-        this.institutions = JSON.parse(storedInst);
+        const parsed = JSON.parse(storedInst);
+        if (Array.isArray(parsed) && parsed.length >= INITIAL_INSTITUTIONS.length) {
+          this.institutions = parsed;
+        } else {
+          this.institutions = [...INITIAL_INSTITUTIONS];
+          this.saveInstitutions();
+        }
       } else {
         this.institutions = [...INITIAL_INSTITUTIONS];
         this.saveInstitutions();

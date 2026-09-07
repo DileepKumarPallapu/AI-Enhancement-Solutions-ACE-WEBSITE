@@ -12,6 +12,7 @@ export type InstitutionCategory =
   | 'IIM'
   | 'IISER'
   | 'AIIMS'
+  | 'INSTITUTE'
   | 'CENTRAL_UNIVERSITY'
   | 'STATE_UNIVERSITY'
   | 'DEEMED_UNIVERSITY'
@@ -22,6 +23,7 @@ export type InstitutionCategory =
   | 'CONSTITUENT_COLLEGE'
   | 'ENGINEERING_COLLEGE'
   | 'MEDICAL_COLLEGE'
+  | 'MANAGEMENT_COLLEGE'
   | 'ARTS_SCIENCE_COLLEGE'
   | 'POLYTECHNIC'
   | 'OTHER';
@@ -88,7 +90,7 @@ export interface Institution {
   phone?: string;
   establishedYear?: number;
   accreditation?: string; // e.g. 'NAAC A++ Grade'
-  nirfRank?: number; // e.g. 63
+  nirfRank?: number | null; // e.g. 63
   studentCount?: number;
   mentorCount?: number;
   eventCount?: number;
