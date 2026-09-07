@@ -1,3 +1,4 @@
+import { AdminFrontendCoveragePage } from './pages/admin/AdminFrontendCoveragePage';
 // ACE 70X Global Student, Institution, Career & Opportunity Ecosystem
 import { CollegeOSPage } from './pages/college/CollegeOSPage';
 import { PlacementCellOSPage } from './pages/placement/PlacementCellOSPage';
@@ -572,6 +573,8 @@ export function App() {
                                 <Route path="/admin/moderation" element={<AdminModerationQueuePage />} />
                                 <Route path="/settings/security" element={<SecurityCenterPage />} />
                                 <Route path="/admin/system" element={<SystemHealthDashboardPage />} />
+                                <Route path="/admin/frontend-coverage" element={<RequireRole allowedRoles={['ADMIN']}><AdminFrontendCoveragePage /></RequireRole>} />
+
 
                                 {/* ACE 60X The Student Operating System & Opportunity Graph */}
                                 <Route path="/student/os" element={<StudentOSPage />} />
