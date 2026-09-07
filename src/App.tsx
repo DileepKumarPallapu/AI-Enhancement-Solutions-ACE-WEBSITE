@@ -59,8 +59,10 @@ import { MentorLearningGuidancePage } from './pages/mentor/MentorLearningGuidanc
 import { MentorAnalyticsPage } from './pages/mentor/MentorAnalyticsPage';
 
 // College & Admin Mentor Pages
+import { CollegeDetailPage } from './pages/college/CollegeDetailPage';
 import { CollegeMentorsPage } from './pages/college/CollegeMentorsPage';
 import { AdminMentorsPage } from './pages/admin/AdminMentorsPage';
+import { AdminInstitutionsPage } from './pages/admin/AdminInstitutionsPage';
 
 // Competitions System
 import { CompetitionsHubPage } from './pages/competitions/CompetitionsHubPage';
@@ -190,6 +192,7 @@ export function App() {
                               <Route path="/project-showcase/demo" element={<PresentationDemoPage />} />
                               <Route path="/blog" element={<BlogPage />} />
                               <Route path="/colleges" element={<CollegesPage />} />
+                              <Route path="/college/:slug" element={<CollegeDetailPage />} />
                               <Route path="/community" element={<CommunityPage />} />
                               <Route path="/referral" element={<ReferralPage />} />
                               <Route path="/rewards" element={<RewardsPage />} />
@@ -315,6 +318,7 @@ export function App() {
                               <Route path="/admin/rewards" element={<RequireRole allowedRoles={['ADMIN']}><AdminCoinEconomyPage /></RequireRole>} />
                               <Route path="/admin/course-intelligence" element={<RequireRole allowedRoles={['ADMIN']}><AdminCourseIntelligencePage /></RequireRole>} />
                               <Route path="/admin/ai/intelligence" element={<RequireRole allowedRoles={['ADMIN']}><AdminCourseIntelligencePage /></RequireRole>} />
+                              <Route path="/admin/institutions" element={<RequireRole allowedRoles={['ADMIN']}><AdminInstitutionsPage /></RequireRole>} />
 
                               {/* Support Center */}
                               <Route path="/support" element={<SupportCenterPage />} />

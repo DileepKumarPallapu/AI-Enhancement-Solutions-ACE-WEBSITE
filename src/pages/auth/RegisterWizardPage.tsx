@@ -10,6 +10,8 @@ import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { AccountRole } from '../../types/account';
 import { VERIFIED_COLLEGES, accountDb } from '../../services/db/accountDatabase';
+import { InstitutionSelectorModal } from '../../components/institution/InstitutionSelectorModal';
+import { Institution } from '../../types/institution';
 import confetti from 'canvas-confetti';
 
 const AVATAR_PRESETS = [
@@ -47,6 +49,7 @@ export const RegisterWizardPage: React.FC = () => {
 
   // Step 3: Role details
   const [collegeQuery, setCollegeQuery] = useState('PSG College of Technology');
+  const [isInstModalOpen, setIsInstModalOpen] = useState(false);
   const [degree, setDegree] = useState('B.Tech');
   const [department, setDepartment] = useState('Computer Science & Engineering');
   const [year, setYear] = useState('1st Year');
@@ -342,13 +345,35 @@ export const RegisterWizardPage: React.FC = () => {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div className="sm:col-span-2">
-                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">College / University</label>
-                  <input
-                    type="text"
-                    value={collegeQuery}
-                    onChange={(e) => setCollegeQuery(e.target.value)}
-                    placeholder="Search verified college (e.g. PSG Tech, IIT, Anna Univ)..."
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800"
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                    College / University (Pan-India Directory)
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={collegeQuery}
+                      readOnly
+                      onClick={() => setIsInstModalOpen(true)}
+                      placeholder="Click to browse verified colleges across India..."
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 cursor-pointer font-medium"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setIsInstModalOpen(true)}
+                      className="px-4 py-2.5 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-brand-600 dark:text-purple-300 font-bold border border-purple-200 dark:border-purple-800 text-xs hover:bg-purple-100 transition whitespace-nowrap"
+                    >
+                      Browse All
+                    </button>
+                  </div>
+
+                  <InstitutionSelectorModal
+                    isOpen={isInstModalOpen}
+                    onClose={() => setIsInstModalOpen(false)}
+                    selectedName={collegeQuery}
+                    onSelect={(inst: Institution) => {
+                      setCollegeQuery(inst.name);
+                      setIsInstModalOpen(false);
+                    }}
                   />
                 </div>
 

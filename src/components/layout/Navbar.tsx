@@ -368,6 +368,17 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                           )}
                         </div>
 
+                        {(currentUser.role === 'ADMIN' || currentUser.roles?.includes('ADMIN')) && (
+                          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 mt-2 space-y-1">
+                            <div className="px-3 py-1 text-[10px] font-bold text-amber-500 uppercase tracking-wider font-mono">
+                              Admin Control
+                            </div>
+                            <Link to="/admin/institutions" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-1.5 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 rounded-xl text-xs font-semibold">
+                              <Building2 className="w-3.5 h-3.5" /> Institution Directory Admin
+                            </Link>
+                          </div>
+                        )}
+
                         {/* Logout */}
                         <div className="pt-2 border-t border-slate-100 dark:border-slate-800 mt-2">
                           <button
