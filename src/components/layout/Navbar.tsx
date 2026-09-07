@@ -361,7 +361,7 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                         </div>
 
                         {/* Phase 3 Command Center & Opportunity Radar */}
-                        <Link to="/student/command-center" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-950/60 rounded-xl font-extrabold transition-colors border border-emerald-500/20">
+                        <Link to="/student/os" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-950/60 rounded-xl font-extrabold transition-colors border border-emerald-500/20">
                           <Sparkles className="w-4 h-4 text-emerald-500" />
                           <span>Student Command Center</span>
                         </Link>

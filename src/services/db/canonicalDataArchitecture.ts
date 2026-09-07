@@ -638,3 +638,28 @@ export interface AuditLog {
   metadata?: Record<string, any>;
   timestamp: Timestamp;
 }
+
+export function getCanonicalStudent() {
+  return {
+    id: 'usr-student-dileep-veltech',
+    email: 'dileep.kumar@veltech.edu.in',
+    username: 'dileep-kumar',
+    role: 'STUDENT',
+    institution: {
+      id: 'inst-vel-tech-rangarajan-avadi',
+      name: 'Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology',
+      shortName: 'Vel Tech',
+      city: 'Avadi, Chennai',
+      state: 'Tamil Nadu'
+    },
+    profile: {
+      firstName: 'Dileep',
+      lastName: 'Kumar',
+      department: 'Computer Science & Engineering',
+      program: 'B.Tech',
+      year: '4th Year',
+      bio: 'Full-Stack & Cloud Engineer passionate about building scalable, high-impact systems.'
+    }
+  };
+}
+

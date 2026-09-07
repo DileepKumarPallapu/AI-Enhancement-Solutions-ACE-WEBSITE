@@ -1,3 +1,17 @@
+// ACE 60X The Student Operating System & Opportunity Graph
+import { StudentOSPage } from './pages/student/StudentOSPage';
+import { RoleIntelligencePage } from './pages/career/RoleIntelligencePage';
+import { StudentCareerProfilePage } from './pages/career/StudentCareerProfilePage';
+import { SavedOpportunitiesPage } from './pages/student/SavedOpportunitiesPage';
+import { CollegeOpportunityBoardPage } from './pages/college/CollegeOpportunityBoardPage';
+import { DepartmentHubPage } from './pages/college/DepartmentHubPage';
+import { StudentNetworkPage } from './pages/network/StudentNetworkPage';
+import { DigitalStudentIDPage } from './pages/student/DigitalStudentIDPage';
+import { InterviewPrepCenterPage } from './pages/career/InterviewPrepCenterPage';
+import { AIInterviewSimulatorPage } from './pages/career/AIInterviewSimulatorPage';
+import { OfferTrackerPage } from './pages/career/OfferTrackerPage';
+import { CareerMilestoneTimelinePage } from './pages/career/CareerMilestoneTimelinePage';
+import { KnowledgeHubPage } from './pages/knowledge/KnowledgeHubPage';
 // ACE 25X Ecosystem, Growth & Network Effect Pages
 import { StudentHomePage } from './pages/student/StudentHomePage';
 import { OpportunityFeedPage } from './pages/feed/OpportunityFeedPage';
@@ -549,6 +563,23 @@ export function App() {
                                 <Route path="/admin/moderation" element={<AdminModerationQueuePage />} />
                                 <Route path="/settings/security" element={<SecurityCenterPage />} />
                                 <Route path="/admin/system" element={<SystemHealthDashboardPage />} />
+
+                                {/* ACE 60X The Student Operating System & Opportunity Graph */}
+                                <Route path="/student/os" element={<StudentOSPage />} />
+                                <Route path="/career/roles" element={<RoleIntelligencePage />} />
+                                <Route path="/career/roles/:roleId" element={<RoleIntelligencePage />} />
+                                <Route path="/career/profile" element={<StudentCareerProfilePage />} />
+                                <Route path="/student/saved" element={<SavedOpportunitiesPage />} />
+                                <Route path="/college/opportunities" element={<CollegeOpportunityBoardPage />} />
+                                <Route path="/college/departments/:id" element={<DepartmentHubPage />} />
+                                <Route path="/network" element={<StudentNetworkPage />} />
+                                <Route path="/student/id" element={<DigitalStudentIDPage />} />
+                                <Route path="/career/interview-prep" element={<InterviewPrepCenterPage />} />
+                                <Route path="/career/interview-ai" element={<AIInterviewSimulatorPage />} />
+                                <Route path="/career/offers" element={<OfferTrackerPage />} />
+                                <Route path="/career/timeline" element={<CareerMilestoneTimelinePage />} />
+                                <Route path="/knowledge" element={<KnowledgeHubPage />} />
+
 
                                 {/* Catch-all 404 handler */}
                               <Route path="*" element={<NotFoundPage />} />
