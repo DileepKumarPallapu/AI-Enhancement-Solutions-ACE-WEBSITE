@@ -1,3 +1,11 @@
+// ACE 10X Massive Scale Platform Transformation Pages
+import { StudentPassportPage } from './pages/student/StudentPassportPage';
+import { RecruiterPortalPage } from './pages/recruiter/RecruiterPortalPage';
+import { InterviewCenterPage } from './pages/career/InterviewCenterPage';
+import { ProjectLabPage } from './pages/projects/ProjectLabPage';
+import { JudgePortalPage } from './pages/judge/JudgePortalPage';
+import { ReportsAndTrustPage } from './pages/reports/ReportsAndTrustPage';
+
 // Phase 3 Student Command Center & Opportunity Intelligence Pages
 import { StudentCommandCenterPage } from './pages/student/StudentCommandCenterPage';
 import { OpportunityIntelligencePage } from './pages/student/OpportunityIntelligencePage';
@@ -453,6 +461,14 @@ export function App() {
                                 <Route path="/teams/:teamId" element={<TeamWorkspacePage />} />
                                 <Route path="/clubs" element={<ClubsHubPage />} />
                                 <Route path="/clubs/:clubId" element={<ClubDetailPage />} />
+
+                                                                {/* ACE 10X Massive Scale Platform Transformation */}
+                                <Route path="/student/passport" element={<StudentPassportPage />} />
+                                <Route path="/recruiter" element={<RecruiterPortalPage />} />
+                                <Route path="/career/interview" element={<InterviewCenterPage />} />
+                                <Route path="/project-lab" element={<ProjectLabPage />} />
+                                <Route path="/judge" element={<JudgePortalPage />} />
+                                <Route path="/reports" element={<ReportsAndTrustPage />} />
 
                                 {/* Catch-all 404 handler */}
                               <Route path="*" element={<NotFoundPage />} />

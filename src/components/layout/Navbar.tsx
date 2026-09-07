@@ -142,6 +142,24 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
 
                   {showMoreMenu && (
                     <div className="absolute left-0 top-full mt-2 w-56 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800 p-2 z-50 animate-scaleUp">
+                      <Link to="/student/passport" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🛡️ Verified Student Passport</span>
+                      </Link>
+                      <Link to="/recruiter" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>💼 Recruiter Hub & Talent Radar</span>
+                      </Link>
+                      <Link to="/career/interview" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🤖 AI Interview Lab</span>
+                      </Link>
+                      <Link to="/project-lab" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🔬 Project Lab & Incubator</span>
+                      </Link>
+                      <Link to="/judge" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>⚖️ Judge Evaluation Portal</span>
+                      </Link>
+                      <Link to="/reports" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🚨 Trust, Safety & Reports</span>
+                      </Link>
                       <Link to="/colleges" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
                         <span>🏫 Colleges Directory</span>
                       </Link>
@@ -153,9 +171,6 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                       </Link>
                       <Link to="/certificates" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
                         <span>📜 Verify Certificate</span>
-                      </Link>
-                      <Link to="/become-mentor" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🎓 Apply as Faculty Mentor</span>
                       </Link>
                       <Link to="/explore" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-brand-600 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl border-t border-slate-100 dark:border-slate-800 mt-1">
                         <span>🧭 All 50+ Modules</span>

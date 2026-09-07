@@ -1,8 +1,7 @@
-# Automated Verification & Testing Strategy
+# ACE Testing & Quality Assurance Suite
 
-## Test Scope
-- **Compilation**: TypeScript strict type checking (`tsc --noEmit`).
-- **Production Build**: Vite bundler rollup verification (`vite build`).
-- **API Resilience**: Testing network failover from live backend to high-fidelity cache.
-- **Search NLP Parser**: Verifying 12 test assertions on natural language queries.
-- **Responsiveness**: Automated viewport verification across 320px, 375px, 768px, 1024px, 1440px, and 1920px.
+## 1. Verification Strategy
+- **Unit & Domain Tests**: Validate domain databases, event buses, calculations, and currency conversions.
+- **Integration Tests**: Verify multi-stage student workflows (Discovery -> Application -> Interview -> Passport -> Shortlist).
+- **Static Analysis**: TypeScript strict type-checking (`tsc --noEmit`).
+- **Build Verification**: Vite production bundle compilation (`npm run build`).
