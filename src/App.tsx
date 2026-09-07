@@ -238,6 +238,7 @@ import { CollegeAIIntelligencePage } from './pages/college/CollegeAIIntelligence
 import { AIGovernanceDashboardPage } from './pages/admin/AIGovernanceDashboardPage';
 import { AIPrivacySettingsPage } from './pages/settings/AIPrivacySettingsPage';
 
+import { MobileBottomNav } from './components/ui/ace/MobileBottomNav';
 export function App() {
   const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false);
 
@@ -543,6 +544,7 @@ export function App() {
                           </main>
 
                           <Footer />
+                          <MobileBottomNav />
                           <AceAiAssistant isOpen={isAiDrawerOpen} onClose={() => setIsAiDrawerOpen(false)} />
                         </div>
                       </Router>
