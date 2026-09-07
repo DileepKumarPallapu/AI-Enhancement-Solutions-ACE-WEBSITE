@@ -1,81 +1,77 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, Trash2, ShieldAlert } from 'lucide-react';
-import { accountDb } from '../../services/db/accountDatabase';
+import { AlertTriangle, Trash2, PowerOff, ShieldCheck, Check } from 'lucide-react';
+import { useToast } from '../../context/ToastContext';
+import { Button } from '../../components/ui/Button';
 
 export const DangerZonePage: React.FC = () => {
-  const { currentUser, logout } = useAuth();
-  const navigate = useNavigate();
-  const [confirmText, setConfirmText] = useState('');
-  const [showConfirm, setShowConfirm] = useState(false);
+  const { currentUser, deactivateAccount, deleteAccount, logout } = useAuth();
+  const { showToast } = useToast();
 
-  const handleDeleteAccount = () => {
-    if (confirmText !== currentUser?.username) return;
-    if (currentUser) {
-      accountDb.deleteAccount(currentUser.id);
-      logout();
-      navigate('/');
+  const [confirmDeactivate, setConfirmDeactivate] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleteConfirmationText, setDeleteConfirmationText] = useState('');
+
+  const handleDeactivate = async () => {
+    await deactivateAccount();
+    showToast('Account deactivated successfully. You can reactivate anytime.');
+    logout();
+  };
+
+  const handleDelete = async () => {
+    if (deleteConfirmationText.trim().toLowerCase() !== 'delete my account') {
+      showToast('Please type the exact confirmation phrase');
+      return;
     }
+    await deleteAccount();
+    showToast('Account marked for deletion. Immutable audit logs retained.');
+    logout();
   };
 
   return (
     <div className="space-y-8 animate-fade-in">
-      <div className="pb-6 border-b border-slate-200 dark:border-slate-800">
-        <h2 className="text-xl font-bold text-rose-600 dark:text-rose-400 flex items-center gap-2">
-          <AlertTriangle className="w-5 h-5" /> Account Danger Zone
-        </h2>
+      
+      <div>
+        <h2 className="text-xl font-bold text-rose-600">Account Lifecycle & Deactivation</h2>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          Irreversible actions related to your account profile, certifications, and data deletion.
+          Temporarily pause your campus profile or request permanent soft-deletion with data preservation safeguards.
         </p>
       </div>
 
-      <div className="p-6 rounded-2xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/60 space-y-4">
-        <div className="flex items-start gap-4">
-          <div className="p-3 rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
-            <Trash2 className="w-6 h-6" />
-          </div>
-          <div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">Delete ACE Account</h3>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
-              Once you delete your account, all your event registrations, hackathon submissions, verified certificates, and ACE reputation points will be permanently erased.
+      {/* Deactivate Account */}
+      <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-4">
+        <div className="flex items-start justify-between">
+          <div className="space-y-1">
+            <h4 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+              <PowerOff className="w-4 h-4 text-amber-600" /> Deactivate Account
+            </h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-xl">
+              Hides your public profile, event registrations, and campus discussions. You can reactivate your account anytime by logging in with your registered credentials.
             </p>
           </div>
         </div>
 
-        {!showConfirm ? (
-          <button
-            type="button"
-            onClick={() => setShowConfirm(true)}
-            className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs shadow-md transition"
-          >
-            I understand, delete my account
-          </button>
+        {!confirmDeactivate ? (
+          <Button variant="outline" size="sm" onClick={() => setConfirmDeactivate(true)}>
+            Deactivate My Account
+          </Button>
         ) : (
-          <div className="pt-4 border-t border-rose-200 dark:border-rose-900/40 space-y-3">
-            <p className="text-xs text-rose-700 dark:text-rose-300 font-medium">
-              Type your username <strong>{currentUser?.username}</strong> to confirm deletion:
+          <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 space-y-3">
+            <p className="text-xs text-amber-800 dark:text-amber-200 font-semibold">
+              Are you sure you want to deactivate your profile?
             </p>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={confirmText}
-                onChange={e => setConfirmText(e.target.value)}
-                className="flex-1 px-3.5 py-2 rounded-xl border border-rose-300 dark:border-rose-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs"
-                placeholder={currentUser?.username}
-              />
+            <div className="flex items-center gap-3">
               <button
                 type="button"
-                onClick={handleDeleteAccount}
-                disabled={confirmText !== currentUser?.username}
-                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 disabled:opacity-40 text-white font-semibold text-xs transition"
+                onClick={handleDeactivate}
+                className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-sm"
               >
-                Permanently Delete
+                Confirm Deactivation
               </button>
               <button
                 type="button"
-                onClick={() => setShowConfirm(false)}
-                className="px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300"
+                onClick={() => setConfirmDeactivate(false)}
+                className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs border border-slate-200 dark:border-slate-700"
               >
                 Cancel
               </button>
@@ -83,6 +79,58 @@ export const DangerZonePage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Delete Account */}
+      <div className="p-6 rounded-3xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/60 space-y-4">
+        <div className="space-y-1">
+          <h4 className="font-bold text-sm text-rose-700 dark:text-rose-400 flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-rose-600" /> Permanent Account Deletion
+          </h4>
+          <p className="text-xs text-rose-600/80 dark:text-rose-400/80 leading-relaxed max-w-xl">
+            Schedules permanent deletion of all personal credentials. In compliance with security and legal requirements, immutable financial records and security audit logs are retained under pseudonymous IDs.
+          </p>
+        </div>
+
+        {!confirmDelete ? (
+          <button
+            type="button"
+            onClick={() => setConfirmDelete(true)}
+            className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-sm"
+          >
+            Request Permanent Deletion
+          </button>
+        ) : (
+          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-rose-300 dark:border-rose-800 space-y-3">
+            <p className="text-xs text-rose-700 dark:text-rose-300 font-semibold">
+              Type <strong className="font-mono text-rose-900 dark:text-white">DELETE MY ACCOUNT</strong> to confirm:
+            </p>
+            <input
+              type="text"
+              value={deleteConfirmationText}
+              onChange={(e) => setDeleteConfirmationText(e.target.value)}
+              placeholder="DELETE MY ACCOUNT"
+              className="w-full p-2.5 rounded-xl border border-rose-300 dark:border-rose-800 dark:bg-slate-800 dark:text-white text-xs outline-none focus:border-rose-600 font-mono"
+            />
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-sm"
+              >
+                Permanently Delete Account
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmDelete(false)}
+                className="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs border border-slate-200 dark:border-slate-700"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
     </div>
   );
 };

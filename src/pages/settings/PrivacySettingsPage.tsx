@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Shield, Eye, Lock, Globe, Check, Users } from 'lucide-react';
+import { Shield, Eye, Lock, Globe, Check, Users, Download, Loader2, FileArchive } from 'lucide-react';
 import { VisibilityLevel } from '../../types/account';
 import { useAutoSave } from '../../hooks/useAutoSave';
 import { SaveStatus } from '../../components/common/SaveStatus';
+import { backgroundJobQueue, BackgroundJob } from '../../services/jobs/backgroundJobQueue';
+import { useToast } from '../../context/ToastContext';
+import { Button } from '../../components/ui/Button';
 
 export const PrivacySettingsPage: React.FC = () => {
   const { currentUser, updateProfile, refreshUser } = useAuth();
+  const { showToast } = useToast();
+  const userId = currentUser?.id || 'usr_student_dileep';
 
   const [profileVisibility, setProfileVisibility] = useState<VisibilityLevel>(
     (currentUser?.privacyPreferences?.profileVisibility as VisibilityLevel) || 'PUBLIC'
@@ -17,6 +22,9 @@ export const PrivacySettingsPage: React.FC = () => {
   const [showSkills, setShowSkills] = useState(currentUser?.privacyPreferences?.showSkills !== false);
   const [showProjects, setShowProjects] = useState(currentUser?.privacyPreferences?.showProjects !== false);
   const [allowFollowers, setAllowFollowers] = useState(currentUser?.privacyPreferences?.allowFollowers !== false);
+
+  // Data Export State
+  const [exportJob, setExportJob] = useState<BackgroundJob | null>(null);
 
   const autoSave = useAutoSave({
     value: {
@@ -50,11 +58,44 @@ export const PrivacySettingsPage: React.FC = () => {
     }
   });
 
+  const handleRequestDataExport = () => {
+    const job = backgroundJobQueue.enqueueJob({
+      type: 'DATA_EXPORT',
+      userId,
+      payload: { requestedAt: new Date().toISOString() }
+    });
+    setExportJob(job);
+    showToast('Background export job queued...');
+
+    // Poll job status
+    const pollId = setInterval(() => {
+      const updated = backgroundJobQueue.getJob(job.id);
+      if (updated) {
+        setExportJob({ ...updated });
+        if (updated.status === 'COMPLETED') {
+          clearInterval(pollId);
+          showToast('Data snapshot prepared and ready for download! 📦');
+        }
+      }
+    }, 400);
+  };
+
+  const handleDownloadSnapshot = () => {
+    if (!exportJob?.result) return;
+    const blob = new Blob([JSON.stringify(exportJob.result.data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ace_data_export_${userId}_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    showToast('Archive downloaded successfully ✓');
+  };
+
   return (
     <div className="space-y-8 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
         <div>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white">Privacy & Visibility Preferences</h2>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">Privacy & Data Governance</h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Choose what details are visible to campus peers and external recruiters. Edits autosave seamlessly.
           </p>
@@ -120,6 +161,55 @@ export const PrivacySettingsPage: React.FC = () => {
           </div>
         ))}
       </div>
+
+      {/* Asynchronous Data Export */}
+      <div className="pt-6 border-t border-slate-200 dark:border-slate-800 space-y-4">
+        <div>
+          <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">Export My Account Data (GDPR Compliant)</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Download a machine-readable JSON archive containing all your registrations, verified certificates, wallet transactions, and roadmaps.
+          </p>
+        </div>
+
+        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950 text-brand-600 flex items-center justify-center">
+              <FileArchive className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="font-bold text-xs text-slate-900 dark:text-white">Full Platform Snapshot Archive</span>
+              <p className="text-[11px] text-slate-400">Includes Profile, Events, Wallet, Roadmaps, Projects</p>
+            </div>
+          </div>
+
+          <div>
+            {!exportJob && (
+              <Button variant="primary" size="sm" onClick={handleRequestDataExport} icon={<Download className="w-3.5 h-3.5" />}>
+                Request Export Archive
+              </Button>
+            )}
+
+            {exportJob?.status === 'QUEUED' && (
+              <span className="text-xs text-slate-500 font-semibold flex items-center gap-1.5">
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-600" /> Preparing Export...
+              </span>
+            )}
+
+            {exportJob?.status === 'RUNNING' && (
+              <span className="text-xs text-indigo-600 font-bold flex items-center gap-1.5 animate-pulse">
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-600" /> Building Archive...
+              </span>
+            )}
+
+            {exportJob?.status === 'COMPLETED' && (
+              <Button variant="ai" size="sm" onClick={handleDownloadSnapshot} icon={<Download className="w-3.5 h-3.5" />}>
+                Download JSON Snapshot (Ready)
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 };

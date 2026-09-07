@@ -20,6 +20,8 @@ import { AceAiAssistant } from './components/ai/AceAiAssistant';
 import { RequireRole } from './components/auth/RequireRole';
 
 // Public Pages
+import { ActivityCenterPage } from './pages/ActivityCenterPage';
+import { NotificationCenterPage } from './pages/NotificationCenterPage';
 import { HomePage } from './pages/HomePage';
 import { EventsExplorerPage } from './pages/EventsExplorerPage';
 import { EventDetailPage } from './pages/EventDetailPage';
@@ -198,6 +200,10 @@ export function App() {
                               <Route path="/certificates" element={<CertificatesPage />} />
                               <Route path="/verify-certificate/:id" element={<CertificatesPage />} />
                               <Route path="/project-showcase" element={<ProjectShowcasePage />} />
+                              <Route path="/activity" element={<ActivityCenterPage />} />
+                              <Route path="/notifications" element={<NotificationCenterPage />} />
+                              <Route path="/projects" element={<ProjectShowcasePage />} />
+
                               <Route path="/project-showcase/demo" element={<PresentationDemoPage />} />
                               <Route path="/blog" element={<BlogPage />} />
                               <Route path="/colleges" element={<CollegesPage />} />
