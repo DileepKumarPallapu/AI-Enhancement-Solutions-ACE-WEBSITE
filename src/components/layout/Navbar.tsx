@@ -30,7 +30,9 @@ import {
   LogIn,
   UserPlus,
   RefreshCw,
-  Award
+  Award,
+  GraduationCap,
+  Users
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
@@ -84,7 +86,7 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
     { role: 'STUDENT', label: 'Dileep Kumar (Student)', icon: '🎓', desc: 'B.Tech CSE @ PSG Tech' },
     { role: 'COLLEGE_AMBASSADOR', label: 'Priya Sharma (Ambassador)', icon: '🤝', desc: 'Anna University Campus Lead' },
     { role: 'ORGANIZER', label: 'TechFest Club (Organizer)', icon: '🏛️', desc: 'Shaastra IIT Madras' },
-    { role: 'MENTOR', label: 'Dr. Arun V (Mentor)', icon: '💡', desc: 'AI Scientist & Judge' },
+    { role: 'MENTOR', label: 'Dr. Arun V (Faculty Mentor)', icon: '💡', desc: 'PSG Tech AI Scientist & Lead' },
     { role: 'COLLEGE', label: 'PSG Tech (Institution)', icon: '🏫', desc: 'Verified University Admin' },
     { role: 'ADMIN', label: 'ACE Admin (Superadmin)', icon: '🛡️', desc: 'System Security Control' }
   ];
@@ -123,11 +125,11 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                 <Link to="/coding" className={navItemClass('/coding')}>
                   Coding
                 </Link>
+                <Link to="/mentors" className={navItemClass('/mentors')}>
+                  <GraduationCap className="w-3.5 h-3.5 text-indigo-500 flex-shrink-0" /> Mentors
+                </Link>
                 <Link to="/learn-play" className="flex items-center gap-1 px-2.5 py-1.5 text-xs lg:text-sm font-bold rounded-xl text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-slate-800 transition-colors whitespace-nowrap">
                   <Sparkles className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" /> Learn & Play
-                </Link>
-                <Link to="/colleges" className={navItemClass('/colleges')}>
-                  Colleges
                 </Link>
 
                 {/* More Dropdown */}
@@ -142,6 +144,9 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
 
                   {showMoreMenu && (
                     <div className="absolute left-0 top-full mt-2 w-56 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800 p-2 z-50 animate-scaleUp">
+                      <Link to="/colleges" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🏫 Colleges Directory</span>
+                      </Link>
                       <Link to="/community" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
                         <span>💬 Community Feed</span>
                       </Link>
@@ -151,11 +156,8 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                       <Link to="/certificates" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
                         <span>📜 Verify Certificate</span>
                       </Link>
-                      <Link to="/project-showcase" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>💡 Project Showcase</span>
-                      </Link>
-                      <Link to="/blog" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>📰 ACE Tech Blog</span>
+                      <Link to="/become-mentor" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🎓 Apply as Faculty Mentor</span>
                       </Link>
                       <Link to="/explore" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-brand-600 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl border-t border-slate-100 dark:border-slate-800 mt-1">
                         <span>🧭 All 50+ Modules</span>
@@ -243,47 +245,7 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                 <span className="hidden sm:inline">Ask ACE</span>
               </button>
 
-              {/* + ADD EVENT Button */}
-              <Link to="/submit-event" className="hidden sm:inline-flex">
-                <button className="px-3 py-1.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs shadow-xs transition-all flex items-center gap-1 whitespace-nowrap">
-                  <PlusCircle className="w-3.5 h-3.5" />
-                  <span className="hidden md:inline">+ Add Event</span>
-                  <span className="md:hidden">+ Event</span>
-                </button>
-              </Link>
-
-              {/* Notifications */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowNotifications(!showNotifications)}
-                  className="relative p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                >
-                  <Bell className="w-4 h-4" />
-                  {unreadNotificationCount > 0 && (
-                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white dark:ring-slate-900 animate-pulse" />
-                  )}
-                </button>
-
-                {showNotifications && (
-                  <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 p-4 z-50 animate-scaleUp">
-                    <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                      <h4 className="font-bold text-sm text-slate-900 dark:text-white">Notifications</h4>
-                      <span className="text-xs text-brand-600 font-semibold">{unreadNotificationCount} New</span>
-                    </div>
-                    <div className="divide-y divide-slate-50 dark:divide-slate-800 max-h-64 overflow-y-auto mt-2">
-                      {notifications.map(n => (
-                        <div key={n.id} className="py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/50 px-2 rounded-lg transition-colors">
-                          <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">{n.title}</p>
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">{n.message}</p>
-                          <span className="text-[10px] text-slate-400 mt-1 block">{n.timestamp}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Real Live Reactive User Profile Pill */}
+              {/* User Profile Pill */}
               {currentUser ? (
                 <div className="relative">
                   <button
@@ -325,60 +287,49 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                           <p className="text-xs font-extrabold text-slate-900 dark:text-white truncate">{currentUser.fullName}</p>
                           <p className="text-[10px] text-indigo-500 font-mono truncate">@{currentUser.username}</p>
                           <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">{currentUser.college}</p>
-                          <div className="flex items-center gap-1.5 mt-1.5">
-                            <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-md bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 font-mono">
-                              {currentUser.role}
-                            </span>
-                            <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-md bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-mono">
-                              Strength: {currentUser.profileStrength}%
-                            </span>
-                          </div>
                         </div>
                       </div>
 
-                      {/* Navigation Menu */}
+                      {/* Mentorship Quick Links */}
                       <div className="space-y-1 text-xs">
                         <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">
-                          Account & Profile
+                          Campus Mentorship
                         </div>
 
-                        <Link to={`/profile/${currentUser.username}`} onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
-                          <User className="w-4 h-4 text-indigo-500" />
-                          <span>View Public Profile</span>
+                        <Link to="/student/mentor" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-indigo-950/40 rounded-xl font-bold transition-colors">
+                          <GraduationCap className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                          <span>My Campus Mentor Workspace</span>
                         </Link>
 
-                        <Link to="/settings/profile" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
-                          <Settings className="w-4 h-4 text-purple-500" />
-                          <span>Edit Profile Information</span>
+                        <Link to="/student/mentors" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <Search className="w-4 h-4 text-purple-500" />
+                          <span>Find / Match Mentors</span>
                         </Link>
 
-                        <Link to="/settings/photos" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
-                          <ImageIcon className="w-4 h-4 text-blue-500" />
-                          <span>Photo Studio & Banners</span>
-                        </Link>
-
-                        <Link to="/profile/gallery" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                        <Link to="/mentor/dashboard" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
                           <Award className="w-4 h-4 text-amber-500" />
-                          <span>Event Visual Gallery</span>
+                          <span>Mentor Faculty Command Center</span>
                         </Link>
 
-                        {/* Workspace Dashboards */}
+                        <Link to="/college/mentors" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <Users className="w-4 h-4 text-emerald-500" />
+                          <span>College Mentor Management</span>
+                        </Link>
+
+                        {/* Account & Profile */}
                         <div className="pt-2 border-t border-slate-100 dark:border-slate-800 mt-2 space-y-1">
                           <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">
-                            Workspaces
+                            Account & Profile
                           </div>
 
-                          <Link to="/student" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-1.5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium">
-                            <span>🎓 Student Dashboard</span>
+                          <Link to={`/profile/${currentUser.username}`} onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                            <User className="w-4 h-4 text-indigo-500" />
+                            <span>View Public Profile</span>
                           </Link>
-                          <Link to="/organizer" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-1.5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium">
-                            <span>🏛️ Organizer Portal</span>
-                          </Link>
-                          <Link to="/ambassador" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-1.5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium">
-                            <span>🤝 Ambassador Portal</span>
-                          </Link>
-                          <Link to="/admin" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-1.5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium">
-                            <span>🛡️ Admin Command Center</span>
+
+                          <Link to="/settings/profile" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                            <Settings className="w-4 h-4 text-purple-500" />
+                            <span>Settings & Preferences</span>
                           </Link>
                         </div>
 
@@ -437,20 +388,17 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
               <Link to="/hackathons" onClick={closeAll} className="px-3 py-2 text-sm font-semibold rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
                 Hackathons
               </Link>
-              <Link to="/competitions" onClick={closeAll} className="px-3 py-2 text-sm font-semibold rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
-                Competitions
+              <Link to="/mentors" onClick={closeAll} className="px-3 py-2 text-sm font-bold text-indigo-600 rounded-xl hover:bg-indigo-50 dark:hover:bg-slate-800">
+                🎓 Campus Mentors
               </Link>
-              <Link to="/coding" onClick={closeAll} className="px-3 py-2 text-sm font-semibold rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
-                Coding
+              <Link to="/student/mentor" onClick={closeAll} className="px-3 py-2 text-sm font-semibold text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                My Mentor Workspace
               </Link>
               <Link to="/learn-play" onClick={closeAll} className="px-3 py-2 text-sm font-bold text-purple-600 rounded-xl hover:bg-purple-50 dark:hover:bg-slate-800">
                 Learn & Play
               </Link>
               <Link to="/profile" onClick={closeAll} className="px-3 py-2 text-sm font-bold text-indigo-600 rounded-xl hover:bg-indigo-50 dark:hover:bg-slate-800">
                 My Profile & Settings
-              </Link>
-              <Link to="/submit-event" onClick={closeAll} className="px-3 py-2 text-sm font-semibold text-brand-600 rounded-xl hover:bg-purple-50 dark:hover:bg-slate-800">
-                + Submit Event
               </Link>
             </nav>
           </div>
