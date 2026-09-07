@@ -152,7 +152,7 @@ export const LoginPage: React.FC = () => {
                 required
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
-                placeholder="dileepkumar or dileep.kumar@psgtech.edu"
+                placeholder="dileepkumar or dileepkumarpallapu28@gmail.com"
                 className="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
               />
             </div>

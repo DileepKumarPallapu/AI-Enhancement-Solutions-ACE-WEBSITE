@@ -318,3 +318,16 @@ export interface MentorAnalyticsData {
   monthlySessionTrends: { month: string; count: number }[];
   eventEngagementRate: number;
 }
+
+export type MentorSpecialization = MentorSpecialty;
+export type MentorGuidanceArea = MentorshipArea;
+
+export interface MentorFilterOptions {
+  collegeId?: string;
+  collegeName?: string;
+  department?: string;
+  specialty?: MentorSpecialty;
+  mentorshipArea?: MentorshipArea;
+  searchQuery?: string;
+  isVerifiedOnly?: boolean;
+}

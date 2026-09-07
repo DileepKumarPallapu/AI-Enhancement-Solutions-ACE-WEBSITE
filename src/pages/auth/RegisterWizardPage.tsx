@@ -48,7 +48,7 @@ export const RegisterWizardPage: React.FC = () => {
   const [usernameStatus, setUsernameStatus] = useState<{ available?: boolean; message?: string }>({});
 
   // Step 3: Role details
-  const [collegeQuery, setCollegeQuery] = useState('PSG College of Technology');
+  const [collegeQuery, setCollegeQuery] = useState('Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology');
   const [isInstModalOpen, setIsInstModalOpen] = useState(false);
   const [degree, setDegree] = useState('B.Tech');
   const [department, setDepartment] = useState('Computer Science & Engineering');

@@ -130,6 +130,7 @@ export interface AchievementRecord {
 }
 
 export interface StudentProfileData {
+  institutionId?: string;
   college: string;
   degree: string;
   major?: string;
@@ -250,6 +251,7 @@ export interface Account {
   enrollments?: UserRoleEnrollment[];
   permissions?: string[];
   collegeId?: string;
+  institutionId?: string;
   status: AccountStatus;
   
   // Verification

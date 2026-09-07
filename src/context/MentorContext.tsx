@@ -127,26 +127,26 @@ export const MentorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   const studentId = currentUser?.id || 'usr_student_dileep';
-  const collegeIdOrName = currentUser?.college || 'PSG College of Technology';
+  const collegeIdOrName = currentUser?.institutionId || currentUser?.college || 'Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology';
 
   // Find if current user is an active mentor
   const activeMentorProfile = currentUser
     ? mentorDb.getAllMentors().find(m => m.username.toLowerCase() === currentUser.username.toLowerCase() || m.userId === currentUser.id) || null
     : null;
 
-  const mentorId = activeMentorProfile?.id || 'men_psg_arun';
+  const mentorId = activeMentorProfile?.id || '';
 
   const collegeMentors = mentorDb.getMentorsByCollege(collegeIdOrName);
   const assignedMentors = mentorDb.getAssignedMentorsForStudent(studentId);
-  const myStudents = mentorDb.getAssignedStudentsForMentor(mentorId);
-  const mentorRequests = mentorDb.getRequestsForMentor(mentorId);
+  const myStudents = mentorId ? mentorDb.getAssignedStudentsForMentor(mentorId) : [];
+  const mentorRequests = mentorId ? mentorDb.getRequestsForMentor(mentorId) : [];
   const studentSessions = mentorDb.getSessionsForStudent(studentId);
-  const mentorSessions = mentorDb.getSessionsForMentor(mentorId);
+  const mentorSessions = mentorId ? mentorDb.getSessionsForMentor(mentorId) : [];
   const studentGoals = mentorDb.getGoalsForStudent(studentId);
   const studentActionItems = mentorDb.getActionItemsForStudent(studentId);
-  const mentorActionItems = mentorDb.getActionItemsForMentor(mentorId);
+  const mentorActionItems = mentorId ? mentorDb.getActionItemsForMentor(mentorId) : [];
   const studentRecommendations = mentorDb.getRecommendationsForStudent(studentId);
-  const mentorAnalytics = mentorDb.getMentorAnalytics(mentorId);
+  const mentorAnalytics = mentorId ? mentorDb.getMentorAnalytics(mentorId) : null;
 
   // Student Actions
   const requestMentor = async (payload: {
@@ -167,7 +167,7 @@ export const MentorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       studentUsername: currentUser?.username || 'dileepkumar',
       studentName: currentUser?.fullName || 'Dileep Kumar',
       studentAvatar: currentUser?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400',
-      studentCollege: currentUser?.college || 'PSG College of Technology',
+      studentCollege: currentUser?.college || 'Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology',
       studentDepartment: (currentUser?.roleProfileData as any)?.department || 'Computer Science and Engineering',
       studentYear: (currentUser?.roleProfileData as any)?.year || '4th Year'
     });
@@ -258,7 +258,7 @@ export const MentorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const created = mentorDb.createActionItem({
       ...item,
       mentorId,
-      mentorName: activeMentorProfile?.fullName || 'Dr. Arun Venkatesh, Ph.D.'
+      mentorName: activeMentorProfile?.fullName || 'Faculty Mentor'
     });
     refreshMentorData();
     return created;
@@ -277,7 +277,7 @@ export const MentorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const created = mentorDb.addRecommendation({
       ...rec,
       mentorId,
-      mentorName: activeMentorProfile?.fullName || 'Dr. Arun Venkatesh, Ph.D.'
+      mentorName: activeMentorProfile?.fullName || 'Faculty Mentor'
     });
     refreshMentorData();
     return created;

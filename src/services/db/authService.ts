@@ -48,7 +48,7 @@ export class AuthService {
     const firstName = payload.firstName || names[0] || 'User';
     const lastName = payload.lastName || names.slice(1).join(' ') || '';
     const phoneNum = payload.phone || payload.phoneNumber || '';
-    const userCollege = payload.college || 'PSG College of Technology';
+    const userCollege = payload.college || 'Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology';
     const userLocation = payload.location || 'Coimbatore, Tamil Nadu';
 
     const newAccount: Account = {

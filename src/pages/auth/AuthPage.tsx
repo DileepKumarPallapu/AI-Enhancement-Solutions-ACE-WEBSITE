@@ -35,7 +35,7 @@ export const AuthPage: React.FC = () => {
   const [regEmail, setRegEmail] = useState('');
   const [regPhone, setRegPhone] = useState('+91 98765 43210');
   const [regPassword, setRegPassword] = useState('');
-  const [regCollege, setRegCollege] = useState('PSG College of Technology');
+  const [regCollege, setRegCollege] = useState('Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology');
   const [regDepartment, setRegDepartment] = useState('Computer Science & Engineering');
   const [regYear, setRegYear] = useState('3rd Year');
   const [regRole, setRegRole] = useState<PlatformRole>('STUDENT');
@@ -270,7 +270,7 @@ export const AuthPage: React.FC = () => {
                   type="text"
                   value={regCollege}
                   onChange={(e) => setRegCollege(e.target.value)}
-                  placeholder="e.g. PSG College of Technology, Anna University, IIT..."
+                  placeholder="e.g. Vel Tech, Anna University, IIT..."
                   className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 font-medium"
                   required
                 />
