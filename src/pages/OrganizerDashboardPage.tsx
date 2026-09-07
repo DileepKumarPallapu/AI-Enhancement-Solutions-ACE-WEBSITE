@@ -14,7 +14,7 @@ export const OrganizerDashboardPage: React.FC = () => {
 
   const attendees = [
     { id: 'REG-88192', name: 'Pallapu Dileep Kumar', college: 'Hindustan Institute of Tech', status: 'Checked In', time: '09:15 AM' },
-    { id: 'REG-88193', name: 'Geeresh P', college: 'PSG College of Tech', status: 'Pending', time: '-' },
+    { id: 'REG-88193', name: 'Geeresh P', college: 'Vel Tech University', status: 'Pending', time: '-' },
     { id: 'REG-88194', name: 'Subhani S', college: 'Karpagam College of Eng', status: 'Checked In', time: '09:22 AM' }
   ];
 

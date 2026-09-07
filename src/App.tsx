@@ -1,3 +1,13 @@
+// ACE 20X Global Student Super Platform Pages
+import { SuperSearchPage } from './pages/search/SuperSearchPage';
+import { OpportunityMarketplacePage } from './pages/opportunities/OpportunityMarketplacePage';
+import { PublicPassportPage } from './pages/passport/PublicPassportPage';
+import { PublicVerifyCredentialPage } from './pages/verify/PublicVerifyCredentialPage';
+import { CareerCopilotPage } from './pages/career/CareerCopilotPage';
+import { CareerRoadmapPage } from './pages/career/CareerRoadmapPage';
+import { SkillGraphPage } from './pages/career/SkillGraphPage';
+import { CompetitionArenaPage } from './pages/competitions/CompetitionArenaPage';
+
 // ACE 10X Massive Scale Platform Transformation Pages
 import { StudentPassportPage } from './pages/student/StudentPassportPage';
 import { RecruiterPortalPage } from './pages/recruiter/RecruiterPortalPage';
@@ -469,6 +479,16 @@ export function App() {
                                 <Route path="/project-lab" element={<ProjectLabPage />} />
                                 <Route path="/judge" element={<JudgePortalPage />} />
                                 <Route path="/reports" element={<ReportsAndTrustPage />} />
+
+                                                                {/* ACE 20X Global Student Super Platform */}
+                                <Route path="/search" element={<SuperSearchPage />} />
+                                <Route path="/opportunities" element={<OpportunityMarketplacePage />} />
+                                <Route path="/passport/:username" element={<PublicPassportPage />} />
+                                <Route path="/verify/:credentialId" element={<PublicVerifyCredentialPage />} />
+                                <Route path="/career/copilot" element={<CareerCopilotPage />} />
+                                <Route path="/career/roadmap" element={<CareerRoadmapPage />} />
+                                <Route path="/career/skills" element={<SkillGraphPage />} />
+                                <Route path="/competitions/:id/arena" element={<CompetitionArenaPage />} />
 
                                 {/* Catch-all 404 handler */}
                               <Route path="*" element={<NotFoundPage />} />

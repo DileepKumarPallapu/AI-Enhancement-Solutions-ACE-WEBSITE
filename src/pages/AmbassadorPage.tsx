@@ -29,8 +29,8 @@ export const AmbassadorPage: React.FC = () => {
         </h3>
         <div className="divide-y divide-slate-100 text-xs">
           {[
-            { rank: '1', name: 'Arun Kumar', college: 'PSG College of Technology', points: '1,420 XP', referrals: '48 Students' },
-            { rank: '2', name: 'Pallapu Dileep Kumar', college: 'Hindustan Institute of Technology', points: '980 XP', referrals: '15 Students' },
+            { rank: '1', name: 'Arun Kumar', college: 'Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology', points: '1,420 XP', referrals: '48 Students' },
+            { rank: '2', name: 'Pallapu Dileep Kumar', college: 'Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology', points: '980 XP', referrals: '15 Students' },
             { rank: '3', name: 'Sneha R', college: 'SSN College of Engineering', points: '860 XP', referrals: '22 Students' }
           ].map(amb => (
             <div key={amb.rank} className="py-3 flex items-center justify-between">
