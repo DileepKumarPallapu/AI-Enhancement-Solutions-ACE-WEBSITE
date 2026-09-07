@@ -1,3 +1,12 @@
+// ACE 70X Global Student, Institution, Career & Opportunity Ecosystem
+import { CollegeOSPage } from './pages/college/CollegeOSPage';
+import { PlacementCellOSPage } from './pages/placement/PlacementCellOSPage';
+import { RecruiterOSDashboardPage } from './pages/recruiter/RecruiterOSDashboardPage';
+import { DeveloperPortalPage } from './pages/developers/DeveloperPortalPage';
+import { TrainingProviderPortalPage } from './pages/provider/TrainingProviderPortalPage';
+import { MarketplaceHubPage } from './pages/marketplace/MarketplaceHubPage';
+import { PartnerNetworkPage } from './pages/partners/PartnerNetworkPage';
+import { CreatorEcosystemPage } from './pages/creators/CreatorEcosystemPage';
 // ACE 60X The Student Operating System & Opportunity Graph
 import { StudentOSPage } from './pages/student/StudentOSPage';
 import { RoleIntelligencePage } from './pages/career/RoleIntelligencePage';
@@ -579,6 +588,18 @@ export function App() {
                                 <Route path="/career/offers" element={<OfferTrackerPage />} />
                                 <Route path="/career/timeline" element={<CareerMilestoneTimelinePage />} />
                                 <Route path="/knowledge" element={<KnowledgeHubPage />} />
+
+                                {/* ACE 70X Global Ecosystem & Portals */}
+                                <Route path="/college" element={<CollegeOSPage />} />
+                                <Route path="/college/placement" element={<PlacementCellOSPage />} />
+                                <Route path="/placement" element={<PlacementCellOSPage />} />
+                                <Route path="/recruiter/dashboard" element={<RecruiterOSDashboardPage />} />
+                                <Route path="/developers" element={<DeveloperPortalPage />} />
+                                <Route path="/provider" element={<TrainingProviderPortalPage />} />
+                                <Route path="/marketplace" element={<MarketplaceHubPage />} />
+                                <Route path="/partners" element={<PartnerNetworkPage />} />
+                                <Route path="/creators" element={<CreatorEcosystemPage />} />
+
 
 
                                 {/* Catch-all 404 handler */}
