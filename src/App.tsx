@@ -1,3 +1,14 @@
+// Phase 3 Student Command Center & Opportunity Intelligence Pages
+import { StudentCommandCenterPage } from './pages/student/StudentCommandCenterPage';
+import { OpportunityIntelligencePage } from './pages/student/OpportunityIntelligencePage';
+import { OpportunityDetailPage } from './pages/student/OpportunityDetailPage';
+import { StudentApplicationsPage } from './pages/student/StudentApplicationsPage';
+import { WeeklyReviewPage } from './pages/student/WeeklyReviewPage';
+import { StudentTimelinePage } from './pages/student/StudentTimelinePage';
+import { CareerReadinessPage } from './pages/career/CareerReadinessPage';
+import { ProjectBuilderPage } from './pages/projects/ProjectBuilderPage';
+import { SavedBookmarksPage } from './pages/saved/SavedBookmarksPage';
+
 // Phase 2 Next-Generation Ecosystem Pages
 import { DigitalIdPage } from './pages/student/DigitalIdPage';
 import { PublicVerifyIdPage } from './pages/verify/PublicVerifyIdPage';
@@ -416,7 +427,18 @@ export function App() {
                               <Route path="/faq" element={<FaqPage />} />
                               <Route path="/privacy" element={<PrivacyPage />} />
 
-                                                              {/* Phase 2 Next-Generation Feature Ecosystem */}
+                                                                                              {/* Phase 3 Student Command Center & Opportunity Intelligence */}
+                                <Route path="/student/command-center" element={<StudentCommandCenterPage />} />
+                                <Route path="/student/opportunities" element={<OpportunityIntelligencePage />} />
+                                <Route path="/student/opportunities/:id" element={<OpportunityDetailPage />} />
+                                <Route path="/student/applications" element={<StudentApplicationsPage />} />
+                                <Route path="/student/weekly-review" element={<WeeklyReviewPage />} />
+                                <Route path="/student/timeline" element={<StudentTimelinePage />} />
+                                <Route path="/career/readiness" element={<CareerReadinessPage />} />
+                                <Route path="/projects/new" element={<ProjectBuilderPage />} />
+                                <Route path="/saved" element={<SavedBookmarksPage />} />
+
+                                {/* Phase 2 Next-Generation Feature Ecosystem */}
                                 <Route path="/student/ace-id" element={<DigitalIdPage />} />
                                 <Route path="/verify/:token" element={<PublicVerifyIdPage />} />
                                 <Route path="/verify/token" element={<PublicVerifyIdPage />} />
