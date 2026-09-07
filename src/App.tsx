@@ -1,3 +1,13 @@
+// ACE 25X Ecosystem, Growth & Network Effect Pages
+import { StudentHomePage } from './pages/student/StudentHomePage';
+import { OpportunityFeedPage } from './pages/feed/OpportunityFeedPage';
+import { FollowingPage } from './pages/following/FollowingPage';
+import { CampusNetworkPage } from './pages/college/CampusNetworkPage';
+import { CollegeClubsPage } from './pages/college/CollegeClubsPage';
+import { PublicUserProfilePage } from './pages/portfolio/PublicUserProfilePage';
+import { InterviewSchedulePage } from './pages/career/InterviewSchedulePage';
+import { CareerCenterPage } from './pages/career/CareerCenterPage';
+
 // ACE 20X Global Student Super Platform Pages
 import { SuperSearchPage } from './pages/search/SuperSearchPage';
 import { OpportunityMarketplacePage } from './pages/opportunities/OpportunityMarketplacePage';
@@ -489,6 +499,16 @@ export function App() {
                                 <Route path="/career/roadmap" element={<CareerRoadmapPage />} />
                                 <Route path="/career/skills" element={<SkillGraphPage />} />
                                 <Route path="/competitions/:id/arena" element={<CompetitionArenaPage />} />
+
+                                                                {/* ACE 25X Ecosystem, Growth & Network Effect */}
+                                <Route path="/student" element={<StudentHomePage />} />
+                                <Route path="/feed" element={<OpportunityFeedPage />} />
+                                <Route path="/following" element={<FollowingPage />} />
+                                <Route path="/college/:slug" element={<CampusNetworkPage />} />
+                                <Route path="/college/clubs" element={<CollegeClubsPage />} />
+                                <Route path="/u/:username" element={<PublicUserProfilePage />} />
+                                <Route path="/interviews" element={<InterviewSchedulePage />} />
+                                <Route path="/career" element={<CareerCenterPage />} />
 
                                 {/* Catch-all 404 handler */}
                               <Route path="*" element={<NotFoundPage />} />
