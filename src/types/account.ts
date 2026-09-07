@@ -19,6 +19,23 @@ export type VisibilityLevel =
   | 'FOLLOWERS'
   | 'PRIVATE';
 
+export type EnrollmentStatus = 'ACTIVE' | 'PENDING' | 'REJECTED' | 'SUSPENDED' | 'EXPIRED';
+
+export interface UserRoleEnrollment {
+  id: string;
+  userId: string;
+  role: AccountRole;
+  collegeId?: string;
+  collegeName?: string;
+  department?: string;
+  status: EnrollmentStatus;
+  appliedAt: string;
+  approvedAt?: string;
+  approvedBy?: string;
+  notes?: string;
+  metadata?: Record<string, any>;
+}
+
 export interface PrivacyPreferences {
   profileVisibility: VisibilityLevel;
   showEmail: boolean;
@@ -228,6 +245,11 @@ export interface Account {
   phone?: string;
   passwordHash: string;
   role: AccountRole;
+  roles?: AccountRole[];
+  activeWorkspace?: AccountRole;
+  enrollments?: UserRoleEnrollment[];
+  permissions?: string[];
+  collegeId?: string;
   status: AccountStatus;
   
   // Verification

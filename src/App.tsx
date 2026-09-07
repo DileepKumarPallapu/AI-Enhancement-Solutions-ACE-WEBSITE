@@ -16,6 +16,7 @@ import { CompetitionProvider } from './context/CompetitionContext';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { AceAiAssistant } from './components/ai/AceAiAssistant';
+import { RequireRole } from './components/auth/RequireRole';
 
 // Public Pages
 import { HomePage } from './pages/HomePage';
@@ -209,16 +210,16 @@ export function App() {
                               <Route path="/student/mentor/messages" element={<StudentMentorMessagesPage />} />
 
                               {/* Mentor Dedicated Workspace Routes */}
-                              <Route path="/mentor" element={<MentorDashboardPage />} />
-                              <Route path="/mentor/dashboard" element={<MentorDashboardPage />} />
-                              <Route path="/mentor/students" element={<MentorStudentListPage />} />
-                              <Route path="/mentor/students/:studentId" element={<MentorStudentDossierPage />} />
-                              <Route path="/mentor/sessions" element={<MentorSessionsPage />} />
-                              <Route path="/mentor/calendar" element={<MentorCalendarPage />} />
-                              <Route path="/mentor/messages" element={<MentorMessagesPage />} />
-                              <Route path="/mentor/events" element={<MentorEventGuidancePage />} />
-                              <Route path="/mentor/learning" element={<MentorLearningGuidancePage />} />
-                              <Route path="/mentor/analytics" element={<MentorAnalyticsPage />} />
+                              <Route path="/mentor" element={<RequireRole allowedRoles={['MENTOR']}><MentorDashboardPage /></RequireRole>} />
+                              <Route path="/mentor/dashboard" element={<RequireRole allowedRoles={['MENTOR']}><MentorDashboardPage /></RequireRole>} />
+                              <Route path="/mentor/students" element={<RequireRole allowedRoles={['MENTOR']}><MentorStudentListPage /></RequireRole>} />
+                              <Route path="/mentor/students/:studentId" element={<RequireRole allowedRoles={['MENTOR']}><MentorStudentDossierPage /></RequireRole>} />
+                              <Route path="/mentor/sessions" element={<RequireRole allowedRoles={['MENTOR']}><MentorSessionsPage /></RequireRole>} />
+                              <Route path="/mentor/calendar" element={<RequireRole allowedRoles={['MENTOR']}><MentorCalendarPage /></RequireRole>} />
+                              <Route path="/mentor/messages" element={<RequireRole allowedRoles={['MENTOR']}><MentorMessagesPage /></RequireRole>} />
+                              <Route path="/mentor/events" element={<RequireRole allowedRoles={['MENTOR']}><MentorEventGuidancePage /></RequireRole>} />
+                              <Route path="/mentor/learning" element={<RequireRole allowedRoles={['MENTOR']}><MentorLearningGuidancePage /></RequireRole>} />
+                              <Route path="/mentor/analytics" element={<RequireRole allowedRoles={['MENTOR']}><MentorAnalyticsPage /></RequireRole>} />
 
                               {/* College & Admin Mentor Management */}
                               <Route path="/college/mentors" element={<CollegeMentorsPage />} />
@@ -280,40 +281,40 @@ export function App() {
                               <Route path="/my-submissions" element={<MySubmissionsPage />} />
 
                               {/* Organizer Workspace */}
-                              <Route path="/organizer" element={<OrganizerDashboardPage />} />
-                              <Route path="/organizer/dashboard" element={<OrganizerDashboardPage />} />
-                              <Route path="/organizer/create" element={<SubmitEventPage />} />
-                              <Route path="/organizer/ai-tools" element={<OrganizerAiToolsPage />} />
+                              <Route path="/organizer" element={<RequireRole allowedRoles={['ORGANIZER']}><OrganizerDashboardPage /></RequireRole>} />
+                              <Route path="/organizer/dashboard" element={<RequireRole allowedRoles={['ORGANIZER']}><OrganizerDashboardPage /></RequireRole>} />
+                              <Route path="/organizer/create" element={<RequireRole allowedRoles={['ORGANIZER']}><SubmitEventPage /></RequireRole>} />
+                              <Route path="/organizer/ai-tools" element={<RequireRole allowedRoles={['ORGANIZER']}><OrganizerAiToolsPage /></RequireRole>} />
                               <Route path="/submit-event" element={<SubmitEventPage />} />
                               <Route path="/submit-event/:id" element={<SubmitEventPage />} />
                               <Route path="/create-event" element={<SubmitEventPage />} />
 
                               {/* Campus Ambassador Workspace */}
-                              <Route path="/ambassador" element={<AmbassadorDashboardPage />} />
-                              <Route path="/ambassador/dashboard" element={<AmbassadorDashboardPage />} />
-                              <Route path="/ambassador/campaigns" element={<AmbassadorCampaignsPage />} />
-                              <Route path="/ambassador/students" element={<AmbassadorStudentsPage />} />
-                              <Route path="/ambassador/tasks" element={<AmbassadorTasksPage />} />
+                              <Route path="/ambassador" element={<RequireRole allowedRoles={['COLLEGE_AMBASSADOR']}><AmbassadorDashboardPage /></RequireRole>} />
+                              <Route path="/ambassador/dashboard" element={<RequireRole allowedRoles={['COLLEGE_AMBASSADOR']}><AmbassadorDashboardPage /></RequireRole>} />
+                              <Route path="/ambassador/campaigns" element={<RequireRole allowedRoles={['COLLEGE_AMBASSADOR']}><AmbassadorCampaignsPage /></RequireRole>} />
+                              <Route path="/ambassador/students" element={<RequireRole allowedRoles={['COLLEGE_AMBASSADOR']}><AmbassadorStudentsPage /></RequireRole>} />
+                              <Route path="/ambassador/tasks" element={<RequireRole allowedRoles={['COLLEGE_AMBASSADOR']}><AmbassadorTasksPage /></RequireRole>} />
                               <Route path="/campus-ambassador" element={<AmbassadorPage />} />
-                              <Route path="/ambassador/event-approvals" element={<AmbassadorApprovalsPage />} />
-                              <Route path="/ambassador/event-approvals/:id" element={<AmbassadorApprovalsPage />} />
+                              <Route path="/ambassador/event-approvals" element={<RequireRole allowedRoles={['COLLEGE_AMBASSADOR']}><AmbassadorApprovalsPage /></RequireRole>} />
+                              <Route path="/ambassador/event-approvals/:id" element={<RequireRole allowedRoles={['COLLEGE_AMBASSADOR']}><AmbassadorApprovalsPage /></RequireRole>} />
 
                               {/* College Institutional Workspace */}
-                              <Route path="/college" element={<CollegePortalPage />} />
-                              <Route path="/college/dashboard" element={<CollegePortalPage />} />
+                              <Route path="/college" element={<RequireRole allowedRoles={['COLLEGE']}><CollegePortalPage /></RequireRole>} />
+                              <Route path="/college/dashboard" element={<RequireRole allowedRoles={['COLLEGE']}><CollegePortalPage /></RequireRole>} />
 
                               {/* ACE Super Admin Workspace */}
-                              <Route path="/admin" element={<AdminAiRiskCenterPage />} />
-                              <Route path="/admin/ai-risk" element={<AdminAiRiskCenterPage />} />
-                              <Route path="/admin/event-approvals" element={<AdminEventApprovalsPage />} />
-                              <Route path="/admin/moderation" element={<AdminEventApprovalsPage />} />
-                              <Route path="/admin/audit-logs" element={<AdminAuditLogsPage />} />
-                              <Route path="/admin/reports" element={<AdminReportsPage />} />
-                              <Route path="/admin/settings/coin-economy" element={<AdminCoinEconomyPage />} />
-                              <Route path="/admin/coin-economy" element={<AdminCoinEconomyPage />} />
-                              <Route path="/admin/rewards" element={<AdminCoinEconomyPage />} />
-                              <Route path="/admin/course-intelligence" element={<AdminCourseIntelligencePage />} />
-                              <Route path="/admin/ai/intelligence" element={<AdminCourseIntelligencePage />} />
+                              <Route path="/admin" element={<RequireRole allowedRoles={['ADMIN']}><AdminAiRiskCenterPage /></RequireRole>} />
+                              <Route path="/admin/ai-risk" element={<RequireRole allowedRoles={['ADMIN']}><AdminAiRiskCenterPage /></RequireRole>} />
+                              <Route path="/admin/event-approvals" element={<RequireRole allowedRoles={['ADMIN']}><AdminEventApprovalsPage /></RequireRole>} />
+                              <Route path="/admin/moderation" element={<RequireRole allowedRoles={['ADMIN']}><AdminEventApprovalsPage /></RequireRole>} />
+                              <Route path="/admin/audit-logs" element={<RequireRole allowedRoles={['ADMIN']}><AdminAuditLogsPage /></RequireRole>} />
+                              <Route path="/admin/reports" element={<RequireRole allowedRoles={['ADMIN']}><AdminReportsPage /></RequireRole>} />
+                              <Route path="/admin/settings/coin-economy" element={<RequireRole allowedRoles={['ADMIN']}><AdminCoinEconomyPage /></RequireRole>} />
+                              <Route path="/admin/coin-economy" element={<RequireRole allowedRoles={['ADMIN']}><AdminCoinEconomyPage /></RequireRole>} />
+                              <Route path="/admin/rewards" element={<RequireRole allowedRoles={['ADMIN']}><AdminCoinEconomyPage /></RequireRole>} />
+                              <Route path="/admin/course-intelligence" element={<RequireRole allowedRoles={['ADMIN']}><AdminCourseIntelligencePage /></RequireRole>} />
+                              <Route path="/admin/ai/intelligence" element={<RequireRole allowedRoles={['ADMIN']}><AdminCourseIntelligencePage /></RequireRole>} />
 
                               {/* Support Center */}
                               <Route path="/support" element={<SupportCenterPage />} />

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { PlatformRole, TaskRecord, ReportRecord, AuditLogEntry, SupportTicket } from '../types/management';
+import { useAuth } from './AuthContext';
 
 interface ManagementContextType {
   activeRole: PlatformRole;
@@ -23,7 +24,7 @@ const defaultTasks: TaskRecord[] = [
     id: 'TSK-101',
     title: 'Review HACKVERSE 2.0 Submissions',
     description: 'Verify registration domain and poster dates for CSE hackathon.',
-    assignedTo: 'Subhani S',
+    assignedTo: 'Campus Ambassador Lead',
     assignedRole: 'CAMPUS_AMBASSADOR',
     createdBy: 'ACE Admin Lead',
     priority: 'HIGH',
@@ -37,7 +38,7 @@ const defaultTasks: TaskRecord[] = [
     id: 'TSK-102',
     title: 'Verify College Department Accreditation',
     description: 'Check AI & Data Science department registry details.',
-    assignedTo: 'Subhani S',
+    assignedTo: 'Campus Ambassador Lead',
     assignedRole: 'CAMPUS_AMBASSADOR',
     createdBy: 'ACE Admin Lead',
     priority: 'MEDIUM',
@@ -78,29 +79,24 @@ const defaultAuditLogs: AuditLogEntry[] = [
     details: 'Approved HACKVERSE 2.0 after manual phone verification with college dean.',
     previousValue: 'PENDING_ACE_ADMIN',
     newValue: 'PUBLISHED'
-  },
-  {
-    id: 'AUD-902',
-    timestamp: '2026-09-02 21:15:00',
-    actorId: 'amb-subhani',
-    actorName: 'Subhani S (Ambassador)',
-    actorRole: 'CAMPUS_AMBASSADOR',
-    action: 'REQUEST_CHANGE',
-    targetType: 'EVENT',
-    targetId: 'ACE-EVT-2026-000182',
-    details: 'Requested date clarification matching uploaded poster flyer.'
   }
 ];
 
 const ManagementContext = createContext<ManagementContextType | undefined>(undefined);
 
 export const ManagementProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [activeRole, setActiveRole] = useState<PlatformRole>('STUDENT');
-  const [activePersona, setActivePersona] = useState({
-    name: 'Pallapu Dileep Kumar',
-    email: 'dileepkumarpallapu28@gmail.com',
-    college: 'Hindustan Institute of Technology, Coimbatore'
-  });
+  const { currentUser, activeRole: authRole, switchWorkspace } = useAuth();
+  
+  const activeRole = (authRole as PlatformRole) || 'STUDENT';
+  const setActiveRole = (role: PlatformRole) => {
+    switchWorkspace(role as any);
+  };
+
+  const activePersona = {
+    name: currentUser?.fullName || currentUser?.displayName || 'Dileep Kumar',
+    email: currentUser?.email || 'dileep.kumar@psgtech.edu',
+    college: currentUser?.college || 'PSG College of Technology'
+  };
 
   const [tasks, setTasks] = useState<TaskRecord[]>(() => {
     const saved = localStorage.getItem('ace_tasks');
@@ -132,16 +128,7 @@ export const ManagementProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   }, [auditLogs]);
 
   const switchPersona = (role: PlatformRole) => {
-    setActiveRole(role);
-    if (role === 'STUDENT') {
-      setActivePersona({ name: 'Pallapu Dileep Kumar', email: 'dileepkumarpallapu28@gmail.com', college: 'Hindustan Institute of Technology' });
-    } else if (role === 'ORGANIZER') {
-      setActivePersona({ name: 'Dr. R. Rajesh (Faculty Coordinator)', email: 'organizer@hindustan.edu', college: 'Hindustan Institute of Technology' });
-    } else if (role === 'CAMPUS_AMBASSADOR') {
-      setActivePersona({ name: 'Subhani S (Campus Ambassador)', email: 'ambassador@hindustan.edu', college: 'Hindustan Institute of Technology' });
-    } else if (role === 'ACE_ADMIN' || role === 'SUPER_ADMIN') {
-      setActivePersona({ name: 'ACE Security Admin', email: 'admin@allcollegeevent.com', college: 'ACE Headquarters' });
-    }
+    switchWorkspace(role as any);
   };
 
   const updateTaskStatus = (taskId: string, status: TaskRecord['status']) => {
@@ -158,19 +145,24 @@ export const ManagementProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   const updateReportStatus = (reportId: string, status: ReportRecord['status'], note?: string) => {
-    setReports(prev => prev.map(r => r.id === reportId ? {
-      ...r,
-      status,
-      resolutionNote: note || r.resolutionNote,
-      updatedAt: new Date().toISOString().split('T')[0]
-    } : r));
+    setReports(prev => prev.map(r => {
+      if (r.id === reportId) {
+        return {
+          ...r,
+          status,
+          assignedAdmin: note ? `${r.assignedAdmin || 'Admin'} - Note: ${note}` : r.assignedAdmin,
+          updatedAt: new Date().toISOString().split('T')[0]
+        };
+      }
+      return r;
+    }));
   };
 
   const createReport = (report: Omit<ReportRecord, 'id' | 'createdAt' | 'updatedAt' | 'status'>) => {
     const newReport: ReportRecord = {
       ...report,
       id: `REP-${Date.now().toString().slice(-4)}`,
-      status: 'NEW',
+      status: 'INVESTIGATING',
       createdAt: new Date().toISOString().split('T')[0],
       updatedAt: new Date().toISOString().split('T')[0]
     };
@@ -178,12 +170,12 @@ export const ManagementProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   const logAuditAction = (action: Omit<AuditLogEntry, 'id' | 'timestamp'>) => {
-    const newLog: AuditLogEntry = {
+    const newEntry: AuditLogEntry = {
       ...action,
       id: `AUD-${Date.now().toString().slice(-4)}`,
-      timestamp: new Date().toLocaleString()
+      timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19)
     };
-    setAuditLogs(prev => [newLog, ...prev]);
+    setAuditLogs(prev => [newEntry, ...prev]);
   };
 
   const createSupportTicket = (ticket: Omit<SupportTicket, 'id' | 'createdAt' | 'status'>) => {
@@ -197,22 +189,24 @@ export const ManagementProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   return (
-    <ManagementContext.Provider value={{
-      activeRole,
-      setActiveRole,
-      activePersona,
-      switchPersona,
-      tasks,
-      updateTaskStatus,
-      createTask,
-      reports,
-      updateReportStatus,
-      createReport,
-      auditLogs,
-      logAuditAction,
-      supportTickets,
-      createSupportTicket
-    }}>
+    <ManagementContext.Provider
+      value={{
+        activeRole,
+        setActiveRole,
+        activePersona,
+        switchPersona,
+        tasks,
+        updateTaskStatus,
+        createTask,
+        reports,
+        updateReportStatus,
+        createReport,
+        auditLogs,
+        logAuditAction,
+        supportTickets,
+        createSupportTicket
+      }}
+    >
       {children}
     </ManagementContext.Provider>
   );

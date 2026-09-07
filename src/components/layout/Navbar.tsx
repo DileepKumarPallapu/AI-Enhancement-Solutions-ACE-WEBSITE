@@ -33,7 +33,10 @@ import {
   RefreshCw,
   Award,
   GraduationCap,
-  Users
+  Users,
+  Briefcase,
+  Building2,
+  Check
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
@@ -43,7 +46,7 @@ import { AccountRole } from '../../types/account';
 
 export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat }) => {
   const { unreadNotificationCount, notifications, theme, toggleTheme } = useApp();
-  const { currentUser, activeRole, logout, switchRolePersona } = useAuth();
+  const { currentUser, activeRole, availableWorkspaces, switchWorkspace, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -51,7 +54,7 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
-  const [showRoleSwitcher, setShowRoleSwitcher] = useState(false);
+  const [showWorkspaceSwitcher, setShowWorkspaceSwitcher] = useState(false);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
 
   useEffect(() => {
@@ -66,7 +69,7 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
     setShowNotifications(false);
     setShowProfileMenu(false);
     setShowMoreMenu(false);
-    setShowRoleSwitcher(false);
+    setShowWorkspaceSwitcher(false);
     setMobileMenuOpen(false);
   };
 
@@ -83,14 +86,8 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
       : 'text-slate-700 dark:text-slate-300 hover:text-brand-600 hover:bg-slate-50 dark:hover:bg-slate-800'}
   `;
 
-  const availablePersonas: { role: AccountRole; label: string; icon: string; desc: string }[] = [
-    { role: 'STUDENT', label: 'Dileep Kumar (Student)', icon: '🎓', desc: 'B.Tech CSE @ PSG Tech' },
-    { role: 'COLLEGE_AMBASSADOR', label: 'Priya Sharma (Ambassador)', icon: '🤝', desc: 'Anna University Campus Lead' },
-    { role: 'ORGANIZER', label: 'TechFest Club (Organizer)', icon: '🏛️', desc: 'Shaastra IIT Madras' },
-    { role: 'MENTOR', label: 'Dr. Arun V (Faculty Mentor)', icon: '💡', desc: 'PSG Tech AI Scientist & Lead' },
-    { role: 'COLLEGE', label: 'PSG Tech (Institution)', icon: '🏫', desc: 'Verified University Admin' },
-    { role: 'ADMIN', label: 'ACE Admin (Superadmin)', icon: '🛡️', desc: 'System Security Control' }
-  ];
+  // Find active workspace object
+  const currentWorkspace = availableWorkspaces.find(w => w.role === activeRole) || availableWorkspaces[0];
 
   return (
     <>
@@ -99,15 +96,15 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
           ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-xs border-b border-slate-200/80 dark:border-slate-800' 
           : 'bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800'
       }`}>
-        <div className="w-full px-3 sm:px-4 lg:px-6">
-          <div className="flex items-center justify-between h-16 gap-2">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-14 sm:h-16 gap-2">
             
-            {/* Left: Brand Logo & Primary Navigation */}
-            <div className="flex items-center gap-2 lg:gap-4 flex-shrink-0">
+            {/* Left: Brand Logo & Desktop Nav Links */}
+            <div className="flex items-center gap-3 lg:gap-6">
               <Link to="/" onClick={closeAll} className="flex items-center gap-2 group flex-shrink-0">
-                <img
-                  src={BRAND.logo}
-                  alt={BRAND.brandName}
+                <img 
+                  src={BRAND.logo} 
+                  alt="AllCollegeEvent Logo" 
                   className="h-9 sm:h-11 w-auto object-contain transition-transform group-hover:scale-105"
                 />
               </Link>
@@ -169,53 +166,77 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
               </nav>
             </div>
 
-            {/* Right: Actions, Search, Persona Switcher & User Profile */}
+            {/* Right: Actions, Search, Workspace Switcher & User Profile */}
             <div className="flex items-center gap-1.5 sm:gap-2.5">
               
-              {/* Quick Persona Switcher Button */}
-              <div className="relative hidden md:block">
-                <button
-                  onClick={() => setShowRoleSwitcher(!showRoleSwitcher)}
-                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/60 text-indigo-700 dark:text-indigo-300 text-xs font-bold hover:bg-indigo-100 transition"
-                  title="Switch Role Persona"
-                >
-                  <RefreshCw className="w-3 h-3 text-indigo-500" />
-                  <span className="truncate max-w-[110px] capitalize">{activeRole.toLowerCase().replace('_', ' ')}</span>
-                  <ChevronDown className={`w-3 h-3 transition-transform ${showRoleSwitcher ? 'rotate-180' : ''}`} />
-                </button>
+              {/* Authenticated Workspace Switcher (Strictly for Current User's Enrolled Workspaces) */}
+              {currentUser && (
+                <div className="relative hidden md:block">
+                  {availableWorkspaces.length > 1 ? (
+                    <button
+                      onClick={() => setShowWorkspaceSwitcher(!showWorkspaceSwitcher)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/60 text-indigo-700 dark:text-indigo-300 text-xs font-bold hover:bg-indigo-100 transition shadow-2xs"
+                      title="Switch Workspace Role"
+                    >
+                      <span>{currentWorkspace?.icon || '🎓'}</span>
+                      <span className="truncate max-w-[130px] font-semibold">{currentWorkspace?.label || 'Workspace'}</span>
+                      <ChevronDown className={`w-3 h-3 transition-transform ${showWorkspaceSwitcher ? 'rotate-180' : ''}`} />
+                    </button>
+                  ) : (
+                    <Link
+                      to={currentWorkspace?.path || '/student/dashboard'}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+                      title="Active Workspace"
+                    >
+                      <span>{currentWorkspace?.icon || '🎓'}</span>
+                      <span className="truncate max-w-[130px] font-semibold">{currentWorkspace?.label || 'Student'}</span>
+                    </Link>
+                  )}
 
-                {showRoleSwitcher && (
-                  <div className="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-2 z-50">
-                    <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 dark:border-slate-800">
-                      Switch Active Persona
-                    </div>
-                    <div className="space-y-1 mt-1">
-                      {availablePersonas.map((p) => (
-                        <button
-                          key={p.role}
-                          onClick={() => {
-                            switchRolePersona(p.role);
-                            setShowRoleSwitcher(false);
-                          }}
-                          className={`w-full text-left p-2 rounded-xl text-xs transition flex items-center gap-2.5 ${
-                            activeRole === p.role
-                              ? 'bg-indigo-600 text-white font-bold'
-                              : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
-                          }`}
-                        >
-                          <span className="text-base">{p.icon}</span>
-                          <div className="overflow-hidden">
-                            <div className="font-semibold truncate">{p.label}</div>
-                            <div className={`text-[10px] truncate ${activeRole === p.role ? 'text-indigo-100' : 'text-slate-400'}`}>
-                              {p.desc}
+                  {/* Dropdown for multi-role enrolled users */}
+                  {showWorkspaceSwitcher && availableWorkspaces.length > 1 && (
+                    <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-3 z-50 animate-scaleUp">
+                      <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 mb-2">
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono">
+                          My Active Workspaces
+                        </div>
+                        <div className="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate mt-0.5">
+                          {currentUser.fullName} (@{currentUser.username})
+                        </div>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        {availableWorkspaces.map((ws) => (
+                          <button
+                            key={ws.role}
+                            onClick={() => {
+                              switchWorkspace(ws.role);
+                              setShowWorkspaceSwitcher(false);
+                              navigate(ws.path);
+                            }}
+                            className={`w-full text-left p-2.5 rounded-2xl text-xs transition flex items-center justify-between gap-3 ${
+                              activeRole === ws.role
+                                ? 'bg-indigo-600 text-white font-bold shadow-md shadow-indigo-600/20'
+                                : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2.5 overflow-hidden">
+                              <span className="text-lg">{ws.icon}</span>
+                              <div className="overflow-hidden">
+                                <div className="font-bold truncate">{ws.label}</div>
+                                <div className={`text-[11px] truncate ${activeRole === ws.role ? 'text-indigo-100' : 'text-slate-400'}`}>
+                                  {ws.desc}
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </button>
-                      ))}
+                            {activeRole === ws.role && <Check className="w-4 h-4 flex-shrink-0" />}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              )}
 
               {/* Search Trigger */}
               <button
@@ -291,30 +312,20 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                         </div>
                       </div>
 
-                      {/* Mentorship Quick Links */}
+                      {/* Mentorship & Workspace Quick Links */}
                       <div className="space-y-1 text-xs">
                         <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">
-                          Campus Mentorship
+                          My Workspaces & Tools
                         </div>
 
                         <Link to="/student/mentor" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-indigo-950/40 rounded-xl font-bold transition-colors">
                           <GraduationCap className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                          <span>My Campus Mentor Workspace</span>
+                          <span>Campus Mentorship Hub</span>
                         </Link>
 
                         <Link to="/student/mentors" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
                           <Search className="w-4 h-4 text-purple-500" />
-                          <span>Find / Match Mentors</span>
-                        </Link>
-
-                        <Link to="/mentor/dashboard" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
-                          <Award className="w-4 h-4 text-amber-500" />
-                          <span>Mentor Faculty Command Center</span>
-                        </Link>
-
-                        <Link to="/college/mentors" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
-                          <Users className="w-4 h-4 text-emerald-500" />
-                          <span>College Mentor Management</span>
+                          <span>Browse Faculty Mentors</span>
                         </Link>
 
                         {/* Account & Profile */}
@@ -323,7 +334,7 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                             Account & Profile
                           </div>
 
-                          <Link to={`/profile/${currentUser.username}`} onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <Link to={`/profile/@${currentUser.username}`} onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
                             <User className="w-4 h-4 text-indigo-500" />
                             <span>View Public Profile</span>
                           </Link>
@@ -337,6 +348,24 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                             <Settings className="w-4 h-4 text-purple-500" />
                             <span>Settings & Preferences</span>
                           </Link>
+                        </div>
+
+                        {/* Opportunities / Apply for New Roles */}
+                        <div className="pt-2 border-t border-slate-100 dark:border-slate-800 mt-2 space-y-1">
+                          <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">
+                            Role Opportunities
+                          </div>
+
+                          {!currentUser.roles?.includes('COLLEGE_AMBASSADOR') && (
+                            <Link to="/ambassador" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-1.5 text-slate-600 dark:text-slate-400 hover:text-indigo-600 text-xs">
+                              <Award className="w-3.5 h-3.5 text-amber-500" /> Apply as Campus Ambassador
+                            </Link>
+                          )}
+                          {!currentUser.roles?.includes('MENTOR') && (
+                            <Link to="/become-mentor" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-1.5 text-slate-600 dark:text-slate-400 hover:text-indigo-600 text-xs">
+                              <GraduationCap className="w-3.5 h-3.5 text-indigo-500" /> Apply as Faculty Mentor
+                            </Link>
+                          )}
                         </div>
 
                         {/* Logout */}
@@ -364,54 +393,82 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                   </Link>
                   <Link
                     to="/register"
-                    className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 transition"
+                    className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md transition"
                   >
                     Sign Up
                   </Link>
                 </div>
               )}
 
-              {/* Mobile Menu Button */}
+              {/* Mobile Menu Trigger */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                aria-label="Toggle navigation menu"
+                className="lg:hidden p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                aria-label="Open Mobile Navigation"
               >
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
-
             </div>
+
           </div>
         </div>
 
-        {/* Mobile Navigation Drawer */}
+        {/* Mobile Nav Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-4 space-y-3">
-            <nav className="flex flex-col gap-1">
-              <Link to="/events" onClick={closeAll} className="px-3 py-2 text-sm font-semibold rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <div className="lg:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 pt-2 pb-6 space-y-3 animate-fadeIn">
+            {currentUser && availableWorkspaces.length > 1 && (
+              <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 rounded-2xl border border-indigo-200 dark:border-indigo-800/60 mb-2">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 font-mono mb-1.5">
+                  My Active Workspace
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {availableWorkspaces.map(ws => (
+                    <button
+                      key={ws.role}
+                      onClick={() => {
+                        switchWorkspace(ws.role);
+                        closeAll();
+                        navigate(ws.path);
+                      }}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition ${
+                        activeRole === ws.role
+                          ? 'bg-indigo-600 text-white font-bold'
+                          : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                      }`}
+                    >
+                      <span>{ws.icon}</span>
+                      <span>{ws.label.split(' ')[0]}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-2">
+              <Link to="/events" onClick={closeAll} className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200">
                 Discover Events
               </Link>
-              <Link to="/hackathons" onClick={closeAll} className="px-3 py-2 text-sm font-semibold rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+              <Link to="/hackathons" onClick={closeAll} className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200">
                 Hackathons
               </Link>
-              <Link to="/mentors" onClick={closeAll} className="px-3 py-2 text-sm font-bold text-indigo-600 rounded-xl hover:bg-indigo-50 dark:hover:bg-slate-800">
-                🎓 Campus Mentors
+              <Link to="/competitions" onClick={closeAll} className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200">
+                Competitions
               </Link>
-              <Link to="/student/mentor" onClick={closeAll} className="px-3 py-2 text-sm font-semibold text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
-                My Mentor Workspace
+              <Link to="/coding" onClick={closeAll} className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200">
+                Coding Practice
               </Link>
-              <Link to="/learn-play" onClick={closeAll} className="px-3 py-2 text-sm font-bold text-purple-600 rounded-xl hover:bg-purple-50 dark:hover:bg-slate-800">
+              <Link to="/mentors" onClick={closeAll} className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+                Campus Mentors
+              </Link>
+              <Link to="/learn-play" onClick={closeAll} className="p-2.5 bg-purple-50 dark:bg-purple-950/40 rounded-xl text-xs font-semibold text-purple-600">
                 Learn & Play
               </Link>
-              <Link to="/profile" onClick={closeAll} className="px-3 py-2 text-sm font-bold text-indigo-600 rounded-xl hover:bg-indigo-50 dark:hover:bg-slate-800">
-                My Profile & Settings
-              </Link>
-            </nav>
+            </div>
           </div>
         )}
       </header>
 
-      {/* Global Command Palette */}
+      {/* Command Palette */}
       <CommandPalette isOpen={isCommandOpen} onClose={() => setIsCommandOpen(false)} />
     </>
   );

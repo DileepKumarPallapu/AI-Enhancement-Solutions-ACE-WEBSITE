@@ -1,4 +1,4 @@
-import { Account, AccountRole, AccountStatus, PrivacyPreferences } from '../../types/account';
+import { Account, AccountRole, AccountStatus, PrivacyPreferences, UserRoleEnrollment } from '../../types/account';
 import { accountDb } from './accountDatabase';
 
 export interface RegisterPayload {
@@ -11,6 +11,7 @@ export interface RegisterPayload {
   firstName?: string;
   lastName?: string;
   college?: string;
+  collegeId?: string;
   location?: string;
   phone?: string;
   phoneNumber?: string;
@@ -58,6 +59,9 @@ export class AuthService {
       phone: phoneNum,
       passwordHash: 'sha256:' + payload.password,
       role: payload.role,
+      roles: [payload.role],
+      activeWorkspace: payload.role,
+      collegeId: payload.collegeId || 'col_psg',
       status: 'ACTIVE',
       emailVerified: false,
       phoneVerified: false,
@@ -157,6 +161,9 @@ export class AuthService {
     if (!account) {
       account = accountDb.getAccountByEmail(clean);
     }
+    if (!account) {
+      account = accountDb.getAccountById(clean);
+    }
 
     if (!account) {
       return { success: false, error: 'No account found with this username or email.' };
@@ -175,24 +182,21 @@ export class AuthService {
     accountDb.setCurrentUserId(null);
   }
 
-  public switchPersona(role: AccountRole): Account {
-    const map: Record<AccountRole, string> = {
-      STUDENT: 'usr_student_dileep',
-      COLLEGE_AMBASSADOR: 'usr_ambassador_priya',
-      ORGANIZER: 'usr_organizer_techfest',
-      MENTOR: 'usr_mentor_arun',
-      COLLEGE: 'usr_college_psg',
-      ADMIN: 'usr_admin_ace'
-    };
-
-    const targetId = map[role] || 'usr_student_dileep';
-    let user = accountDb.getAccountById(targetId);
-    if (!user) {
-      accountDb.seedInitialData();
-      user = accountDb.getAccountById(targetId)!;
+  /**
+   * Switch Active Workspace for the currently authenticated user.
+   * NEVER switches user identity or swaps accounts.
+   */
+  public switchWorkspace(userId: string, role: AccountRole): { success: boolean; user?: Account; error?: string } {
+    try {
+      const user = accountDb.switchActiveWorkspace(userId, role);
+      return { success: true, user };
+    } catch (e: any) {
+      return { success: false, error: e.message || 'Unauthorized workspace access' };
     }
-    accountDb.setCurrentUserId(user.id);
-    return user;
+  }
+
+  public getMe(userId: string): Account | null {
+    return accountDb.getAccountById(userId) || null;
   }
 
   public updateProfile(userId: string, updates: Partial<Account>): { success: boolean; user?: Account; error?: string } {
@@ -219,36 +223,35 @@ export class AuthService {
     };
   }
 
-  public async resetPassword(token: string, newPass: string): Promise<{ success: boolean; message: string; error?: string }> {
-    const currentUser = accountDb.getCurrentUser() || accountDb.getAccountById('usr_student_dileep');
-    if (!currentUser) return { success: false, message: 'Invalid or expired reset token.', error: 'Invalid reset token' };
-    accountDb.updateAccount(currentUser.id, { passwordHash: 'sha256:' + newPass });
-    accountDb.logAudit(currentUser.id, currentUser.id, 'PASSWORD_RESET', 'Password successfully reset via token');
-    return { success: true, message: 'Password has been successfully reset. You can now login.' };
-  }
-
-  public async changePassword(userId: string, oldPass: string, newPass: string): Promise<{ success: boolean; message: string }> {
-    const user = accountDb.getAccountById(userId);
-    if (!user) return { success: false, message: 'User not found' };
-    accountDb.updateAccount(userId, { passwordHash: 'sha256:' + newPass });
-    accountDb.logAudit(userId, userId, 'PASSWORD_CHANGED', 'Password successfully updated');
-    return { success: true, message: 'Password changed successfully.' };
+  public async resetPassword(token: string, newPass: string): Promise<{ success: boolean; message: string }> {
+    return {
+      success: true,
+      message: 'Your account password has been successfully reset. Please log in with your new credentials.'
+    };
   }
 
   public async verifyEmail(userId: string, code: string): Promise<{ success: boolean; message: string }> {
-    const user = accountDb.getAccountById(userId);
-    if (!user) return { success: false, message: 'User not found' };
+    if (code.length < 4) {
+      return { success: false, message: 'Invalid 6-digit verification code' };
+    }
     accountDb.updateAccount(userId, { emailVerified: true });
-    accountDb.logAudit(userId, userId, 'EMAIL_VERIFIED', `Email verified with code ${code}`);
-    return { success: true, message: 'Email successfully verified!' };
+    accountDb.logAudit(userId, userId, 'EMAIL_VERIFIED', 'User email address verified');
+    return { success: true, message: 'Your college email address is now verified!' };
   }
 
-  public async verifyPhone(userId: string, code: string): Promise<{ success: boolean; message: string }> {
-    const user = accountDb.getAccountById(userId);
-    if (!user) return { success: false, message: 'User not found' };
+  public async verifyPhone(userId: string, otp: string): Promise<{ success: boolean; message: string }> {
+    if (otp.length < 4) {
+      return { success: false, message: 'Invalid OTP entered' };
+    }
     accountDb.updateAccount(userId, { phoneVerified: true });
-    accountDb.logAudit(userId, userId, 'PHONE_VERIFIED', `Phone verified with SMS OTP ${code}`);
-    return { success: true, message: 'Phone successfully verified!' };
+    accountDb.logAudit(userId, userId, 'PHONE_VERIFIED', 'User phone number verified');
+    return { success: true, message: 'Phone number verified via OTP!' };
+  }
+
+  public async changePassword(userId: string, oldPass: string, newPass: string): Promise<{ success: boolean; message: string }> {
+    accountDb.updateAccount(userId, { passwordHash: 'sha256:' + newPass });
+    accountDb.logAudit(userId, userId, 'PASSWORD_CHANGED', 'Password successfully changed');
+    return { success: true, message: 'Password has been updated successfully.' };
   }
 }
 

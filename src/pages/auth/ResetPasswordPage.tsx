@@ -28,7 +28,7 @@ export const ResetPasswordPage: React.FC = () => {
       setSuccess(true);
       showToast('Password reset successfully! Please sign in.', 'success');
     } else {
-      setError(res.error || res.message || 'Failed to reset password.');
+      setError(res.message || 'Failed to reset password.');
     }
   };
 

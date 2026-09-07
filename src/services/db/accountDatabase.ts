@@ -7,7 +7,8 @@ import {
   GalleryImage,
   PrivacyPreferences,
   UserSession,
-  CollegeSearchItem
+  CollegeSearchItem,
+  UserRoleEnrollment
 } from '../../types/account';
 
 export const VERIFIED_COLLEGES: CollegeSearchItem[] = [
@@ -26,16 +27,18 @@ export const VERIFIED_COLLEGES: CollegeSearchItem[] = [
 ];
 
 const STORAGE_KEYS = {
-  ACCOUNTS: 'ace_db_accounts_v2',
-  SESSIONS: 'ace_db_sessions_v2',
-  AUDIT_LOGS: 'ace_db_audit_logs_v2',
-  GALLERY_IMAGES: 'ace_db_gallery_images_v2',
-  GALLERY_ALBUMS: 'ace_db_gallery_albums_v2',
-  CURRENT_USER_ID: 'ace_db_current_user_id_v2'
+  ACCOUNTS: 'ace_db_accounts_v3',
+  ENROLLMENTS: 'ace_db_enrollments_v3',
+  SESSIONS: 'ace_db_sessions_v3',
+  AUDIT_LOGS: 'ace_db_audit_logs_v3',
+  GALLERY_IMAGES: 'ace_db_gallery_images_v3',
+  GALLERY_ALBUMS: 'ace_db_gallery_albums_v3',
+  CURRENT_USER_ID: 'ace_db_current_user_id_v3'
 };
 
 export class AccountDatabase {
   private accounts: Map<string, Account> = new Map();
+  private enrollments: Map<string, UserRoleEnrollment> = new Map();
   private auditLogs: AuditLogEntry[] = [];
   private galleryImages: Map<string, GalleryImage> = new Map();
   private galleryAlbums: Map<string, GalleryAlbum> = new Map();
@@ -54,6 +57,12 @@ export class AccountDatabase {
       if (rawAccounts) {
         const parsed = JSON.parse(rawAccounts) as Account[];
         parsed.forEach(acc => this.accounts.set(acc.id, acc));
+      }
+
+      const rawEnrollments = localStorage.getItem(STORAGE_KEYS.ENROLLMENTS);
+      if (rawEnrollments) {
+        const parsedEnrs = JSON.parse(rawEnrollments) as UserRoleEnrollment[];
+        parsedEnrs.forEach(enr => this.enrollments.set(enr.id, enr));
       }
 
       const rawLogs = localStorage.getItem(STORAGE_KEYS.AUDIT_LOGS);
@@ -75,618 +84,717 @@ export class AccountDatabase {
 
       this.currentUserId = localStorage.getItem(STORAGE_KEYS.CURRENT_USER_ID) || 'usr_student_dileep';
     } catch {
-      // Fallback
+      // Storage fallback
     }
   }
 
   private saveToStorage() {
     try {
       localStorage.setItem(STORAGE_KEYS.ACCOUNTS, JSON.stringify(Array.from(this.accounts.values())));
+      localStorage.setItem(STORAGE_KEYS.ENROLLMENTS, JSON.stringify(Array.from(this.enrollments.values())));
       localStorage.setItem(STORAGE_KEYS.AUDIT_LOGS, JSON.stringify(this.auditLogs));
       localStorage.setItem(STORAGE_KEYS.GALLERY_IMAGES, JSON.stringify(Array.from(this.galleryImages.values())));
       localStorage.setItem(STORAGE_KEYS.GALLERY_ALBUMS, JSON.stringify(Array.from(this.galleryAlbums.values())));
       if (this.currentUserId) {
         localStorage.setItem(STORAGE_KEYS.CURRENT_USER_ID, this.currentUserId);
+      } else {
+        localStorage.removeItem(STORAGE_KEYS.CURRENT_USER_ID);
       }
     } catch {
-      // localStorage may be full
+      // Storage error safeguard
     }
   }
 
   public seedInitialData() {
-    const initialAccounts: Account[] = [
-      {
-        id: 'usr_student_dileep',
-        username: 'dileepkumar',
-        email: 'dileep.kumar@psgtech.edu',
-        phoneNumber: '+91 98765 43210',
-        phone: '+91 98765 43210',
-        passwordHash: 'sha256:dileep_pass_123',
-        role: 'STUDENT',
-        status: 'ACTIVE',
-        emailVerified: true,
-        phoneVerified: true,
-        isVerified: true,
-        firstName: 'Dileep',
-        lastName: 'Kumar',
-        displayName: 'Dileep Kumar',
-        fullName: 'Dileep Kumar Pallapu',
-        avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400',
-        coverPhotoUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1600',
-        coverTheme: 'cosmic_indigo',
-        bio: 'B.Tech CSE student passionate about Full-Stack Systems, AI Agents, and Competitive Hackathons.',
-        college: 'PSG College of Technology',
-        location: 'Coimbatore, Tamil Nadu',
-        country: 'India',
-        state: 'Tamil Nadu',
-        city: 'Coimbatore',
-        website: 'https://dileepkumar.dev',
-        linkedin: 'https://linkedin.com/in/dileepkumar',
+    // 1. Dileep Kumar (Real Authenticated User with Student + Campus Ambassador Enrollments)
+    const dileepAccount: Account = {
+      id: 'usr_student_dileep',
+      username: 'dileepkumar',
+      email: 'dileep.kumar@psgtech.edu',
+      phoneNumber: '+91 98765 43210',
+      phone: '+91 98765 43210',
+      passwordHash: 'sha256:dileep_pass_123',
+      role: 'STUDENT',
+      roles: ['STUDENT', 'COLLEGE_AMBASSADOR'],
+      activeWorkspace: 'STUDENT',
+      permissions: ['STUDENT_ACCESS', 'AMBASSADOR_ACCESS'],
+      collegeId: 'col_psg',
+      status: 'ACTIVE',
+      emailVerified: true,
+      phoneVerified: true,
+      isVerified: true,
+      firstName: 'Dileep',
+      lastName: 'Kumar',
+      displayName: 'Dileep Kumar',
+      fullName: 'Dileep Kumar Pallapu',
+      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400',
+      coverPhotoUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1600',
+      coverTheme: 'cosmic_indigo',
+      bio: 'B.Tech CSE student passionate about Full-Stack Systems, AI Agents, and Competitive Hackathons.',
+      college: 'PSG College of Technology',
+      location: 'Coimbatore, Tamil Nadu',
+      country: 'India',
+      state: 'Tamil Nadu',
+      city: 'Coimbatore',
+      website: 'https://dileepkumar.dev',
+      linkedin: 'https://linkedin.com/in/dileepkumar',
+      github: 'https://github.com/DileepKumarPallapu',
+      twitter: 'https://twitter.com/dileep_dev',
+      socialLinks: {
         github: 'https://github.com/DileepKumarPallapu',
+        linkedin: 'https://linkedin.com/in/dileepkumar',
         twitter: 'https://twitter.com/dileep_dev',
-        socialLinks: {
-          github: 'https://github.com/DileepKumarPallapu',
-          linkedin: 'https://linkedin.com/in/dileepkumar',
-          twitter: 'https://twitter.com/dileep_dev',
-          website: 'https://dileepkumar.dev'
-        },
-        skills: {
-          verified: ['React 19', 'TypeScript', 'Node.js', 'Python', 'TailwindCSS', 'PostgreSQL'],
-          interested: ['Rust', 'Distributed Systems', 'LLM Fine-tuning', 'WebAssembly']
-        },
-        education: [
-          {
-            id: 'edu_1',
-            institution: 'PSG College of Technology',
-            degree: 'Bachelor of Technology',
-            fieldOfStudy: 'Computer Science and Engineering',
-            startYear: '2022',
-            endYear: '2026',
-            current: true,
-            isCurrent: true,
-            grade: '8.9 CGPA',
-            description: 'Focused on Cloud Architecture and Intelligent Autonomous Systems.'
-          }
-        ],
-        projects: [
-          {
-            id: 'proj_1',
-            title: 'AllCollegeEvent (ACE) Ecosystem Platform',
-            name: 'AllCollegeEvent (ACE) Ecosystem Platform',
-            description: 'Unified high-performance discovery, coding arena, and verification platform for Indian colleges.',
-            technologies: ['React 19', 'TypeScript', 'TailwindCSS', 'Vite', 'Lucide'],
-            githubUrl: 'https://github.com/DileepKumarPallapu/AI-Enhancement-Solutions-ACE-WEBSITE',
-            liveUrl: 'https://allcollegeevent.vercel.app',
-            visibility: 'PUBLIC'
-          },
-          {
-            id: 'proj_2',
-            title: 'Autonomous Multi-Agent Orchestrator',
-            name: 'Autonomous Multi-Agent Orchestrator',
-            description: 'Subagent orchestration runtime for automated coding and validation pipelines.',
-            technologies: ['Python', 'FastAPI', 'Redis', 'Docker'],
-            githubUrl: 'https://github.com/DileepKumarPallapu/agent-orchestrator',
-            visibility: 'PUBLIC'
-          }
-        ],
-        certificates: [
-          {
-            id: 'cert_1',
-            title: 'National Hackathon Champion 2025',
-            issuer: 'ACE National Tech Council',
-            issueDate: '2025-11-20',
-            credentialUrl: 'https://allcollegeevent.com/verify/ACE-HACK-8839',
-            isAceVerified: true,
-            skills: ['Full-Stack', 'System Design']
-          }
-        ],
-        achievements: [
-          {
-            id: 'ach_1',
-            title: '1st Place — National AI Hackathon',
-            description: 'Built generative UI pipeline in under 36 hours.',
-            date: 'Nov 2025',
-            category: 'HACKATHON',
-            verified: true
-          },
-          {
-            id: 'ach_2',
-            title: 'Top 1% Ace Coding Arena',
-            description: 'Maintained 2,450 Ace Reputation score.',
-            date: 'Jan 2026',
-            category: 'CODING',
-            verified: true
-          }
-        ],
-        roleProfileData: {
-          college: 'PSG College of Technology',
-          degree: 'B.Tech',
-          major: 'Computer Science & Engineering',
-          department: 'Computer Science and Engineering',
-          year: '4th Year',
-          graduationYear: '2026',
-          studentIdNumber: '22CS089',
-          cgpa: '8.9'
-        },
-        privacyPreferences: {
-          profileVisibility: 'PUBLIC',
-          showEmail: false,
-          showPhone: false,
-          showCollege: true,
-          showLocation: true,
-          showSkills: true,
-          showProjects: true,
-          showEducation: true,
-          allowDirectMessages: true,
-          showActivityOnFeed: true,
-          showGallery: 'PUBLIC',
-          showAchievements: true,
-          showSocialLinks: true,
-          allowFollowers: true
-        },
-        privacy: {
-          profileVisibility: 'PUBLIC',
-          showEmail: false,
-          showPhone: false,
-          showCollege: true,
-          showLocation: true,
-          showSkills: true,
-          showProjects: true,
-          showEducation: true,
-          allowDirectMessages: true,
-          showActivityOnFeed: true,
-          showGallery: 'PUBLIC',
-          showAchievements: true,
-          showSocialLinks: true,
-          allowFollowers: true
-        },
-        sessions: [],
-        stats: {
-          eventsAttended: 14,
-          followersCount: 342,
-          reputationScore: 2450,
-          projectsCount: 2,
-          coinsBalance: 5000
-        },
-        followers: ['usr_ambassador_priya', 'usr_mentor_arun'],
-        following: ['usr_ambassador_priya', 'usr_organizer_techfest'],
-        followersCount: 342,
-        followingCount: 18,
-        pointsEarned: 2450,
-        profileStrength: 95,
-        createdAt: '2025-01-15T00:00:00Z',
-        updatedAt: '2026-09-01T00:00:00Z',
-        lastLoginAt: new Date().toISOString()
+        website: 'https://dileepkumar.dev'
       },
-      {
-        id: 'usr_ambassador_priya',
-        username: 'priya_ambassador',
-        email: 'priya.s@annauniv.edu',
-        phoneNumber: '+91 94444 11223',
-        phone: '+91 94444 11223',
-        passwordHash: 'sha256:priya_pass_123',
-        role: 'COLLEGE_AMBASSADOR',
-        status: 'ACTIVE',
-        emailVerified: true,
-        phoneVerified: true,
-        isVerified: true,
-        firstName: 'Priya',
-        lastName: 'Sharma',
-        displayName: 'Priya Sharma',
-        fullName: 'Priya Sharma',
-        avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400',
-        coverPhotoUrl: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=1600',
-        bio: 'Lead Campus Ambassador @ Anna University. Connecting students to nationwide hackathons.',
-        college: 'Anna University, Chennai',
-        location: 'Chennai, Tamil Nadu',
-        country: 'India',
-        state: 'Tamil Nadu',
-        city: 'Chennai',
-        socialLinks: {
-          linkedin: 'https://linkedin.com/in/priyasharma'
-        },
-        skills: {
-          verified: ['Community Leadership', 'Event Marketing', 'Public Speaking'],
-          interested: ['Tech Scouting', 'Partnerships']
-        },
-        education: [
-          {
-            id: 'edu_2',
-            institution: 'Anna University',
-            degree: 'B.E.',
-            fieldOfStudy: 'Information Technology',
-            startYear: '2023',
-            endYear: '2027',
-            current: true,
-            isCurrent: true
-          }
-        ],
-        projects: [],
-        certificates: [],
-        achievements: [],
-        roleProfileData: {
-          campusName: 'Anna University Guindy Campus',
-          college: 'Anna University',
-          department: 'Information Technology',
-          year: '3rd Year',
-          referralCount: 420,
-          eventsPromotedCount: 18,
-          studentsReached: 2400
-        },
-        privacyPreferences: {
-          profileVisibility: 'PUBLIC',
-          showEmail: false,
-          showPhone: false,
-          showCollege: true,
-          showLocation: true,
-          showSkills: true,
-          showProjects: true,
-          showGallery: 'PUBLIC',
-          showAchievements: true,
-          showSocialLinks: true,
-          allowFollowers: true
-        },
-        privacy: {
-          profileVisibility: 'PUBLIC',
-          showEmail: false,
-          showPhone: false,
-          showCollege: true,
-          showLocation: true,
-          showSkills: true,
-          showProjects: true,
-          showGallery: 'PUBLIC',
-          showAchievements: true,
-          showSocialLinks: true,
-          allowFollowers: true
-        },
-        sessions: [],
-        stats: {
-          eventsAttended: 28,
-          followersCount: 890,
-          reputationScore: 4120
-        },
-        followers: ['usr_student_dileep'],
-        following: ['usr_student_dileep'],
-        followersCount: 890,
-        followingCount: 45,
-        pointsEarned: 4120,
-        profileStrength: 90,
-        createdAt: '2025-02-10T00:00:00Z',
-        updatedAt: '2026-09-01T00:00:00Z',
-        lastLoginAt: new Date().toISOString()
+      skills: {
+        verified: ['React 19', 'TypeScript', 'Node.js', 'Python', 'TailwindCSS', 'PostgreSQL'],
+        interested: ['Rust', 'Distributed Systems', 'LLM Fine-tuning', 'WebAssembly']
       },
-      {
-        id: 'usr_organizer_techfest',
-        username: 'techfest_organizer',
-        email: 'organizer@shaastra.iitm.ac.in',
-        phoneNumber: '+91 91234 56789',
-        phone: '+91 91234 56789',
-        passwordHash: 'sha256:organizer_pass_123',
-        role: 'ORGANIZER',
-        status: 'ACTIVE',
-        emailVerified: true,
-        phoneVerified: true,
-        isVerified: true,
-        firstName: 'Shaastra',
-        lastName: 'Team',
-        displayName: 'Shaastra IIT Madras',
-        fullName: 'Shaastra Technical Team',
-        avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400',
-        coverPhotoUrl: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1600',
-        bio: 'Annual Technical Festival of IIT Madras. Asia’s largest student-managed tech fest.',
-        college: 'IIT Madras',
-        location: 'Chennai, Tamil Nadu',
-        country: 'India',
-        state: 'Tamil Nadu',
-        city: 'Chennai',
-        socialLinks: {
-          website: 'https://shaastra.org'
-        },
-        skills: {
-          verified: ['Hackathon Hosting', 'Judging Criteria', 'Prize Distribution'],
-          interested: []
-        },
-        education: [],
-        projects: [],
-        certificates: [],
-        achievements: [],
-        roleProfileData: {
-          organizationName: 'Shaastra IIT Madras',
-          organizerType: 'COLLEGE_FEST',
-          organizationType: 'STUDENT_CLUB',
-          eventsCount: 45,
-          participantsCount: 12500
-        },
-        privacyPreferences: {
-          profileVisibility: 'PUBLIC',
-          showEmail: true,
-          showPhone: false,
-          showCollege: true,
-          showLocation: true,
-          showSkills: true,
-          showProjects: true,
-          showGallery: 'PUBLIC',
-          showAchievements: true,
-          showSocialLinks: true,
-          allowFollowers: true
-        },
-        privacy: {
-          profileVisibility: 'PUBLIC',
-          showEmail: true,
-          showPhone: false,
-          showCollege: true,
-          showLocation: true,
-          showSkills: true,
-          showProjects: true,
-          showGallery: 'PUBLIC',
-          showAchievements: true,
-          showSocialLinks: true,
-          allowFollowers: true
-        },
-        sessions: [],
-        stats: {
-          eventsAttended: 50,
-          followersCount: 5400,
-          reputationScore: 8900
-        },
-        followers: ['usr_student_dileep'],
-        following: [],
-        followersCount: 5400,
-        followingCount: 12,
-        pointsEarned: 8900,
-        profileStrength: 100,
-        createdAt: '2024-08-01T00:00:00Z',
-        updatedAt: '2026-09-01T00:00:00Z',
-        lastLoginAt: new Date().toISOString()
-      },
-      {
-        id: 'usr_mentor_arun',
-        username: 'dr_arun_mentor',
-        email: 'arun.v@ai-institute.org',
-        phoneNumber: '+91 98888 77766',
-        phone: '+91 98888 77766',
-        passwordHash: 'sha256:arun_pass_123',
-        role: 'MENTOR',
-        status: 'ACTIVE',
-        emailVerified: true,
-        phoneVerified: true,
-        isVerified: true,
-        firstName: 'Dr. Arun',
-        lastName: 'Venkatesh',
-        displayName: 'Dr. Arun V',
-        fullName: 'Dr. Arun Venkatesh, Ph.D.',
-        avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400',
-        coverPhotoUrl: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1600',
-        bio: 'Principal AI Scientist & Hackathon Judge. Guiding next-gen engineers on Autonomous Agents & ML.',
-        college: 'Visiting Faculty @ IIT Madras',
-        location: 'Bengaluru, Karnataka',
-        country: 'India',
-        state: 'Karnataka',
-        city: 'Bengaluru',
-        socialLinks: {
-          linkedin: 'https://linkedin.com/in/arun-ai',
-          github: 'https://github.com/arun-ai-research'
-        },
-        skills: {
-          verified: ['Deep Learning', 'PyTorch', 'System Architecture', 'Research Publication'],
-          interested: ['Quantum Computing']
-        },
-        education: [],
-        projects: [],
-        certificates: [],
-        achievements: [],
-        roleProfileData: {
-          domainExpertise: ['AI / Machine Learning', 'Computer Vision', 'Agentic Workflows'],
-          yearsOfExperience: 12,
-          organization: 'AI Research Institute'
-        },
-        privacyPreferences: {
-          profileVisibility: 'PUBLIC',
-          showEmail: false,
-          showPhone: false,
-          showCollege: true,
-          showLocation: true,
-          showSkills: true,
-          showProjects: true,
-          showGallery: 'PUBLIC',
-          showAchievements: true,
-          showSocialLinks: true,
-          allowFollowers: true
-        },
-        privacy: {
-          profileVisibility: 'PUBLIC',
-          showEmail: false,
-          showPhone: false,
-          showCollege: true,
-          showLocation: true,
-          showSkills: true,
-          showProjects: true,
-          showGallery: 'PUBLIC',
-          showAchievements: true,
-          showSocialLinks: true,
-          allowFollowers: true
-        },
-        sessions: [],
-        stats: {
-          eventsAttended: 32,
-          followersCount: 1850,
-          reputationScore: 6500
-        },
-        followers: ['usr_student_dileep'],
-        following: ['usr_student_dileep'],
-        followersCount: 1850,
-        followingCount: 88,
-        pointsEarned: 6500,
-        profileStrength: 95,
-        createdAt: '2024-10-10T00:00:00Z',
-        updatedAt: '2026-09-01T00:00:00Z',
-        lastLoginAt: new Date().toISOString()
-      },
-      {
-        id: 'usr_college_psg',
-        username: 'psg_institution',
-        email: 'admin@psgtech.edu',
-        phoneNumber: '+91 422 2572177',
-        phone: '+91 422 2572177',
-        passwordHash: 'sha256:psg_pass_123',
-        role: 'COLLEGE',
-        status: 'ACTIVE',
-        emailVerified: true,
-        phoneVerified: true,
-        isVerified: true,
-        firstName: 'PSG',
-        lastName: 'Tech',
-        displayName: 'PSG College of Technology',
-        fullName: 'PSG College of Technology',
-        avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400',
-        coverPhotoUrl: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80&w=1600',
-        bio: 'Autonomous, Government Aided, NAAC A++ Accredited premier engineering institution.',
+      education: [
+        {
+          id: 'edu_1',
+          institution: 'PSG College of Technology',
+          degree: 'Bachelor of Technology',
+          fieldOfStudy: 'Computer Science and Engineering',
+          startYear: '2022',
+          endYear: '2026',
+          current: true,
+          isCurrent: true,
+          grade: '8.9 CGPA',
+          description: 'Focused on Cloud Architecture and Intelligent Autonomous Systems.'
+        }
+      ],
+      projects: [
+        {
+          id: 'proj_1',
+          title: 'AllCollegeEvent (ACE) Ecosystem Platform',
+          name: 'AllCollegeEvent (ACE) Ecosystem Platform',
+          description: 'Unified discovery, coding arena, and verification platform for Indian colleges.',
+          technologies: ['React 19', 'TypeScript', 'TailwindCSS', 'Vite', 'Lucide'],
+          githubUrl: 'https://github.com/DileepKumarPallapu/AI-Enhancement-Solutions-ACE-WEBSITE',
+          liveUrl: 'https://allcollegeevent.vercel.app',
+          visibility: 'PUBLIC'
+        }
+      ],
+      certificates: [
+        {
+          id: 'cert_1',
+          title: 'National Hackathon Champion 2025',
+          issuer: 'ACE National Tech Council',
+          issueDate: '2025-11-20',
+          credentialUrl: 'https://allcollegeevent.com/verify/ACE-HACK-8839',
+          isAceVerified: true,
+          skills: ['Full-Stack', 'System Design']
+        }
+      ],
+      achievements: [
+        {
+          id: 'ach_1',
+          title: '1st Place — National AI Hackathon',
+          description: 'Built generative UI pipeline in under 36 hours.',
+          date: 'Nov 2025',
+          category: 'HACKATHON',
+          verified: true
+        }
+      ],
+      roleProfileData: {
         college: 'PSG College of Technology',
-        location: 'Coimbatore, Tamil Nadu',
-        country: 'India',
-        state: 'Tamil Nadu',
-        city: 'Coimbatore',
-        socialLinks: {
-          website: 'https://psgtech.edu'
-        },
-        skills: {
-          verified: ['Institutional Partner', 'NAAC A++'],
-          interested: []
-        },
-        education: [],
-        projects: [],
-        certificates: [],
-        achievements: [],
-        roleProfileData: {
-          officialName: 'PSG College of Technology',
-          accreditation: 'NAAC A++ (3.72 CGPA)',
-          establishedYear: 1951,
-          studentsCount: 8500
-        },
-        privacyPreferences: {
-          profileVisibility: 'PUBLIC',
-          showEmail: true,
-          showPhone: true,
-          showCollege: true,
-          showLocation: true,
-          showSkills: true,
-          showProjects: true,
-          showGallery: 'PUBLIC',
-          showAchievements: true,
-          showSocialLinks: true,
-          allowFollowers: true
-        },
-        privacy: {
-          profileVisibility: 'PUBLIC',
-          showEmail: true,
-          showPhone: true,
-          showCollege: true,
-          showLocation: true,
-          showSkills: true,
-          showProjects: true,
-          showGallery: 'PUBLIC',
-          showAchievements: true,
-          showSocialLinks: true,
-          allowFollowers: true
-        },
-        sessions: [],
-        stats: {
-          eventsAttended: 120,
-          followersCount: 12400,
-          reputationScore: 15000
-        },
-        followers: ['usr_student_dileep'],
-        following: [],
+        degree: 'B.Tech',
+        major: 'Computer Science & Engineering',
+        department: 'Computer Science and Engineering',
+        year: '4th Year',
+        graduationYear: '2026',
+        studentIdNumber: '22CS089',
+        cgpa: '8.9'
+      },
+      privacyPreferences: {
+        profileVisibility: 'PUBLIC',
+        showEmail: false,
+        showPhone: false,
+        showCollege: true,
+        showLocation: true,
+        showSkills: true,
+        showProjects: true,
+        showEducation: true,
+        allowDirectMessages: true,
+        showActivityOnFeed: true,
+        showGallery: 'PUBLIC',
+        showAchievements: true,
+        showSocialLinks: true,
+        allowFollowers: true
+      },
+      privacy: {
+        profileVisibility: 'PUBLIC',
+        showEmail: false,
+        showPhone: false,
+        showCollege: true,
+        showLocation: true,
+        showSkills: true,
+        showProjects: true,
+        showEducation: true,
+        allowDirectMessages: true,
+        showActivityOnFeed: true,
+        showGallery: 'PUBLIC',
+        showAchievements: true,
+        showSocialLinks: true,
+        allowFollowers: true
+      },
+      sessions: [],
+      stats: {
+        eventsAttended: 14,
+        followersCount: 342,
+        reputationScore: 2450,
+        projectsCount: 2,
+        coinsBalance: 5000
+      },
+      followers: ['usr_ambassador_priya', 'usr_mentor_arun'],
+      following: ['usr_ambassador_priya', 'usr_organizer_techfest'],
+      followersCount: 342,
+      followingCount: 18,
+      pointsEarned: 2450,
+      profileStrength: 95,
+      createdAt: '2025-01-15T00:00:00Z',
+      updatedAt: '2026-09-01T00:00:00Z',
+      lastLoginAt: new Date().toISOString()
+    };
+
+    // 2. Priya Sharma (Campus Ambassador Account)
+    const priyaAccount: Account = {
+      id: 'usr_ambassador_priya',
+      username: 'priya_ambassador',
+      email: 'priya.s@annauniv.edu',
+      phoneNumber: '+91 94444 11223',
+      phone: '+91 94444 11223',
+      passwordHash: 'sha256:priya_pass_123',
+      role: 'COLLEGE_AMBASSADOR',
+      roles: ['COLLEGE_AMBASSADOR', 'STUDENT'],
+      activeWorkspace: 'COLLEGE_AMBASSADOR',
+      collegeId: 'col_anna',
+      status: 'ACTIVE',
+      emailVerified: true,
+      phoneVerified: true,
+      isVerified: true,
+      firstName: 'Priya',
+      lastName: 'Sharma',
+      displayName: 'Priya Sharma',
+      fullName: 'Priya Sharma',
+      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400',
+      coverPhotoUrl: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=1600',
+      bio: 'Lead Campus Ambassador @ Anna University. Connecting students to nationwide hackathons.',
+      college: 'Anna University (CEG Campus)',
+      location: 'Chennai, Tamil Nadu',
+      country: 'India',
+      state: 'Tamil Nadu',
+      city: 'Chennai',
+      socialLinks: {
+        linkedin: 'https://linkedin.com/in/priyasharma'
+      },
+      skills: {
+        verified: ['Community Leadership', 'Event Marketing', 'Public Speaking'],
+        interested: ['Tech Scouting', 'Partnerships']
+      },
+      education: [],
+      projects: [],
+      certificates: [],
+      achievements: [],
+      roleProfileData: {
+        campusName: 'Anna University Guindy Campus',
+        college: 'Anna University (CEG Campus)',
+        department: 'Information Technology',
+        year: '3rd Year',
+        referralCount: 420,
+        eventsPromotedCount: 18,
+        studentsReached: 2400
+      },
+      privacyPreferences: {
+        profileVisibility: 'PUBLIC',
+        showEmail: false,
+        showPhone: false,
+        showCollege: true,
+        showLocation: true,
+        showSkills: true,
+        showProjects: true,
+        showGallery: 'PUBLIC',
+        showAchievements: true,
+        showSocialLinks: true,
+        allowFollowers: true
+      },
+      privacy: {
+        profileVisibility: 'PUBLIC',
+        showEmail: false,
+        showPhone: false,
+        showCollege: true,
+        showLocation: true,
+        showSkills: true,
+        showProjects: true,
+        showGallery: 'PUBLIC',
+        showAchievements: true,
+        showSocialLinks: true,
+        allowFollowers: true
+      },
+      sessions: [],
+      stats: {
+        eventsAttended: 28,
+        followersCount: 890,
+        reputationScore: 4120
+      },
+      followers: ['usr_student_dileep'],
+      following: ['usr_student_dileep'],
+      followersCount: 890,
+      followingCount: 45,
+      pointsEarned: 4120,
+      profileStrength: 90,
+      createdAt: '2025-02-10T00:00:00Z',
+      updatedAt: '2026-09-01T00:00:00Z',
+      lastLoginAt: new Date().toISOString()
+    };
+
+    // 3. TechFest Club (Organizer Account)
+    const organizerAccount: Account = {
+      id: 'usr_organizer_techfest',
+      username: 'techfest_organizer',
+      email: 'organizer@shaastra.iitm.ac.in',
+      phoneNumber: '+91 91234 56789',
+      phone: '+91 91234 56789',
+      passwordHash: 'sha256:organizer_pass_123',
+      role: 'ORGANIZER',
+      roles: ['ORGANIZER'],
+      activeWorkspace: 'ORGANIZER',
+      collegeId: 'col_iitm',
+      status: 'ACTIVE',
+      emailVerified: true,
+      phoneVerified: true,
+      isVerified: true,
+      firstName: 'Shaastra',
+      lastName: 'Team',
+      displayName: 'Shaastra IIT Madras',
+      fullName: 'Shaastra Technical Team',
+      avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400',
+      coverPhotoUrl: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1600',
+      bio: 'Annual Technical Festival of IIT Madras. Asia’s largest student-managed tech fest.',
+      college: 'IIT Madras',
+      location: 'Chennai, Tamil Nadu',
+      country: 'India',
+      state: 'Tamil Nadu',
+      city: 'Chennai',
+      socialLinks: {
+        website: 'https://shaastra.org'
+      },
+      skills: {
+        verified: ['Hackathon Hosting', 'Judging Criteria', 'Prize Distribution'],
+        interested: []
+      },
+      education: [],
+      projects: [],
+      certificates: [],
+      achievements: [],
+      roleProfileData: {
+        organizationName: 'Shaastra IIT Madras',
+        organizerType: 'COLLEGE_FEST',
+        organizationType: 'STUDENT_CLUB',
+        eventsCount: 45,
+        participantsCount: 12500
+      },
+      privacyPreferences: {
+        profileVisibility: 'PUBLIC',
+        showEmail: true,
+        showPhone: false,
+        showCollege: true,
+        showLocation: true,
+        showSkills: true,
+        showProjects: true,
+        showGallery: 'PUBLIC',
+        showAchievements: true,
+        showSocialLinks: true,
+        allowFollowers: true
+      },
+      privacy: {
+        profileVisibility: 'PUBLIC',
+        showEmail: true,
+        showPhone: false,
+        showCollege: true,
+        showLocation: true,
+        showSkills: true,
+        showProjects: true,
+        showGallery: 'PUBLIC',
+        showAchievements: true,
+        showSocialLinks: true,
+        allowFollowers: true
+      },
+      sessions: [],
+      stats: {
+        eventsAttended: 50,
+        followersCount: 5400,
+        reputationScore: 8900
+      },
+      followers: ['usr_student_dileep'],
+      following: [],
+      followersCount: 5400,
+      followingCount: 12,
+      pointsEarned: 8900,
+      profileStrength: 100,
+      createdAt: '2024-08-01T00:00:00Z',
+      updatedAt: '2026-09-01T00:00:00Z',
+      lastLoginAt: new Date().toISOString()
+    };
+
+    // 4. Dr. Arun Venkatesh (Faculty Mentor Account)
+    const mentorAccount: Account = {
+      id: 'usr_mentor_arun',
+      username: 'dr_arun_mentor',
+      email: 'arun.v@ai-institute.org',
+      phoneNumber: '+91 98888 77766',
+      phone: '+91 98888 77766',
+      passwordHash: 'sha256:arun_pass_123',
+      role: 'MENTOR',
+      roles: ['MENTOR'],
+      activeWorkspace: 'MENTOR',
+      collegeId: 'col_psg',
+      status: 'ACTIVE',
+      emailVerified: true,
+      phoneVerified: true,
+      isVerified: true,
+      firstName: 'Dr. Arun',
+      lastName: 'Venkatesh',
+      displayName: 'Dr. Arun V',
+      fullName: 'Dr. Arun Venkatesh, Ph.D.',
+      avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400',
+      coverPhotoUrl: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1600',
+      bio: 'Principal AI Scientist & Hackathon Judge. Guiding next-gen engineers on Autonomous Agents & ML.',
+      college: 'PSG College of Technology',
+      location: 'Coimbatore, Tamil Nadu',
+      country: 'India',
+      state: 'Tamil Nadu',
+      city: 'Coimbatore',
+      socialLinks: {
+        linkedin: 'https://linkedin.com/in/arun-ai',
+        github: 'https://github.com/arun-ai-research'
+      },
+      skills: {
+        verified: ['Deep Learning', 'PyTorch', 'System Architecture', 'Research Publication'],
+        interested: ['Quantum Computing']
+      },
+      education: [],
+      projects: [],
+      certificates: [],
+      achievements: [],
+      roleProfileData: {
+        domainExpertise: ['AI / Machine Learning', 'Computer Vision', 'Agentic Workflows'],
+        yearsOfExperience: 12,
+        organization: 'PSG Tech AI Research Lab'
+      },
+      privacyPreferences: {
+        profileVisibility: 'PUBLIC',
+        showEmail: false,
+        showPhone: false,
+        showCollege: true,
+        showLocation: true,
+        showSkills: true,
+        showProjects: true,
+        showGallery: 'PUBLIC',
+        showAchievements: true,
+        showSocialLinks: true,
+        allowFollowers: true
+      },
+      privacy: {
+        profileVisibility: 'PUBLIC',
+        showEmail: false,
+        showPhone: false,
+        showCollege: true,
+        showLocation: true,
+        showSkills: true,
+        showProjects: true,
+        showGallery: 'PUBLIC',
+        showAchievements: true,
+        showSocialLinks: true,
+        allowFollowers: true
+      },
+      sessions: [],
+      stats: {
+        eventsAttended: 32,
+        followersCount: 1850,
+        reputationScore: 6500
+      },
+      followers: ['usr_student_dileep'],
+      following: ['usr_student_dileep'],
+      followersCount: 1850,
+      followingCount: 88,
+      pointsEarned: 6500,
+      profileStrength: 95,
+      createdAt: '2024-10-10T00:00:00Z',
+      updatedAt: '2026-09-01T00:00:00Z',
+      lastLoginAt: new Date().toISOString()
+    };
+
+    // 5. PSG Tech (College Admin Account)
+    const collegeAccount: Account = {
+      id: 'usr_college_psg',
+      username: 'psg_institution',
+      email: 'admin@psgtech.edu',
+      phoneNumber: '+91 422 2572177',
+      phone: '+91 422 2572177',
+      passwordHash: 'sha256:psg_pass_123',
+      role: 'COLLEGE',
+      roles: ['COLLEGE'],
+      activeWorkspace: 'COLLEGE',
+      collegeId: 'col_psg',
+      status: 'ACTIVE',
+      emailVerified: true,
+      phoneVerified: true,
+      isVerified: true,
+      firstName: 'PSG',
+      lastName: 'Tech',
+      displayName: 'PSG College of Technology',
+      fullName: 'PSG College of Technology',
+      avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400',
+      coverPhotoUrl: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80&w=1600',
+      bio: 'Autonomous, Government Aided, NAAC A++ Accredited premier engineering institution.',
+      college: 'PSG College of Technology',
+      location: 'Coimbatore, Tamil Nadu',
+      country: 'India',
+      state: 'Tamil Nadu',
+      city: 'Coimbatore',
+      socialLinks: {
+        website: 'https://psgtech.edu'
+      },
+      skills: {
+        verified: ['Institutional Partner', 'NAAC A++'],
+        interested: []
+      },
+      education: [],
+      projects: [],
+      certificates: [],
+      achievements: [],
+      roleProfileData: {
+        officialName: 'PSG College of Technology',
+        accreditation: 'NAAC A++ (3.72 CGPA)',
+        establishedYear: 1951,
+        studentsCount: 8500
+      },
+      privacyPreferences: {
+        profileVisibility: 'PUBLIC',
+        showEmail: true,
+        showPhone: true,
+        showCollege: true,
+        showLocation: true,
+        showSkills: true,
+        showProjects: true,
+        showGallery: 'PUBLIC',
+        showAchievements: true,
+        showSocialLinks: true,
+        allowFollowers: true
+      },
+      privacy: {
+        profileVisibility: 'PUBLIC',
+        showEmail: true,
+        showPhone: true,
+        showCollege: true,
+        showLocation: true,
+        showSkills: true,
+        showProjects: true,
+        showGallery: 'PUBLIC',
+        showAchievements: true,
+        showSocialLinks: true,
+        allowFollowers: true
+      },
+      sessions: [],
+      stats: {
+        eventsAttended: 120,
         followersCount: 12400,
-        followingCount: 5,
-        pointsEarned: 15000,
-        profileStrength: 100,
-        createdAt: '2024-01-01T00:00:00Z',
-        updatedAt: '2026-09-01T00:00:00Z',
-        lastLoginAt: new Date().toISOString()
+        reputationScore: 15000
+      },
+      followers: ['usr_student_dileep'],
+      following: [],
+      followersCount: 12400,
+      followingCount: 3,
+      pointsEarned: 15000,
+      profileStrength: 100,
+      createdAt: '2024-06-01T00:00:00Z',
+      updatedAt: '2026-09-01T00:00:00Z',
+      lastLoginAt: new Date().toISOString()
+    };
+
+    // 6. ACE Superadmin Account
+    const adminAccount: Account = {
+      id: 'usr_admin_ace',
+      username: 'ace_admin',
+      email: 'security@allcollegeevent.com',
+      phoneNumber: '+91 80 4455 6677',
+      phone: '+91 80 4455 6677',
+      passwordHash: 'sha256:admin_pass_123',
+      role: 'ADMIN',
+      roles: ['ADMIN'],
+      activeWorkspace: 'ADMIN',
+      permissions: ['ALL_PERMISSIONS', 'SUPERADMIN'],
+      status: 'ACTIVE',
+      emailVerified: true,
+      phoneVerified: true,
+      isVerified: true,
+      firstName: 'ACE',
+      lastName: 'Admin',
+      displayName: 'ACE System Security',
+      fullName: 'ACE Superadministrator',
+      avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=400',
+      coverPhotoUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1600',
+      bio: 'ACE Core Platform Engineering & National Tech Verification Lead.',
+      college: 'ACE Central Directorate',
+      location: 'Bengaluru, Karnataka',
+      country: 'India',
+      state: 'Karnataka',
+      city: 'Bengaluru',
+      socialLinks: {
+        website: 'https://allcollegeevent.com'
+      },
+      skills: {
+        verified: ['Platform Architecture', 'Event Verification', 'Security Audit'],
+        interested: []
+      },
+      education: [],
+      projects: [],
+      certificates: [],
+      achievements: [],
+      roleProfileData: {
+        officialName: 'ACE Platform Security Directorate'
+      } as any,
+      privacyPreferences: {
+        profileVisibility: 'PUBLIC',
+        showEmail: false,
+        showPhone: false,
+        showCollege: true,
+        showLocation: true,
+        showSkills: true,
+        showProjects: true,
+        showGallery: 'PUBLIC',
+        showAchievements: true,
+        showSocialLinks: true,
+        allowFollowers: true
+      },
+      privacy: {
+        profileVisibility: 'PUBLIC',
+        showEmail: false,
+        showPhone: false,
+        showCollege: true,
+        showLocation: true,
+        showSkills: true,
+        showProjects: true,
+        showGallery: 'PUBLIC',
+        showAchievements: true,
+        showSocialLinks: true,
+        allowFollowers: true
+      },
+      sessions: [],
+      stats: {
+        eventsAttended: 99,
+        followersCount: 3200,
+        reputationScore: 9999
+      },
+      followers: [],
+      following: [],
+      followersCount: 3200,
+      followingCount: 10,
+      pointsEarned: 9999,
+      profileStrength: 100,
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2026-09-01T00:00:00Z',
+      lastLoginAt: new Date().toISOString()
+    };
+
+    // Seed Accounts
+    const allSeedAccounts = [
+      dileepAccount,
+      priyaAccount,
+      organizerAccount,
+      mentorAccount,
+      collegeAccount,
+      adminAccount
+    ];
+    allSeedAccounts.forEach(acc => this.accounts.set(acc.id, acc));
+
+    // Seed Role Enrollments
+    const seedEnrollments: UserRoleEnrollment[] = [
+      {
+        id: 'enr_dileep_stu',
+        userId: 'usr_student_dileep',
+        role: 'STUDENT',
+        collegeId: 'col_psg',
+        collegeName: 'PSG College of Technology',
+        department: 'Computer Science and Engineering',
+        status: 'ACTIVE',
+        appliedAt: '2025-01-15T00:00:00Z',
+        approvedAt: '2025-01-15T00:00:00Z',
+        approvedBy: 'SYSTEM'
       },
       {
-        id: 'usr_admin_ace',
-        username: 'ace_admin',
-        email: 'security.admin@allcollegeevent.com',
-        phoneNumber: '+91 99999 88888',
-        phone: '+91 99999 88888',
-        passwordHash: 'sha256:admin_pass_123',
+        id: 'enr_dileep_amb',
+        userId: 'usr_student_dileep',
+        role: 'COLLEGE_AMBASSADOR',
+        collegeId: 'col_psg',
+        collegeName: 'PSG College of Technology',
+        department: 'Computer Science and Engineering',
+        status: 'ACTIVE',
+        appliedAt: '2025-02-01T00:00:00Z',
+        approvedAt: '2025-02-10T00:00:00Z',
+        approvedBy: 'col_psg_admin'
+      },
+      {
+        id: 'enr_priya_amb',
+        userId: 'usr_ambassador_priya',
+        role: 'COLLEGE_AMBASSADOR',
+        collegeId: 'col_anna',
+        collegeName: 'Anna University (CEG Campus)',
+        department: 'Information Technology',
+        status: 'ACTIVE',
+        appliedAt: '2025-02-10T00:00:00Z',
+        approvedAt: '2025-02-10T00:00:00Z',
+        approvedBy: 'SYSTEM'
+      },
+      {
+        id: 'enr_org_shaastra',
+        userId: 'usr_organizer_techfest',
+        role: 'ORGANIZER',
+        collegeId: 'col_iitm',
+        collegeName: 'IIT Madras',
+        status: 'ACTIVE',
+        appliedAt: '2024-08-01T00:00:00Z',
+        approvedAt: '2024-08-01T00:00:00Z',
+        approvedBy: 'SYSTEM'
+      },
+      {
+        id: 'enr_mentor_arun',
+        userId: 'usr_mentor_arun',
+        role: 'MENTOR',
+        collegeId: 'col_psg',
+        collegeName: 'PSG College of Technology',
+        department: 'Computer Science and Engineering',
+        status: 'ACTIVE',
+        appliedAt: '2024-10-10T00:00:00Z',
+        approvedAt: '2024-10-10T00:00:00Z',
+        approvedBy: 'col_psg_dean'
+      },
+      {
+        id: 'enr_college_psg',
+        userId: 'usr_college_psg',
+        role: 'COLLEGE',
+        collegeId: 'col_psg',
+        collegeName: 'PSG College of Technology',
+        status: 'ACTIVE',
+        appliedAt: '2024-06-01T00:00:00Z',
+        approvedAt: '2024-06-01T00:00:00Z',
+        approvedBy: 'SYSTEM'
+      },
+      {
+        id: 'enr_admin_ace',
+        userId: 'usr_admin_ace',
         role: 'ADMIN',
         status: 'ACTIVE',
-        emailVerified: true,
-        phoneVerified: true,
-        isVerified: true,
-        firstName: 'ACE',
-        lastName: 'Admin',
-        displayName: 'ACE Super Admin',
-        fullName: 'ACE Super Admin Controller',
-        avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=400',
-        coverPhotoUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1600',
-        bio: 'Central Security, Content Moderation & AI Economy administrator for AllCollegeEvent.',
-        college: 'ACE Platform HQ',
-        location: 'Bengaluru, Karnataka',
-        country: 'India',
-        state: 'Karnataka',
-        city: 'Bengaluru',
-        socialLinks: {
-          website: 'https://allcollegeevent.com'
-        },
-        skills: {
-          verified: ['Superadmin', 'Risk Engine', 'Content Audit'],
-          interested: []
-        },
-        education: [],
-        projects: [],
-        certificates: [],
-        achievements: [],
-        privacyPreferences: {
-          profileVisibility: 'PUBLIC',
-          showEmail: false,
-          showPhone: false,
-          showCollege: true,
-          showLocation: true,
-          showSkills: true,
-          showProjects: true,
-          showGallery: 'PUBLIC',
-          showAchievements: true,
-          showSocialLinks: true,
-          allowFollowers: true
-        },
-        privacy: {
-          profileVisibility: 'PUBLIC',
-          showEmail: false,
-          showPhone: false,
-          showCollege: true,
-          showLocation: true,
-          showSkills: true,
-          showProjects: true,
-          showGallery: 'PUBLIC',
-          showAchievements: true,
-          showSocialLinks: true,
-          allowFollowers: true
-        },
-        sessions: [],
-        stats: {
-          eventsAttended: 99,
-          followersCount: 3200,
-          reputationScore: 9999
-        },
-        followers: [],
-        following: [],
-        followersCount: 3200,
-        followingCount: 10,
-        pointsEarned: 9999,
-        profileStrength: 100,
-        createdAt: '2024-01-01T00:00:00Z',
-        updatedAt: '2026-09-01T00:00:00Z',
-        lastLoginAt: new Date().toISOString()
+        appliedAt: '2024-01-01T00:00:00Z',
+        approvedAt: '2024-01-01T00:00:00Z',
+        approvedBy: 'SYSTEM'
       }
     ];
+    seedEnrollments.forEach(enr => this.enrollments.set(enr.id, enr));
 
-    initialAccounts.forEach(acc => this.accounts.set(acc.id, acc));
-
-    // Seed Gallery
+    // Seed Gallery Images
     const seedGallery: GalleryImage[] = [
       {
         id: 'gal_1',
@@ -715,20 +823,26 @@ export class AccountDatabase {
         createdAt: '2026-02-14T00:00:00Z'
       }
     ];
-
     seedGallery.forEach(img => this.galleryImages.set(img.id, img));
+
     this.saveToStorage();
   }
 
   // Lookups
   public getAccountById(id: string): Account | undefined {
-    return this.accounts.get(id);
+    const acc = this.accounts.get(id);
+    if (!acc) return undefined;
+    acc.enrollments = this.getUserEnrollments(id);
+    return acc;
   }
 
   public getAccountByUsername(username: string): Account | undefined {
     const clean = username.toLowerCase().replace('@', '').trim();
     for (const acc of this.accounts.values()) {
-      if (acc.username.toLowerCase() === clean) return acc;
+      if (acc.username.toLowerCase() === clean) {
+        acc.enrollments = this.getUserEnrollments(acc.id);
+        return acc;
+      }
     }
     return undefined;
   }
@@ -736,14 +850,17 @@ export class AccountDatabase {
   public getAccountByEmail(email: string): Account | undefined {
     const clean = email.toLowerCase().trim();
     for (const acc of this.accounts.values()) {
-      if (acc.email.toLowerCase() === clean) return acc;
+      if (acc.email.toLowerCase() === clean) {
+        acc.enrollments = this.getUserEnrollments(acc.id);
+        return acc;
+      }
     }
     return undefined;
   }
 
   public getCurrentUser(): Account | null {
     if (!this.currentUserId) return null;
-    return this.accounts.get(this.currentUserId) || null;
+    return this.getAccountById(this.currentUserId) || null;
   }
 
   public setCurrentUserId(id: string | null) {
@@ -785,9 +902,126 @@ export class AccountDatabase {
     return false;
   }
 
-  // Mutations
+  // Role Enrollment Engine
+  public getUserEnrollments(userId: string): UserRoleEnrollment[] {
+    const res: UserRoleEnrollment[] = [];
+    for (const enr of this.enrollments.values()) {
+      if (enr.userId === userId) res.push(enr);
+    }
+    return res;
+  }
+
+  public hasActiveEnrollment(userId: string, role: AccountRole): boolean {
+    const user = this.accounts.get(userId);
+    if (!user) return false;
+    if (user.role === role) return true;
+    if (user.roles && user.roles.includes(role)) return true;
+
+    for (const enr of this.enrollments.values()) {
+      if (enr.userId === userId && enr.role === role && enr.status === 'ACTIVE') {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public applyForRole(
+    userId: string,
+    role: AccountRole,
+    collegeId?: string,
+    department?: string,
+    metadata?: Record<string, any>
+  ): UserRoleEnrollment {
+    const user = this.accounts.get(userId);
+    if (!user) throw new Error(`User ${userId} not found`);
+
+    const newEnr: UserRoleEnrollment = {
+      id: 'enr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+      userId,
+      role,
+      collegeId: collegeId || user.collegeId,
+      collegeName: user.college,
+      department: department || (user.roleProfileData as any)?.department,
+      status: 'PENDING',
+      appliedAt: new Date().toISOString(),
+      metadata
+    };
+
+    this.enrollments.set(newEnr.id, newEnr);
+    this.logAudit(userId, userId, 'ROLE_APPLICATION_SUBMITTED', `Applied for ${role} workspace`);
+    this.saveToStorage();
+    return newEnr;
+  }
+
+  public approveRole(enrollmentId: string, approvedByAdminId: string): UserRoleEnrollment {
+    const enr = this.enrollments.get(enrollmentId);
+    if (!enr) throw new Error('Enrollment record not found');
+
+    enr.status = 'ACTIVE';
+    enr.approvedAt = new Date().toISOString();
+    enr.approvedBy = approvedByAdminId;
+
+    // Grant role in user account
+    const user = this.accounts.get(enr.userId);
+    if (user) {
+      if (!user.roles) user.roles = [user.role];
+      if (!user.roles.includes(enr.role)) {
+        user.roles.push(enr.role);
+      }
+      this.accounts.set(user.id, user);
+    }
+
+    this.logAudit(approvedByAdminId, enr.userId, 'ROLE_ENROLLMENT_APPROVED', `Approved ${enr.role} enrollment`);
+    this.saveToStorage();
+    return enr;
+  }
+
+  public rejectRole(enrollmentId: string, reason?: string): UserRoleEnrollment {
+    const enr = this.enrollments.get(enrollmentId);
+    if (!enr) throw new Error('Enrollment record not found');
+
+    enr.status = 'REJECTED';
+    enr.notes = reason;
+    this.saveToStorage();
+    return enr;
+  }
+
+  public switchActiveWorkspace(userId: string, role: AccountRole): Account {
+    const user = this.accounts.get(userId);
+    if (!user) throw new Error(`User ${userId} not found`);
+
+    const isAuthorized = this.hasActiveEnrollment(userId, role) || user.role === 'ADMIN';
+    if (!isAuthorized) {
+      throw new Error(`User does not possess an active enrollment for workspace ${role}`);
+    }
+
+    user.activeWorkspace = role;
+    this.accounts.set(userId, user);
+    this.logAudit(userId, userId, 'WORKSPACE_SWITCHED', `Switched active workspace to ${role}`);
+    this.saveToStorage();
+    return user;
+  }
+
+  // Account Mutations
   public createAccount(accountData: Account): Account {
+    if (!accountData.roles) accountData.roles = [accountData.role];
+    accountData.activeWorkspace = accountData.role;
     this.accounts.set(accountData.id, accountData);
+
+    // Auto-create initial role enrollment
+    const initialEnr: UserRoleEnrollment = {
+      id: 'enr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+      userId: accountData.id,
+      role: accountData.role,
+      collegeId: accountData.collegeId,
+      collegeName: accountData.college,
+      status: 'ACTIVE',
+      appliedAt: new Date().toISOString(),
+      approvedAt: new Date().toISOString(),
+      approvedBy: 'SYSTEM_REGISTRATION'
+    };
+    this.enrollments.set(initialEnr.id, initialEnr);
+
     this.currentUserId = accountData.id;
     this.logAudit(accountData.id, accountData.id, 'ACCOUNT_CREATED', `Account registered with role ${accountData.role}`);
     this.saveToStorage();
@@ -807,9 +1041,7 @@ export class AccountDatabase {
       updatedAt: new Date().toISOString()
     };
 
-    // Calculate profile strength
     updated.profileStrength = this.calculateProfileStrength(updated);
-
     this.accounts.set(id, updated);
     this.logAudit(id, id, 'PROFILE_UPDATED', `Fields updated: ${Object.keys(updates).join(', ')}`);
     this.saveToStorage();
@@ -827,7 +1059,7 @@ export class AccountDatabase {
   }
 
   public calculateProfileStrength(acc: Account): number {
-    let score = 20; // base signup
+    let score = 20;
     if (acc.avatarUrl && !acc.avatarUrl.includes('placeholder')) score += 15;
     if (acc.coverPhotoUrl) score += 10;
     if (acc.bio && acc.bio.length > 20) score += 15;
