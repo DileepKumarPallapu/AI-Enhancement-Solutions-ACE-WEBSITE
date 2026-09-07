@@ -123,8 +123,8 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                 <Link to="/coding" className={navItemClass('/coding')}>
                   Coding
                 </Link>
-                <Link to="/mentors" className={navItemClass('/mentors')}>
-                  <GraduationCap className="w-3.5 h-3.5 text-indigo-500 flex-shrink-0" /> Mentors
+                <Link to="/student/mentorship" className={navItemClass('/student/mentorship')}>
+                  <GraduationCap className="w-3.5 h-3.5 text-indigo-500 flex-shrink-0" /> Mentorship
                 </Link>
                 <Link to="/learn-play" className="flex items-center gap-1 px-2.5 py-1.5 text-xs lg:text-sm font-bold rounded-xl text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-slate-800 transition-colors whitespace-nowrap">
                   <Sparkles className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" /> Learn & Play

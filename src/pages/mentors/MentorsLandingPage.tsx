@@ -176,11 +176,11 @@ export const MentorsLandingPage: React.FC = () => {
 
                   <div className="space-y-1 text-xs">
                     <p className="font-semibold text-slate-200">{mentor.designation}</p>
-                    <p className="text-slate-400 truncate">{mentor.collegeName}</p>
+                    <p className="text-slate-400 truncate">{mentor.institutionName}</p>
                   </div>
 
                   <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
-                    {mentor.professionalBio}
+                    {mentor.bio}
                   </p>
 
                   {/* Expertise Tags */}

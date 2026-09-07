@@ -1,3 +1,4 @@
+import { CollegeDetailPage } from './pages/college/CollegeDetailPage';
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
@@ -39,29 +40,37 @@ import { ContestsPage } from './pages/ContestsPage';
 import { MentorsLandingPage } from './pages/mentors/MentorsLandingPage';
 import { MentorPublicProfilePage } from './pages/mentors/MentorPublicProfilePage';
 import { BecomeMentorPage } from './pages/mentors/BecomeMentorPage';
-
-// Student Workspace Mentor Pages
+// Student Mentorship Pages
 import { StudentFindMentorPage } from './pages/student/mentor/StudentFindMentorPage';
 import { StudentMentorDashboardPage } from './pages/student/mentor/StudentMentorDashboardPage';
 import { StudentMentorSessionsPage } from './pages/student/mentor/StudentMentorSessionsPage';
 import { StudentMentorGoalsPage } from './pages/student/mentor/StudentMentorGoalsPage';
+import { StudentMentorActionPlansPage } from './pages/student/mentor/StudentMentorActionPlansPage';
 import { StudentMentorMessagesPage } from './pages/student/mentor/StudentMentorMessagesPage';
+import { StudentMentorFeedbackPage } from './pages/student/mentor/StudentMentorFeedbackPage';
 
 // Mentor Dedicated Workspace Pages
 import { MentorDashboardPage } from './pages/mentor/MentorDashboardPage';
 import { MentorStudentListPage } from './pages/mentor/MentorStudentListPage';
 import { MentorStudentDossierPage } from './pages/mentor/MentorStudentDossierPage';
+import { MentorRequestsPage } from './pages/mentor/MentorRequestsPage';
 import { MentorSessionsPage } from './pages/mentor/MentorSessionsPage';
+import { MentorGoalsReviewPage } from './pages/mentor/MentorGoalsReviewPage';
+import { MentorActionPlansPage } from './pages/mentor/MentorActionPlansPage';
 import { MentorCalendarPage } from './pages/mentor/MentorCalendarPage';
 import { MentorMessagesPage } from './pages/mentor/MentorMessagesPage';
+import { MentorResourcesPage } from './pages/mentor/MentorResourcesPage';
 import { MentorEventGuidancePage } from './pages/mentor/MentorEventGuidancePage';
 import { MentorLearningGuidancePage } from './pages/mentor/MentorLearningGuidancePage';
 import { MentorAnalyticsPage } from './pages/mentor/MentorAnalyticsPage';
 
 // College & Admin Mentor Pages
-import { CollegeDetailPage } from './pages/college/CollegeDetailPage';
 import { CollegeMentorsPage } from './pages/college/CollegeMentorsPage';
 import { AdminMentorsPage } from './pages/admin/AdminMentorsPage';
+import { AdminMentorRequestsPage } from './pages/admin/AdminMentorRequestsPage';
+import { AdminMentorAssignmentsPage } from './pages/admin/AdminMentorAssignmentsPage';
+import { AdminInstitutionMentorsPage } from './pages/admin/AdminInstitutionMentorsPage';
+
 import { AdminInstitutionsPage } from './pages/admin/AdminInstitutionsPage';
 
 // Competitions System
@@ -201,32 +210,49 @@ export function App() {
                               <Route path="/contests" element={<ContestsPage />} />
 
                               {/* Public Mentor Ecosystem */}
-                              <Route path="/mentors" element={<MentorsLandingPage />} />
-                              <Route path="/mentor/:username" element={<MentorPublicProfilePage />} />
-                              <Route path="/become-mentor" element={<BecomeMentorPage />} />
+              <Route path="/mentors" element={<MentorsLandingPage />} />
+              <Route path="/mentor/:username" element={<MentorPublicProfilePage />} />
+              <Route path="/become-mentor" element={<BecomeMentorPage />} />
 
-                              {/* Student Workspace Mentor Routes */}
-                              <Route path="/student/mentors" element={<StudentFindMentorPage />} />
-                              <Route path="/student/mentor" element={<StudentMentorDashboardPage />} />
-                              <Route path="/student/mentor/sessions" element={<StudentMentorSessionsPage />} />
-                              <Route path="/student/mentor/goals" element={<StudentMentorGoalsPage />} />
-                              <Route path="/student/mentor/messages" element={<StudentMentorMessagesPage />} />
+              {/* Student Workspace Mentor Routes */}
+              <Route path="/student/mentorship" element={<StudentMentorDashboardPage />} />
+              <Route path="/student/mentorship/find" element={<StudentFindMentorPage />} />
+              <Route path="/student/mentorship/goals" element={<StudentMentorGoalsPage />} />
+              <Route path="/student/mentorship/sessions" element={<StudentMentorSessionsPage />} />
+              <Route path="/student/mentorship/action-plans" element={<StudentMentorActionPlansPage />} />
+              <Route path="/student/mentorship/messages" element={<StudentMentorMessagesPage />} />
+              <Route path="/student/mentorship/feedback" element={<StudentMentorFeedbackPage />} />
+              {/* Aliases */}
+              <Route path="/student/mentor" element={<StudentMentorDashboardPage />} />
+              <Route path="/student/mentors" element={<StudentFindMentorPage />} />
+              <Route path="/student/mentor/goals" element={<StudentMentorGoalsPage />} />
+              <Route path="/student/mentor/sessions" element={<StudentMentorSessionsPage />} />
+              <Route path="/student/mentor/action-plans" element={<StudentMentorActionPlansPage />} />
+              <Route path="/student/mentor/messages" element={<StudentMentorMessagesPage />} />
+              <Route path="/student/mentor/feedback" element={<StudentMentorFeedbackPage />} />
 
-                              {/* Mentor Dedicated Workspace Routes */}
-                              <Route path="/mentor" element={<RequireRole allowedRoles={['MENTOR']}><MentorDashboardPage /></RequireRole>} />
-                              <Route path="/mentor/dashboard" element={<RequireRole allowedRoles={['MENTOR']}><MentorDashboardPage /></RequireRole>} />
-                              <Route path="/mentor/students" element={<RequireRole allowedRoles={['MENTOR']}><MentorStudentListPage /></RequireRole>} />
-                              <Route path="/mentor/students/:studentId" element={<RequireRole allowedRoles={['MENTOR']}><MentorStudentDossierPage /></RequireRole>} />
-                              <Route path="/mentor/sessions" element={<RequireRole allowedRoles={['MENTOR']}><MentorSessionsPage /></RequireRole>} />
-                              <Route path="/mentor/calendar" element={<RequireRole allowedRoles={['MENTOR']}><MentorCalendarPage /></RequireRole>} />
-                              <Route path="/mentor/messages" element={<RequireRole allowedRoles={['MENTOR']}><MentorMessagesPage /></RequireRole>} />
-                              <Route path="/mentor/events" element={<RequireRole allowedRoles={['MENTOR']}><MentorEventGuidancePage /></RequireRole>} />
-                              <Route path="/mentor/learning" element={<RequireRole allowedRoles={['MENTOR']}><MentorLearningGuidancePage /></RequireRole>} />
-                              <Route path="/mentor/analytics" element={<RequireRole allowedRoles={['MENTOR']}><MentorAnalyticsPage /></RequireRole>} />
+              {/* Mentor Dedicated Workspace Routes */}
+              <Route path="/mentor" element={<RequireRole allowedRoles={['MENTOR', 'ADMIN']}><MentorDashboardPage /></RequireRole>} />
+              <Route path="/mentor/dashboard" element={<RequireRole allowedRoles={['MENTOR', 'ADMIN']}><MentorDashboardPage /></RequireRole>} />
+              <Route path="/mentor/students" element={<RequireRole allowedRoles={['MENTOR', 'ADMIN']}><MentorStudentListPage /></RequireRole>} />
+              <Route path="/mentor/students/:studentId" element={<RequireRole allowedRoles={['MENTOR', 'ADMIN']}><MentorStudentDossierPage /></RequireRole>} />
+              <Route path="/mentor/requests" element={<RequireRole allowedRoles={['MENTOR', 'ADMIN']}><MentorRequestsPage /></RequireRole>} />
+              <Route path="/mentor/sessions" element={<RequireRole allowedRoles={['MENTOR', 'ADMIN']}><MentorSessionsPage /></RequireRole>} />
+              <Route path="/mentor/goals" element={<RequireRole allowedRoles={['MENTOR', 'ADMIN']}><MentorGoalsReviewPage /></RequireRole>} />
+              <Route path="/mentor/action-plans" element={<RequireRole allowedRoles={['MENTOR', 'ADMIN']}><MentorActionPlansPage /></RequireRole>} />
+              <Route path="/mentor/calendar" element={<RequireRole allowedRoles={['MENTOR', 'ADMIN']}><MentorCalendarPage /></RequireRole>} />
+              <Route path="/mentor/messages" element={<RequireRole allowedRoles={['MENTOR', 'ADMIN']}><MentorMessagesPage /></RequireRole>} />
+              <Route path="/mentor/resources" element={<RequireRole allowedRoles={['MENTOR', 'ADMIN']}><MentorResourcesPage /></RequireRole>} />
+              <Route path="/mentor/events" element={<RequireRole allowedRoles={['MENTOR', 'ADMIN']}><MentorEventGuidancePage /></RequireRole>} />
+              <Route path="/mentor/learning" element={<RequireRole allowedRoles={['MENTOR', 'ADMIN']}><MentorLearningGuidancePage /></RequireRole>} />
+              <Route path="/mentor/analytics" element={<RequireRole allowedRoles={['MENTOR', 'ADMIN']}><MentorAnalyticsPage /></RequireRole>} />
 
-                              {/* College & Admin Mentor Management */}
-                              <Route path="/college/mentors" element={<CollegeMentorsPage />} />
-                              <Route path="/admin/mentors" element={<AdminMentorsPage />} />
+              {/* College & Admin Mentor Management */}
+              <Route path="/college/mentors" element={<CollegeMentorsPage />} />
+              <Route path="/admin/mentors" element={<RequireRole allowedRoles={['ADMIN']}><AdminMentorsPage /></RequireRole>} />
+              <Route path="/admin/mentor-requests" element={<RequireRole allowedRoles={['ADMIN']}><AdminMentorRequestsPage /></RequireRole>} />
+              <Route path="/admin/mentor-assignments" element={<RequireRole allowedRoles={['ADMIN']}><AdminMentorAssignmentsPage /></RequireRole>} />
+              <Route path="/admin/institutions/:institutionId/mentors" element={<RequireRole allowedRoles={['ADMIN']}><AdminInstitutionMentorsPage /></RequireRole>} />
 
                               {/* Competitions Hub & Online Rooms */}
                               <Route path="/competitions" element={<CompetitionsHubPage />} />

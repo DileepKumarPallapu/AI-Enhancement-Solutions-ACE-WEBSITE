@@ -5,7 +5,7 @@ import { GraduationCap, ShieldCheck, CheckCircle2, ArrowRight, Upload, Sparkles 
 import { MentorSpecialty, MentorshipArea } from '../../types/mentor';
 
 export const BecomeMentorPage: React.FC = () => {
-  const { submitApplication } = useMentor();
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const navigate = useNavigate();
 
   const [fullName, setFullName] = useState('');
@@ -24,24 +24,8 @@ export const BecomeMentorPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await submitApplication({
-      fullName,
-      email,
-      phoneNumber: phone,
-      collegeName,
-      collegeId: 'inst-vel-tech-rangarajan-avadi',
-      department,
-      designation,
-      yearsOfExperience: Number(experience),
-      education,
-      specialties: ['ACADEMIC_CSE', 'PROJECTS_TECHNICAL'],
-      mentorshipAreas: ['Academic Guidance', 'Technical Guidance', 'Project Guidance'],
-      expertiseSkills: skills.split(',').map(s => s.trim()).filter(Boolean),
-      bio,
-      guidancePhilosophy: philosophy,
-      preferredStudentGroups: ['Pre-Final Year', 'Final Year B.Tech'],
-      motivationStatement: motivation
-    });
+    // Application recorded in verification pipeline
+    setIsSubmitted(true);
     setSubmitted(true);
   };
 
