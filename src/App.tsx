@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 // Providers
 import { AppProvider } from './context/AppContext';
+import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import { WorkflowProvider } from './context/WorkflowContext';
 import { ManagementProvider } from './context/ManagementContext';
@@ -97,8 +98,26 @@ import { AdminReportsPage } from './pages/admin/AdminReportsPage';
 import { AdminCoinEconomyPage } from './pages/admin/AdminCoinEconomyPage';
 import { SupportCenterPage } from './pages/support/SupportCenterPage';
 
-// Auth Pages
-import { AuthPage } from './pages/auth/AuthPage';
+// Auth Pages (Production Real Suite)
+import { LoginPage } from './pages/auth/LoginPage';
+import { RegisterWizardPage } from './pages/auth/RegisterWizardPage';
+import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage';
+import { ResetPasswordPage } from './pages/auth/ResetPasswordPage';
+import { VerifyEmailPage } from './pages/auth/VerifyEmailPage';
+import { VerifyPhonePage } from './pages/auth/VerifyPhonePage';
+
+// Profile Pages
+import { PublicProfilePage } from './pages/profile/PublicProfilePage';
+import { ProfileGalleryPage } from './pages/profile/ProfileGalleryPage';
+
+// Settings Pages Suite
+import { SettingsLayout } from './pages/settings/SettingsLayout';
+import { SettingsHubPage } from './pages/settings/SettingsHubPage';
+import { ProfileSettingsPage } from './pages/settings/ProfileSettingsPage';
+import { PhotoManagementPage } from './pages/settings/PhotoManagementPage';
+import { SecuritySettingsPage } from './pages/settings/SecuritySettingsPage';
+import { PrivacySettingsPage } from './pages/settings/PrivacySettingsPage';
+import { DangerZonePage } from './pages/settings/DangerZonePage';
 
 // Feature Directory & Error Pages
 import { ExploreDirectoryPage } from './pages/ExploreDirectoryPage';
@@ -114,165 +133,194 @@ export function App() {
 
   return (
     <AppProvider>
-      <ToastProvider>
-        <WorkflowProvider>
-          <ManagementProvider>
-            <LearnPlayProvider>
-              <ArcadeProvider>
-                <CompetitionProvider>
-                  <Router>
-                    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">
-                      <Navbar onOpenAiChat={() => setIsAiDrawerOpen(true)} />
+      <AuthProvider>
+        <ToastProvider>
+          <WorkflowProvider>
+            <ManagementProvider>
+              <LearnPlayProvider>
+                <ArcadeProvider>
+                  <CompetitionProvider>
+                    <Router>
+                      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">
+                        <Navbar onOpenAiChat={() => setIsAiDrawerOpen(true)} />
 
-                      <main className="flex-1">
-                        <Routes>
-                          {/* Public Discovery */}
-                          <Route path="/" element={<HomePage onOpenAiAssistant={() => setIsAiDrawerOpen(true)} />} />
-                          <Route path="/events" element={<EventsExplorerPage />} />
-                          <Route path="/events/:slug" element={<EventDetailPage />} />
-                          <Route path="/hackathons" element={<HackathonsPage />} />
-                          <Route path="/for-you" element={<ForYouPage />} />
-                          <Route path="/search" element={<SearchPage />} />
-                          <Route path="/certificates" element={<CertificatesPage />} />
-                          <Route path="/verify-certificate/:id" element={<CertificatesPage />} />
-                          <Route path="/project-showcase" element={<ProjectShowcasePage />} />
-                          <Route path="/project-showcase/demo" element={<PresentationDemoPage />} />
-                          <Route path="/blog" element={<BlogPage />} />
-                          <Route path="/colleges" element={<CollegesPage />} />
-                          <Route path="/community" element={<CommunityPage />} />
-                          <Route path="/referral" element={<ReferralPage />} />
-                          <Route path="/rewards" element={<RewardsPage />} />
-                          <Route path="/rewards/vouchers" element={<RewardsPage />} />
-                          <Route path="/contest" element={<ContestsPage />} />
-                          <Route path="/contests" element={<ContestsPage />} />
+                        <main className="flex-1">
+                          <Routes>
+                            {/* Public Discovery */}
+                            <Route path="/" element={<HomePage onOpenAiAssistant={() => setIsAiDrawerOpen(true)} />} />
+                            <Route path="/events" element={<EventsExplorerPage />} />
+                            <Route path="/events/:slug" element={<EventDetailPage />} />
+                            <Route path="/hackathons" element={<HackathonsPage />} />
+                            <Route path="/for-you" element={<ForYouPage />} />
+                            <Route path="/search" element={<SearchPage />} />
+                            <Route path="/certificates" element={<CertificatesPage />} />
+                            <Route path="/verify-certificate/:id" element={<CertificatesPage />} />
+                            <Route path="/project-showcase" element={<ProjectShowcasePage />} />
+                            <Route path="/project-showcase/demo" element={<PresentationDemoPage />} />
+                            <Route path="/blog" element={<BlogPage />} />
+                            <Route path="/colleges" element={<CollegesPage />} />
+                            <Route path="/community" element={<CommunityPage />} />
+                            <Route path="/referral" element={<ReferralPage />} />
+                            <Route path="/rewards" element={<RewardsPage />} />
+                            <Route path="/rewards/vouchers" element={<RewardsPage />} />
+                            <Route path="/contest" element={<ContestsPage />} />
+                            <Route path="/contests" element={<ContestsPage />} />
 
-                          {/* Competitions Hub & Online Rooms */}
-                          <Route path="/competitions" element={<CompetitionsHubPage />} />
-                          <Route path="/competitions/:id" element={<CompetitionDetailPage />} />
-                          <Route path="/competitions/:id/room" element={<CompetitionRoomPage />} />
-                          <Route path="/competitions/:id/results" element={<CompetitionResultsPage />} />
+                            {/* Competitions Hub & Online Rooms */}
+                            <Route path="/competitions" element={<CompetitionsHubPage />} />
+                            <Route path="/competitions/:id" element={<CompetitionDetailPage />} />
+                            <Route path="/competitions/:id/room" element={<CompetitionRoomPage />} />
+                            <Route path="/competitions/:id/results" element={<CompetitionResultsPage />} />
 
-                          {/* Coding & Learning Hub */}
-                          <Route path="/coding" element={<CodingHomePage onOpenAiChat={() => setIsAiDrawerOpen(true)} />} />
-                          <Route path="/coding/practice" element={<CodingProblemPage />} />
-                          <Route path="/coding/practice/:id" element={<CodingProblemPage />} />
-                          <Route path="/coding/games" element={<CodingGamesPage />} />
-                          <Route path="/coding/history" element={<CodingHistoryPage />} />
-                          <Route path="/coding/contests" element={<ContestsPage />} />
-                          <Route path="/coding/leaderboard" element={<AmbassadorPage />} />
-                          <Route path="/learn" element={<LearningHubPage />} />
-                          <Route path="/learn/:pathId" element={<LearningHubPage />} />
+                            {/* Coding & Learning Hub */}
+                            <Route path="/coding" element={<CodingHomePage onOpenAiChat={() => setIsAiDrawerOpen(true)} />} />
+                            <Route path="/coding/practice" element={<CodingProblemPage />} />
+                            <Route path="/coding/practice/:id" element={<CodingProblemPage />} />
+                            <Route path="/coding/games" element={<CodingGamesPage />} />
+                            <Route path="/coding/history" element={<CodingHistoryPage />} />
+                            <Route path="/coding/contests" element={<ContestsPage />} />
+                            <Route path="/coding/leaderboard" element={<AmbassadorPage />} />
+                            <Route path="/learn" element={<LearningHubPage />} />
+                            <Route path="/learn/:pathId" element={<LearningHubPage />} />
 
-                          {/* Learn & Play Ecosystem */}
-                          <Route path="/learn-play" element={<LearnPlayDashboardPage />} />
-                          <Route path="/learn-play/daily" element={<DailyMissionsPage />} />
-                          <Route path="/learn-play/tasks" element={<MicroTasksPage />} />
-                          <Route path="/learn-play/skill-tree" element={<SkillTreePage />} />
-                          <Route path="/learn-play/paths" element={<LearningHubPage />} />
-                          <Route path="/coding/games/:gameId" element={<GameLauncherPage />} />
+                            {/* Learn & Play Ecosystem */}
+                            <Route path="/learn-play" element={<LearnPlayDashboardPage />} />
+                            <Route path="/learn-play/daily" element={<DailyMissionsPage />} />
+                            <Route path="/learn-play/tasks" element={<MicroTasksPage />} />
+                            <Route path="/learn-play/skill-tree" element={<SkillTreePage />} />
+                            <Route path="/learn-play/paths" element={<LearningHubPage />} />
+                            <Route path="/coding/games/:gameId" element={<GameLauncherPage />} />
 
-                          {/* Student Workspace, Competitions & Wallet */}
-                          <Route path="/student" element={<StudentPortalPage onOpenAiChat={() => setIsAiDrawerOpen(true)} />} />
-                          <Route path="/student/dashboard" element={<StudentDashboardPage />} />
-                          <Route path="/dashboard" element={<StudentDashboardPage />} />
-                          <Route path="/dashboard/profile" element={<StudentProfilePage />} />
-                          <Route path="/student/career" element={<StudentCareerPage />} />
-                          <Route path="/student/applications" element={<StudentCareerPage />} />
-                          <Route path="/student/saved" element={<StudentDashboardPage />} />
-                          <Route path="/student/projects" element={<StudentProfilePage />} />
-                          <Route path="/student/resume" element={<ResumeBuilderPage />} />
-                          <Route path="/student/wallet" element={<StudentWalletPage />} />
-                          <Route path="/student/wallet/history" element={<StudentWalletHistoryPage />} />
-                          <Route path="/student/wallet/rewards" element={<StudentRewardsPage />} />
-                          <Route path="/student/rewards" element={<StudentRewardsPage />} />
-                          <Route path="/student/rewards/history" element={<StudentWalletHistoryPage />} />
-                          <Route path="/student/play-earn" element={<PlayAndEarnPage />} />
-                          <Route path="/student/earn" element={<PlayAndEarnPage />} />
-                          <Route path="/student/skills" element={<StudentSkillsPage />} />
-                          <Route path="/student/analytics" element={<StudentAnalyticsPage />} />
-                          <Route path="/student/achievements" element={<StudentAchievementsPage />} />
-                          <Route path="/student/notifications" element={<StudentNotificationsPage />} />
-                          <Route path="/student/events" element={<StudentEventsPage />} />
-                          <Route path="/student/competitions" element={<StudentCompetitionsPage />} />
-                          <Route path="/student/wins" element={<StudentWinsPage />} />
-                          <Route path="/ai/recommendations" element={<PersonalizedLearningPathPage />} />
-                          <Route path="/ai/learning-path" element={<PersonalizedLearningPathPage />} />
-                          <Route path="/student/learning-recommendations" element={<PersonalizedLearningPathPage />} />
-                          <Route path="/student/ai-learning" element={<PersonalizedLearningPathPage />} />
-                          <Route path="/my-submissions" element={<MySubmissionsPage />} />
+                            {/* Student Workspace, Competitions & Wallet */}
+                            <Route path="/student" element={<StudentPortalPage onOpenAiChat={() => setIsAiDrawerOpen(true)} />} />
+                            <Route path="/student/dashboard" element={<StudentDashboardPage />} />
+                            <Route path="/dashboard" element={<StudentDashboardPage />} />
+                            <Route path="/dashboard/profile" element={<StudentProfilePage />} />
+                            <Route path="/student/career" element={<StudentCareerPage />} />
+                            <Route path="/student/applications" element={<StudentCareerPage />} />
+                            <Route path="/student/saved" element={<StudentDashboardPage />} />
+                            <Route path="/student/projects" element={<StudentProfilePage />} />
+                            <Route path="/student/resume" element={<ResumeBuilderPage />} />
+                            <Route path="/student/wallet" element={<StudentWalletPage />} />
+                            <Route path="/student/wallet/history" element={<StudentWalletHistoryPage />} />
+                            <Route path="/student/wallet/rewards" element={<StudentRewardsPage />} />
+                            <Route path="/student/rewards" element={<StudentRewardsPage />} />
+                            <Route path="/student/rewards/history" element={<StudentWalletHistoryPage />} />
+                            <Route path="/student/play-earn" element={<PlayAndEarnPage />} />
+                            <Route path="/student/earn" element={<PlayAndEarnPage />} />
+                            <Route path="/student/skills" element={<StudentSkillsPage />} />
+                            <Route path="/student/analytics" element={<StudentAnalyticsPage />} />
+                            <Route path="/student/achievements" element={<StudentAchievementsPage />} />
+                            <Route path="/student/notifications" element={<StudentNotificationsPage />} />
+                            <Route path="/student/events" element={<StudentEventsPage />} />
+                            <Route path="/student/competitions" element={<StudentCompetitionsPage />} />
+                            <Route path="/student/wins" element={<StudentWinsPage />} />
+                            <Route path="/ai/recommendations" element={<PersonalizedLearningPathPage />} />
+                            <Route path="/ai/learning-path" element={<PersonalizedLearningPathPage />} />
+                            <Route path="/student/learning-recommendations" element={<PersonalizedLearningPathPage />} />
+                            <Route path="/student/ai-learning" element={<PersonalizedLearningPathPage />} />
+                            <Route path="/my-submissions" element={<MySubmissionsPage />} />
 
-                          {/* Organizer Workspace */}
-                          <Route path="/organizer" element={<OrganizerDashboardPage />} />
-                          <Route path="/organizer/dashboard" element={<OrganizerDashboardPage />} />
-                          <Route path="/organizer/create" element={<SubmitEventPage />} />
-                          <Route path="/organizer/ai-tools" element={<OrganizerAiToolsPage />} />
-                          <Route path="/submit-event" element={<SubmitEventPage />} />
-                          <Route path="/submit-event/:id" element={<SubmitEventPage />} />
-                          <Route path="/create-event" element={<SubmitEventPage />} />
+                            {/* Organizer Workspace */}
+                            <Route path="/organizer" element={<OrganizerDashboardPage />} />
+                            <Route path="/organizer/dashboard" element={<OrganizerDashboardPage />} />
+                            <Route path="/organizer/create" element={<SubmitEventPage />} />
+                            <Route path="/organizer/ai-tools" element={<OrganizerAiToolsPage />} />
+                            <Route path="/submit-event" element={<SubmitEventPage />} />
+                            <Route path="/submit-event/:id" element={<SubmitEventPage />} />
+                            <Route path="/create-event" element={<SubmitEventPage />} />
 
-                          {/* Campus Ambassador Workspace */}
-                          <Route path="/ambassador" element={<AmbassadorDashboardPage />} />
-                          <Route path="/ambassador/dashboard" element={<AmbassadorDashboardPage />} />
-                          <Route path="/ambassador/campaigns" element={<AmbassadorCampaignsPage />} />
-                          <Route path="/ambassador/students" element={<AmbassadorStudentsPage />} />
-                          <Route path="/ambassador/tasks" element={<AmbassadorTasksPage />} />
-                          <Route path="/campus-ambassador" element={<AmbassadorPage />} />
-                          <Route path="/ambassador/event-approvals" element={<AmbassadorApprovalsPage />} />
-                          <Route path="/ambassador/event-approvals/:id" element={<AmbassadorApprovalsPage />} />
+                            {/* Campus Ambassador Workspace */}
+                            <Route path="/ambassador" element={<AmbassadorDashboardPage />} />
+                            <Route path="/ambassador/dashboard" element={<AmbassadorDashboardPage />} />
+                            <Route path="/ambassador/campaigns" element={<AmbassadorCampaignsPage />} />
+                            <Route path="/ambassador/students" element={<AmbassadorStudentsPage />} />
+                            <Route path="/ambassador/tasks" element={<AmbassadorTasksPage />} />
+                            <Route path="/campus-ambassador" element={<AmbassadorPage />} />
+                            <Route path="/ambassador/event-approvals" element={<AmbassadorApprovalsPage />} />
+                            <Route path="/ambassador/event-approvals/:id" element={<AmbassadorApprovalsPage />} />
 
-                          {/* College Institutional Workspace */}
-                          <Route path="/college" element={<CollegePortalPage />} />
-                          <Route path="/college/dashboard" element={<CollegePortalPage />} />
+                            {/* College Institutional Workspace */}
+                            <Route path="/college" element={<CollegePortalPage />} />
+                            <Route path="/college/dashboard" element={<CollegePortalPage />} />
 
-                          {/* ACE Super Admin Workspace */}
-                          <Route path="/admin" element={<AdminAiRiskCenterPage />} />
-                          <Route path="/admin/ai-risk" element={<AdminAiRiskCenterPage />} />
-                          <Route path="/admin/event-approvals" element={<AdminEventApprovalsPage />} />
-                          <Route path="/admin/moderation" element={<AdminEventApprovalsPage />} />
-                          <Route path="/admin/audit-logs" element={<AdminAuditLogsPage />} />
-                          <Route path="/admin/reports" element={<AdminReportsPage />} />
-                          <Route path="/admin/settings/coin-economy" element={<AdminCoinEconomyPage />} />
-                          <Route path="/admin/coin-economy" element={<AdminCoinEconomyPage />} />
-                          <Route path="/admin/rewards" element={<AdminCoinEconomyPage />} />
-                          <Route path="/admin/course-intelligence" element={<AdminCourseIntelligencePage />} />
-                          <Route path="/admin/ai/intelligence" element={<AdminCourseIntelligencePage />} />
+                            {/* ACE Super Admin Workspace */}
+                            <Route path="/admin" element={<AdminAiRiskCenterPage />} />
+                            <Route path="/admin/ai-risk" element={<AdminAiRiskCenterPage />} />
+                            <Route path="/admin/event-approvals" element={<AdminEventApprovalsPage />} />
+                            <Route path="/admin/moderation" element={<AdminEventApprovalsPage />} />
+                            <Route path="/admin/audit-logs" element={<AdminAuditLogsPage />} />
+                            <Route path="/admin/reports" element={<AdminReportsPage />} />
+                            <Route path="/admin/settings/coin-economy" element={<AdminCoinEconomyPage />} />
+                            <Route path="/admin/coin-economy" element={<AdminCoinEconomyPage />} />
+                            <Route path="/admin/rewards" element={<AdminCoinEconomyPage />} />
+                            <Route path="/admin/course-intelligence" element={<AdminCourseIntelligencePage />} />
+                            <Route path="/admin/ai/intelligence" element={<AdminCourseIntelligencePage />} />
 
-                          {/* Support & Auth */}
-                          <Route path="/support" element={<SupportCenterPage />} />
-                          <Route path="/auth/login" element={<AuthPage />} />
-                          <Route path="/auth/register" element={<AuthPage />} />
-                          <Route path="/login" element={<AuthPage />} />
-                          <Route path="/register" element={<AuthPage />} />
+                            {/* Support Center */}
+                            <Route path="/support" element={<SupportCenterPage />} />
 
-                          {/* Master Feature Directory & Error Routes */}
-                          <Route path="/explore" element={<ExploreDirectoryPage />} />
-                          <Route path="/all-features" element={<ExploreDirectoryPage />} />
-                          <Route path="/forbidden" element={<ForbiddenPage />} />
+                            {/* Complete Production Authentication Ecosystem Routes */}
+                            <Route path="/login" element={<LoginPage />} />
+                            <Route path="/auth/login" element={<LoginPage />} />
+                            <Route path="/register" element={<RegisterWizardPage />} />
+                            <Route path="/auth/register" element={<RegisterWizardPage />} />
+                            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                            <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
+                            <Route path="/reset-password" element={<ResetPasswordPage />} />
+                            <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
+                            <Route path="/verify-email" element={<VerifyEmailPage />} />
+                            <Route path="/auth/verify-email" element={<VerifyEmailPage />} />
+                            <Route path="/verify-phone" element={<VerifyPhonePage />} />
+                            <Route path="/auth/verify-phone" element={<VerifyPhonePage />} />
 
-                          {/* Static & Location Utilities */}
-                          <Route path="/compare" element={<EventComparisonPage />} />
-                          <Route path="/location/:city" element={<LocationPage />} />
-                          <Route path="/locations/:country/:city" element={<LocationPage />} />
-                          <Route path="/about" element={<AboutPage />} />
-                          <Route path="/contact" element={<ContactPage />} />
-                          <Route path="/faq" element={<FaqPage />} />
-                          <Route path="/privacy" element={<PrivacyPage />} />
+                            {/* Live Public & Self Profile Ecosystem */}
+                            <Route path="/profile" element={<PublicProfilePage />} />
+                            <Route path="/profile/:username" element={<PublicProfilePage />} />
+                            <Route path="/u/:username" element={<PublicProfilePage />} />
+                            <Route path="/profile/gallery" element={<ProfileGalleryPage />} />
+                            <Route path="/profile/:username/gallery" element={<ProfileGalleryPage />} />
 
-                          {/* Catch-all 404 handler strictly at the end */}
-                          <Route path="*" element={<NotFoundPage />} />
-                        </Routes>
-                      </main>
+                            {/* Account Settings Suite */}
+                            <Route path="/settings" element={<SettingsLayout />}>
+                              <Route index element={<SettingsHubPage />} />
+                              <Route path="profile" element={<ProfileSettingsPage />} />
+                              <Route path="photos" element={<PhotoManagementPage />} />
+                              <Route path="security" element={<SecuritySettingsPage />} />
+                              <Route path="privacy" element={<PrivacySettingsPage />} />
+                              <Route path="danger-zone" element={<DangerZonePage />} />
+                            </Route>
 
-                      <Footer />
-                      <AceAiAssistant isOpen={isAiDrawerOpen} onClose={() => setIsAiDrawerOpen(false)} />
-                    </div>
-                  </Router>
-                </CompetitionProvider>
-              </ArcadeProvider>
-            </LearnPlayProvider>
-          </ManagementProvider>
-        </WorkflowProvider>
-      </ToastProvider>
+                            {/* Master Feature Directory & Error Routes */}
+                            <Route path="/explore" element={<ExploreDirectoryPage />} />
+                            <Route path="/all-features" element={<ExploreDirectoryPage />} />
+                            <Route path="/forbidden" element={<ForbiddenPage />} />
+
+                            {/* Static & Location Utilities */}
+                            <Route path="/compare" element={<EventComparisonPage />} />
+                            <Route path="/location/:city" element={<LocationPage />} />
+                            <Route path="/locations/:country/:city" element={<LocationPage />} />
+                            <Route path="/about" element={<AboutPage />} />
+                            <Route path="/contact" element={<ContactPage />} />
+                            <Route path="/faq" element={<FaqPage />} />
+                            <Route path="/privacy" element={<PrivacyPage />} />
+
+                            {/* Catch-all 404 handler */}
+                            <Route path="*" element={<NotFoundPage />} />
+                          </Routes>
+                        </main>
+
+                        <Footer />
+                        <AceAiAssistant isOpen={isAiDrawerOpen} onClose={() => setIsAiDrawerOpen(false)} />
+                      </div>
+                    </Router>
+                  </CompetitionProvider>
+                </ArcadeProvider>
+              </LearnPlayProvider>
+            </ManagementProvider>
+          </WorkflowProvider>
+        </ToastProvider>
+      </AuthProvider>
     </AppProvider>
   );
 }
