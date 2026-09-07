@@ -81,7 +81,7 @@ export function runAllMentorshipTests(): TestResult[] {
     const schools = mentorshipDb.getSchoolsForInstitution(CANONICAL_VEL_TECH_ID);
     expect(schools.length).toBe(9);
     expect(schools.find(s => s.name === 'School of Computing')?.departments.map(d => d.name)).toContain(
-      'Computer Science and Engineering'
+      'Department of Computer Science and Engineering'
     );
   });
 
@@ -92,7 +92,7 @@ export function runAllMentorshipTests(): TestResult[] {
       { id: 'usr_student_dileep', institutionId: CANONICAL_VEL_TECH_ID },
       mentors,
       {
-        studyMajor: 'Computer Science and Engineering',
+        studyMajor: 'Department of Computer Science and Engineering',
         yearOfStudy: '4th Year',
         interests: ['AI/ML', 'Hackathons', 'Cloud Computing'],
         skillsLearning: ['Python', 'Deep Learning'],
@@ -116,11 +116,11 @@ export function runAllMentorshipTests(): TestResult[] {
         avatarUrl: '',
         institutionId: CANONICAL_VEL_TECH_ID,
         college: CANONICAL_VEL_TECH_NAME,
-        department: 'Computer Science and Engineering',
+        department: 'Department of Computer Science and Engineering',
         year: '4th Year',
         school: 'School of Computing'
       },
-      mentorId: 'mentor-veltech-1',
+      mentorId: 'men_veltech_senthil',
       goalCategory: 'CAREER',
       primaryGoal: 'Target FAANG AI roles',
       message: 'Requesting guidance for final year roadmap',
@@ -135,7 +135,7 @@ export function runAllMentorshipTests(): TestResult[] {
 
   // Test 7: Capacity Enforcement on Accept
   test('7. Capacity Enforcement on Accept', () => {
-    const mentor = mentorshipDb.getMentorById('mentor-veltech-1');
+    const mentor = mentorshipDb.getMentorById('men_veltech_senthil');
     const initialCount = mentor?.currentStudentCount || 0;
     const req = mentorshipDb.createMentorshipRequest({
       student: {
@@ -145,11 +145,11 @@ export function runAllMentorshipTests(): TestResult[] {
         avatarUrl: '',
         institutionId: CANONICAL_VEL_TECH_ID,
         college: CANONICAL_VEL_TECH_NAME,
-        department: 'Computer Science and Engineering',
+        department: 'Department of Computer Science and Engineering',
         year: '4th Year',
         school: 'School of Computing'
       },
-      mentorId: 'mentor-veltech-1',
+      mentorId: 'men_veltech_senthil',
       goalCategory: 'CAREER',
       primaryGoal: 'Goal',
       message: 'Msg',
@@ -159,7 +159,7 @@ export function runAllMentorshipTests(): TestResult[] {
       assignmentType: 'PRIMARY'
     });
     mentorshipDb.respondToRequest(req.id, true, 'Welcome!');
-    const updatedMentor = mentorshipDb.getMentorById('mentor-veltech-1');
+    const updatedMentor = mentorshipDb.getMentorById('men_veltech_senthil');
     expect(updatedMentor?.currentStudentCount).toBe(initialCount + 1);
   });
 
@@ -167,7 +167,7 @@ export function runAllMentorshipTests(): TestResult[] {
   test('8. Dynamic Milestone Calculation', () => {
     const goal = mentorshipDb.createGoal({
       studentId: 'usr_student_dileep',
-      mentorId: 'mentor-veltech-1',
+      mentorId: 'men_veltech_senthil',
       institutionId: CANONICAL_VEL_TECH_ID,
       title: 'Test Goal',
       description: 'Test Desc',
@@ -193,7 +193,7 @@ export function runAllMentorshipTests(): TestResult[] {
     const plan = mentorshipDb.createActionPlan({
       studentId: 'usr_student_dileep',
       studentName: 'Dileep Kumar',
-      mentorId: 'mentor-veltech-1',
+      mentorId: 'men_veltech_senthil',
       mentorName: 'Dr. K. Senthilkumar',
       institutionId: CANONICAL_VEL_TECH_ID,
       title: 'Test Action Plan',
@@ -214,7 +214,7 @@ export function runAllMentorshipTests(): TestResult[] {
       studentAvatar: '',
       studentUsername: 'dileepkumar',
       institutionId: CANONICAL_VEL_TECH_ID,
-      mentorId: 'mentor-veltech-1',
+      mentorId: 'men_veltech_senthil',
       mentorName: 'Dr. K. Senthilkumar',
       mentorAvatar: '',
       date: '2026-10-15',
@@ -233,7 +233,7 @@ export function runAllMentorshipTests(): TestResult[] {
         studentAvatar: '',
         studentUsername: 'otherstudent',
         institutionId: CANONICAL_VEL_TECH_ID,
-        mentorId: 'mentor-veltech-1',
+        mentorId: 'men_veltech_senthil',
         mentorName: 'Dr. K. Senthilkumar',
         mentorAvatar: '',
         date: '2026-10-15',
@@ -255,7 +255,7 @@ export function runAllMentorshipTests(): TestResult[] {
       'usr_student_dileep',
       'Dileep Kumar Pallapu',
       CANONICAL_VEL_TECH_NAME,
-      'Computer Science and Engineering',
+      'Department of Computer Science and Engineering',
       '4th Year'
     );
     expect(brief.studentName).toBe('Dileep Kumar Pallapu');
@@ -269,11 +269,11 @@ export function runAllMentorshipTests(): TestResult[] {
       senderName: 'Dileep Kumar',
       senderAvatar: '',
       senderRole: 'STUDENT',
-      receiverId: 'mentor-veltech-1',
+      receiverId: 'men_veltech_senthil',
       content: 'Hello professor, here is my research proposal update.'
     });
     expect(msg.id).toBeDefined();
-    const thread = mentorshipDb.getMessages('usr_student_dileep', 'mentor-veltech-1');
+    const thread = mentorshipDb.getMessages('usr_student_dileep', 'men_veltech_senthil');
     expect(thread.some(m => m.id === msg.id)).toBe(true);
   });
 
@@ -281,7 +281,7 @@ export function runAllMentorshipTests(): TestResult[] {
   test('13. Private vs Shared Notes', () => {
     const note = mentorshipDb.createNote({
       studentId: 'usr_student_dileep',
-      mentorId: 'mentor-veltech-1',
+      mentorId: 'men_veltech_senthil',
       institutionId: CANONICAL_VEL_TECH_ID,
       type: 'PRIVATE_MENTOR_NOTE',
       topic: 'Confidential Evaluation',
@@ -294,9 +294,26 @@ export function runAllMentorshipTests(): TestResult[] {
 
   // Test 14: Feedback & Rating Calculation
   test('14. Feedback & Rating Calculation', () => {
-    const session = mentorshipDb.getSessionsForStudent('usr_student_dileep')[0];
-    const sessionId = session ? session.id : 'session-default';
-    const fb = mentorshipDb.submitFeedback(sessionId, {
+    let session = mentorshipDb.getSessionsForStudent('usr_student_dileep')[0];
+    if (!session) {
+      session = mentorshipDb.bookSession({
+        studentId: 'usr_student_dileep',
+        studentName: 'Dileep Kumar',
+        studentAvatar: '',
+        studentUsername: 'dileepkumar',
+        institutionId: CANONICAL_VEL_TECH_ID,
+        mentorId: 'men_veltech_senthil',
+        mentorName: 'Dr. K. Senthilkumar',
+        mentorAvatar: '',
+        date: '2026-10-18',
+        time: '11:00',
+        durationMinutes: 30,
+        topic: 'Architecture Review',
+        mentorshipArea: 'Career Guidance',
+        mode: 'ONLINE'
+      });
+    }
+    const fb = mentorshipDb.submitFeedback(session.id, {
       studentId: 'usr_student_dileep',
       studentName: 'Dileep Kumar',
       studentCollege: CANONICAL_VEL_TECH_NAME,
@@ -312,7 +329,7 @@ export function runAllMentorshipTests(): TestResult[] {
   // Test 15: Resource Sharing
   test('15. Resource Sharing', () => {
     const res = mentorshipDb.recommendResource({
-      mentorId: 'mentor-veltech-1',
+      mentorId: 'men_veltech_senthil',
       mentorName: 'Dr. K. Senthilkumar',
       institutionId: CANONICAL_VEL_TECH_ID,
       type: 'ARTICLE',

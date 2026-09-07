@@ -42,11 +42,14 @@ class SessionSecurityService {
 
   private hydrate() {
     try {
-      if (typeof localStorage === 'undefined') return;
+      if (typeof localStorage === 'undefined') {
+        this.sessions = [...SEED_SESSIONS];
+        return;
+      }
       const raw = localStorage.getItem(STORAGE_KEY_SESSIONS);
-      this.sessions = raw ? JSON.parse(raw) : SEED_SESSIONS;
+      this.sessions = raw ? JSON.parse(raw) : [...SEED_SESSIONS];
     } catch (e) {
-      this.sessions = SEED_SESSIONS;
+      this.sessions = [...SEED_SESSIONS];
     }
   }
 

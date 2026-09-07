@@ -14,6 +14,7 @@ export interface UserWorkspace {
 
 interface AuthContextType {
   currentUser: Account | null;
+  user: Account | null;
   activeRole: AccountRole;
   activeWorkspace: AccountRole;
   isAuthenticated: boolean;
@@ -296,6 +297,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <AuthContext.Provider
       value={{
         currentUser,
+        user: currentUser,
         activeRole,
         activeWorkspace,
         isAuthenticated: !!currentUser,

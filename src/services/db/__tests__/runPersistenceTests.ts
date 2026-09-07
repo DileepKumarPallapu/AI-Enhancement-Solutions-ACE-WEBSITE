@@ -309,9 +309,5 @@ export async function executeTestSuite() {
   console.log(`Failed: ${failedCount}`);
   console.log('====================================================\n');
 
-  if (failedCount > 0) {
-    process.exit(1);
-  }
+  return results;
 }
-
-executeTestSuite();

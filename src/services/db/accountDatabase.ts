@@ -12,7 +12,7 @@ import {
 } from '../../types/account';
 
 export const VERIFIED_COLLEGES: CollegeSearchItem[] = [
-  { id: 'col_psg', name: 'Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology', city: 'Chennai', state: 'Tamil Nadu', isVerified: true },
+  { id: 'inst-vel-tech-rangarajan-avadi', name: 'Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology', city: 'Chennai', state: 'Tamil Nadu', isVerified: true },
   { id: 'col_iitm', name: 'IIT Madras (Indian Institute of Technology)', city: 'Chennai', state: 'Tamil Nadu', isVerified: true },
   { id: 'col_anna', name: 'Anna University (CEG Campus)', city: 'Chennai', state: 'Tamil Nadu', isVerified: true },
   { id: 'col_nit_trichy', name: 'NIT Trichy (National Institute of Technology)', city: 'Tiruchirappalli', state: 'Tamil Nadu', isVerified: true },
@@ -110,7 +110,7 @@ export class AccountDatabase {
     const dileepAccount: Account = {
       id: 'usr_student_dileep',
       username: 'dileepkumar',
-      email: 'dileep.kumar@psgtech.edu',
+      email: 'dileep.kumar@veltech.edu.in',
       phoneNumber: '+91 98765 43210',
       phone: '+91 98765 43210',
       passwordHash: 'sha256:dileep_pass_123',
@@ -118,7 +118,7 @@ export class AccountDatabase {
       roles: ['STUDENT', 'COLLEGE_AMBASSADOR'],
       activeWorkspace: 'STUDENT',
       permissions: ['STUDENT_ACCESS', 'AMBASSADOR_ACCESS'],
-      collegeId: 'col_psg',
+      collegeId: 'inst-vel-tech-rangarajan-avadi',
       status: 'ACTIVE',
       emailVerified: true,
       phoneVerified: true,

@@ -318,6 +318,32 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                           My Workspaces & Tools
                         </div>
 
+                        {/* Phase 2 Quick Tools */}
+                        <Link to="/student/ace-id" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-emerald-600 dark:text-emerald-400 bg-emerald-50/70 dark:bg-emerald-950/40 rounded-xl font-bold transition-colors">
+                          <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                          <span>Digital Student ID & Pass</span>
+                        </Link>
+
+                        <Link to="/calendar" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <Clock className="w-4 h-4 text-blue-500" />
+                          <span>Smart ACE Calendar & Deadlines</span>
+                        </Link>
+
+                        <Link to="/career" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <Briefcase className="w-4 h-4 text-amber-500" />
+                          <span>Career Hub & Resume</span>
+                        </Link>
+
+                        <Link to="/teams" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <Users className="w-4 h-4 text-purple-500" />
+                          <span>Hackathon Teams & Workspace</span>
+                        </Link>
+
+                        <Link to="/clubs" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <Building2 className="w-4 h-4 text-cyan-500" />
+                          <span>Campus Tech Clubs</span>
+                        </Link>
+
                         <Link to="/student/mentor" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-indigo-950/40 rounded-xl font-bold transition-colors">
                           <GraduationCap className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                           <span>Campus Mentorship Hub</span>

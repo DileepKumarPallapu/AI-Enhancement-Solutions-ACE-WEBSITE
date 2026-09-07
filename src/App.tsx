@@ -1,3 +1,18 @@
+// Phase 2 Next-Generation Ecosystem Pages
+import { DigitalIdPage } from './pages/student/DigitalIdPage';
+import { PublicVerifyIdPage } from './pages/verify/PublicVerifyIdPage';
+import { PublicVerifyCertificatePage } from './pages/verify/PublicVerifyCertificatePage';
+import { SmartCalendarPage } from './pages/calendar/SmartCalendarPage';
+import { DeadlineCenterPage } from './pages/deadlines/DeadlineCenterPage';
+import { StudentPortfolioPage } from './pages/portfolio/StudentPortfolioPage';
+import { VerifiedResumeBuilderPage } from './pages/career/VerifiedResumeBuilderPage';
+import { CareerHubPage } from './pages/career/CareerHubPage';
+import { OpportunityTrackerPage } from './pages/career/OpportunityTrackerPage';
+import { TeamFinderPage } from './pages/teams/TeamFinderPage';
+import { TeamWorkspacePage } from './pages/teams/TeamWorkspacePage';
+import { ClubsHubPage } from './pages/clubs/ClubsHubPage';
+import { ClubDetailPage } from './pages/clubs/ClubDetailPage';
+
 import { CollegeDetailPage } from './pages/college/CollegeDetailPage';
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
@@ -401,7 +416,23 @@ export function App() {
                               <Route path="/faq" element={<FaqPage />} />
                               <Route path="/privacy" element={<PrivacyPage />} />
 
-                              {/* Catch-all 404 handler */}
+                                                              {/* Phase 2 Next-Generation Feature Ecosystem */}
+                                <Route path="/student/ace-id" element={<DigitalIdPage />} />
+                                <Route path="/verify/:token" element={<PublicVerifyIdPage />} />
+                                <Route path="/verify/token" element={<PublicVerifyIdPage />} />
+                                <Route path="/verify/certificate/:id" element={<PublicVerifyCertificatePage />} />
+                                <Route path="/calendar" element={<SmartCalendarPage />} />
+                                <Route path="/deadlines" element={<DeadlineCenterPage />} />
+                                <Route path="/portfolio/:username" element={<StudentPortfolioPage />} />
+                                <Route path="/career/resume" element={<VerifiedResumeBuilderPage />} />
+                                <Route path="/career" element={<CareerHubPage />} />
+                                <Route path="/career/applications" element={<OpportunityTrackerPage />} />
+                                <Route path="/teams" element={<TeamFinderPage />} />
+                                <Route path="/teams/:teamId" element={<TeamWorkspacePage />} />
+                                <Route path="/clubs" element={<ClubsHubPage />} />
+                                <Route path="/clubs/:clubId" element={<ClubDetailPage />} />
+
+                                {/* Catch-all 404 handler */}
                               <Route path="*" element={<NotFoundPage />} />
                             </Routes>
                           </main>
