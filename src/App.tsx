@@ -239,6 +239,12 @@ import { AIGovernanceDashboardPage } from './pages/admin/AIGovernanceDashboardPa
 import { AIPrivacySettingsPage } from './pages/settings/AIPrivacySettingsPage';
 
 import { MobileBottomNav } from './components/ui/ace/MobileBottomNav';
+// ACE 50X Trust, Reliability, Scale & Production Excellence
+import { TrustCenterPage } from './pages/trust/TrustCenterPage';
+import { AdminModerationQueuePage } from './pages/admin/AdminModerationQueuePage';
+import { SecurityCenterPage } from './pages/settings/SecurityCenterPage';
+import { SystemHealthDashboardPage } from './pages/admin/SystemHealthDashboardPage';
+
 export function App() {
   const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false);
 
@@ -537,6 +543,12 @@ export function App() {
                                 <Route path="/college/ai" element={<CollegeAIIntelligencePage />} />
                                 <Route path="/admin/ai" element={<AIGovernanceDashboardPage />} />
                                 <Route path="/settings/ai" element={<AIPrivacySettingsPage />} />
+
+                                                                {/* ACE 50X Trust, Reliability & Scale */}
+                                <Route path="/trust" element={<TrustCenterPage />} />
+                                <Route path="/admin/moderation" element={<AdminModerationQueuePage />} />
+                                <Route path="/settings/security" element={<SecurityCenterPage />} />
+                                <Route path="/admin/system" element={<SystemHealthDashboardPage />} />
 
                                 {/* Catch-all 404 handler */}
                               <Route path="*" element={<NotFoundPage />} />

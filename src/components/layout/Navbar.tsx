@@ -181,6 +181,9 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                       <Link to="/judge" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
                         <span>⚖️ Judge Evaluation Portal</span>
                       </Link>
+                      <Link to="/trust" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🛡️ Verified Trust Center</span>
+                      </Link>
                       <Link to="/reports" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
                         <span>🚨 Trust, Safety & Reports</span>
                       </Link>
