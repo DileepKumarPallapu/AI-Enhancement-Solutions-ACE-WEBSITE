@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Shield, Eye, Lock, Globe, Check, Users } from 'lucide-react';
-import { accountDb } from '../../services/db/accountDatabase';
 import { VisibilityLevel } from '../../types/account';
+import { useAutoSave } from '../../hooks/useAutoSave';
+import { SaveStatus } from '../../components/common/SaveStatus';
 
 export const PrivacySettingsPage: React.FC = () => {
   const { currentUser, updateProfile, refreshUser } = useAuth();
@@ -17,53 +18,48 @@ export const PrivacySettingsPage: React.FC = () => {
   const [showProjects, setShowProjects] = useState(currentUser?.privacyPreferences?.showProjects !== false);
   const [allowFollowers, setAllowFollowers] = useState(currentUser?.privacyPreferences?.allowFollowers !== false);
 
-  const [saved, setSaved] = useState(false);
-  const [saving, setSaving] = useState(false);
-
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!currentUser) return;
-    setSaving(true);
-
-    await updateProfile({
-      privacyPreferences: {
-        profileVisibility,
-        showEmail,
-        showPhone,
-        showCollege,
-        showLocation: true,
-        showSkills,
-        showProjects,
-        showGallery: 'PUBLIC',
-        showAchievements: true,
-        showSocialLinks: true,
-        allowFollowers
-      }
-    });
-    refreshUser();
-
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
-  };
+  const autoSave = useAutoSave({
+    value: {
+      profileVisibility,
+      showEmail,
+      showPhone,
+      showCollege,
+      showSkills,
+      showProjects,
+      allowFollowers
+    },
+    debounceMs: 600,
+    onSave: async (prefs) => {
+      if (!currentUser) return;
+      await updateProfile({
+        privacyPreferences: {
+          profileVisibility: prefs.profileVisibility,
+          showEmail: prefs.showEmail,
+          showPhone: prefs.showPhone,
+          showCollege: prefs.showCollege,
+          showLocation: true,
+          showSkills: prefs.showSkills,
+          showProjects: prefs.showProjects,
+          showGallery: 'PUBLIC',
+          showAchievements: true,
+          showSocialLinks: true,
+          allowFollowers: prefs.allowFollowers
+        }
+      });
+      refreshUser();
+    }
+  });
 
   return (
-    <form onSubmit={handleSave} className="space-y-8 animate-fade-in">
+    <div className="space-y-8 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
         <div>
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">Privacy & Visibility Preferences</h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Choose what details are visible to campus peers and external recruiters.
+            Choose what details are visible to campus peers and external recruiters. Edits autosave seamlessly.
           </p>
         </div>
-        <button
-          type="submit"
-          disabled={saving}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-lg shadow-indigo-600/25 transition disabled:opacity-50"
-        >
-          {saved ? <Check className="w-4 h-4 text-emerald-300" /> : <Shield className="w-4 h-4" />}
-          {saved ? 'Saved!' : 'Save Privacy'}
-        </button>
+        <SaveStatus status={autoSave.status} lastSavedAt={autoSave.lastSavedAt} />
       </div>
 
       <div className="space-y-4">
@@ -99,27 +95,31 @@ export const PrivacySettingsPage: React.FC = () => {
         </label>
 
         {[
-          { label: 'Display College and Department on Public Profile', value: showCollege, setter: setShowCollege },
-          { label: 'Display Verified Skills & Tech Stack', value: showSkills, setter: setShowSkills },
-          { label: 'Display Featured Projects & Portfolios', value: showProjects, setter: setShowProjects },
-          { label: 'Allow Peer Students to Follow Me', value: allowFollowers, setter: setAllowFollowers },
-          { label: 'Display Email Address on Profile', value: showEmail, setter: setShowEmail },
-          { label: 'Display Phone Number on Profile', value: showPhone, setter: setShowPhone },
-        ].map((t, i) => (
-          <label
-            key={i}
-            className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 cursor-pointer"
-          >
-            <span className="text-xs font-medium text-slate-800 dark:text-slate-200">{t.label}</span>
-            <input
-              type="checkbox"
-              checked={t.value}
-              onChange={e => t.setter(e.target.checked)}
-              className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 dark:border-slate-700"
-            />
-          </label>
+          { label: 'Display Email Address Publicly', checked: showEmail, toggle: () => setShowEmail(!showEmail) },
+          { label: 'Display Mobile Phone Number', checked: showPhone, toggle: () => setShowPhone(!showPhone) },
+          { label: 'Display College & Academic Department', checked: showCollege, toggle: () => setShowCollege(!showCollege) },
+          { label: 'Display Verified Skill Badges', checked: showSkills, toggle: () => setShowSkills(!showSkills) },
+          { label: 'Display Student Project Showcase', checked: showProjects, toggle: () => setShowProjects(!showProjects) },
+          { label: 'Allow Peer Students to Follow Profile', checked: allowFollowers, toggle: () => setAllowFollowers(!allowFollowers) }
+        ].map((item, idx) => (
+          <div key={idx} className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-800">
+            <span className="text-xs font-medium text-slate-800 dark:text-slate-200">{item.label}</span>
+            <button
+              type="button"
+              onClick={item.toggle}
+              className={`w-11 h-6 rounded-full transition-colors relative flex items-center p-0.5 ${
+                item.checked ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-700'
+              }`}
+            >
+              <div
+                className={`w-5 h-5 rounded-full bg-white transition-transform ${
+                  item.checked ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
         ))}
       </div>
-    </form>
+    </div>
   );
 };

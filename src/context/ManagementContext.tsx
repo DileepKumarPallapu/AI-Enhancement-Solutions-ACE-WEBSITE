@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { PlatformRole, TaskRecord, ReportRecord, AuditLogEntry, SupportTicket } from '../types/management';
 import { useAuth } from './AuthContext';
+import { accountDb } from '../services/db/accountDatabase';
+import { chatDb } from '../services/db/chatDatabase';
 
 interface ManagementContextType {
   activeRole: PlatformRole;
@@ -52,8 +54,8 @@ const defaultTasks: TaskRecord[] = [
 const defaultReports: ReportRecord[] = [
   {
     id: 'REP-401',
-    reporterId: 'stu-992',
-    reporterName: 'Kavitha R',
+    reporterId: 'usr_student_dileep',
+    reporterName: 'Dileep Kumar',
     targetType: 'EVENT',
     targetId: 'ACE-EVT-2026-000182',
     targetTitle: 'National Cybersecurity Summit',
@@ -70,14 +72,14 @@ const defaultAuditLogs: AuditLogEntry[] = [
   {
     id: 'AUD-901',
     timestamp: '2026-09-02 21:30:00',
-    actorId: 'usr-admin-1',
+    actorId: 'usr_admin',
     actorName: 'Super Admin',
     actorRole: 'SUPER_ADMIN',
     action: 'ADMIN_OVERRIDE',
     targetType: 'EVENT',
     targetId: 'ACE-EVT-2026-000184',
     details: 'Approved HACKVERSE 2.0 after manual phone verification with college dean.',
-    previousValue: 'PENDING_ACE_ADMIN',
+    previousValue: 'PENDING_REVIEW',
     newValue: 'PUBLISHED'
   }
 ];
@@ -94,42 +96,50 @@ export const ManagementProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const activePersona = {
     name: currentUser?.fullName || currentUser?.displayName || 'Dileep Kumar',
-    email: currentUser?.email || 'dileep.kumar@psgtech.edu',
-    college: currentUser?.college || 'PSG College of Technology'
+    email: currentUser?.email || 'dileep.kumar@veltech.edu.in',
+    college: currentUser?.college || 'Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology'
   };
 
   const [tasks, setTasks] = useState<TaskRecord[]>(() => {
-    const saved = localStorage.getItem('ace_tasks');
+    const saved = typeof localStorage !== 'undefined' ? localStorage.getItem('ace_mgmt_tasks') : null;
     return saved ? JSON.parse(saved) : defaultTasks;
   });
 
   const [reports, setReports] = useState<ReportRecord[]>(() => {
-    const saved = localStorage.getItem('ace_reports');
+    const saved = typeof localStorage !== 'undefined' ? localStorage.getItem('ace_mgmt_reports') : null;
     return saved ? JSON.parse(saved) : defaultReports;
   });
 
   const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>(() => {
-    const saved = localStorage.getItem('ace_audit_logs');
-    return saved ? JSON.parse(saved) : defaultAuditLogs;
+    return defaultAuditLogs;
   });
 
-  const [supportTickets, setSupportTickets] = useState<SupportTicket[]>([]);
+  const [supportTickets, setSupportTickets] = useState<SupportTicket[]>(() => {
+    const dbTickets = chatDb.getAllTickets();
+    return dbTickets.map(t => ({
+      id: t.id,
+      requesterId: t.userId,
+      requesterName: t.userName,
+      requesterRole: 'STUDENT' as PlatformRole,
+      category: 'TECHNICAL' as any,
+      subject: t.subject,
+      message: t.messages[0]?.text || '',
+      status: 'OPEN',
+      createdAt: t.createdAt
+    }));
+  });
 
   useEffect(() => {
-    localStorage.setItem('ace_tasks', JSON.stringify(tasks));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('ace_mgmt_tasks', JSON.stringify(tasks));
+    }
   }, [tasks]);
 
   useEffect(() => {
-    localStorage.setItem('ace_reports', JSON.stringify(reports));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('ace_mgmt_reports', JSON.stringify(reports));
+    }
   }, [reports]);
-
-  useEffect(() => {
-    localStorage.setItem('ace_audit_logs', JSON.stringify(auditLogs));
-  }, [auditLogs]);
-
-  const switchPersona = (role: PlatformRole) => {
-    switchWorkspace(role as any);
-  };
 
   const updateTaskStatus = (taskId: string, status: TaskRecord['status']) => {
     setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status } : t));
@@ -145,40 +155,47 @@ export const ManagementProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   const updateReportStatus = (reportId: string, status: ReportRecord['status'], note?: string) => {
-    setReports(prev => prev.map(r => {
-      if (r.id === reportId) {
-        return {
-          ...r,
-          status,
-          assignedAdmin: note ? `${r.assignedAdmin || 'Admin'} - Note: ${note}` : r.assignedAdmin,
-          updatedAt: new Date().toISOString().split('T')[0]
-        };
-      }
-      return r;
-    }));
+    setReports(prev => prev.map(r => r.id === reportId ? {
+      ...r,
+      status,
+      resolutionNote: note || r.resolutionNote,
+      updatedAt: new Date().toISOString().split('T')[0]
+    } : r));
   };
 
   const createReport = (report: Omit<ReportRecord, 'id' | 'createdAt' | 'updatedAt' | 'status'>) => {
+    const now = new Date().toISOString().split('T')[0];
     const newReport: ReportRecord = {
       ...report,
       id: `REP-${Date.now().toString().slice(-4)}`,
       status: 'INVESTIGATING',
-      createdAt: new Date().toISOString().split('T')[0],
-      updatedAt: new Date().toISOString().split('T')[0]
+      createdAt: now,
+      updatedAt: now
     };
     setReports(prev => [newReport, ...prev]);
   };
 
   const logAuditAction = (action: Omit<AuditLogEntry, 'id' | 'timestamp'>) => {
-    const newEntry: AuditLogEntry = {
+    const newLog: AuditLogEntry = {
       ...action,
       id: `AUD-${Date.now().toString().slice(-4)}`,
-      timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19)
+      timestamp: new Date().toISOString()
     };
-    setAuditLogs(prev => [newEntry, ...prev]);
+    setAuditLogs(prev => [newLog, ...prev]);
   };
 
   const createSupportTicket = (ticket: Omit<SupportTicket, 'id' | 'createdAt' | 'status'>) => {
+    chatDb.createTicket({
+      userId: currentUser?.id || 'usr_student_dileep',
+      userName: currentUser?.fullName || 'Dileep Kumar',
+      userEmail: currentUser?.email || 'dileep.kumar@veltech.edu.in',
+      userCollege: currentUser?.college || 'Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology',
+      subject: ticket.subject,
+      category: 'OTHER',
+      priority: 'MEDIUM',
+      messages: [{ sender: currentUser?.fullName || 'Student', text: ticket.message, timestamp: new Date().toISOString() }]
+    });
+
     const newTicket: SupportTicket = {
       ...ticket,
       id: `TCK-${Date.now().toString().slice(-4)}`,
@@ -194,7 +211,7 @@ export const ManagementProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         activeRole,
         setActiveRole,
         activePersona,
-        switchPersona,
+        switchPersona: setActiveRole,
         tasks,
         updateTaskStatus,
         createTask,

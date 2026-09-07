@@ -565,3 +565,5 @@ class InstitutionDatabaseService {
 }
 
 export const institutionDatabase = new InstitutionDatabaseService();
+
+export const institutionDb = institutionDatabase;

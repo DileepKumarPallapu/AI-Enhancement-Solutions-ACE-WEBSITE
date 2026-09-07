@@ -862,6 +862,10 @@ export class AccountDatabase {
     return undefined;
   }
 
+  public getAllAccounts(): Account[] {
+    return Array.from(this.accounts.values());
+  }
+
   public getCurrentUser(): Account | null {
     if (!this.currentUserId) return null;
     return this.getAccountById(this.currentUserId) || null;

@@ -769,6 +769,11 @@ export class MentorshipDatabase {
   }
 
   // Sessions
+  public getAllSessions(): MentorshipSession[] {
+    this.init();
+    return Array.from(this.sessions.values());
+  }
+
   public getSessionsForStudent(studentId: string): MentorshipSession[] {
     this.init();
     return Array.from(this.sessions.values())

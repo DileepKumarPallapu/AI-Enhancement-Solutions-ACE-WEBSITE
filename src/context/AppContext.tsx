@@ -1,6 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { EventItem, StudentProfile, ReferralInvitation, NotificationItem } from '../types';
 import { fetchEvents, userProfileData, sampleReferralInvitations, fallbackEvents } from '../services/api';
+import { eventPersistenceDb, PersistentEvent } from '../services/db/eventPersistenceDatabase';
+import { notificationDb } from '../services/db/notificationDatabase';
+import { settingsDb } from '../services/db/settingsDatabase';
+import { accountDb } from '../services/db/accountDatabase';
 
 interface AppContextType {
   user: StudentProfile;
@@ -27,129 +31,169 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const currentAcc = accountDb.getCurrentUser();
+  const userId = currentAcc?.id || 'usr_student_dileep';
+
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    return (localStorage.getItem('ace_theme') as 'light' | 'dark') || 'light';
+    return settingsDb.getUserPreferences(userId).theme || 'light';
   });
 
   const [user, setUser] = useState<StudentProfile>(() => {
-    const saved = localStorage.getItem('ace_user_profile');
-    return saved ? JSON.parse(saved) : userProfileData;
+    if (currentAcc) {
+      return {
+        ...userProfileData,
+        name: currentAcc.fullName || currentAcc.displayName || userProfileData.name,
+        email: currentAcc.email || userProfileData.email,
+        college: currentAcc.college || userProfileData.college,
+        department: (currentAcc.roleProfileData as any)?.department || (currentAcc.roleProfileData as any)?.major || userProfileData.department,
+        year: (currentAcc.roleProfileData as any)?.year || userProfileData.year,
+        avatarUrl: currentAcc.avatarUrl || userProfileData.avatarUrl,
+        skills: currentAcc.skills?.verified || userProfileData.skills,
+        interests: currentAcc.skills?.interested || userProfileData.interests
+      };
+    }
+    return userProfileData;
   });
 
   const [events, setEvents] = useState<EventItem[]>(fallbackEvents);
   const [isLoadingEvents, setIsLoadingEvents] = useState(true);
 
   const [savedEvents, setSavedEvents] = useState<string[]>(() => {
-    const saved = localStorage.getItem('ace_saved_events');
-    return saved ? JSON.parse(saved) : ['nexora-2k26-a-national-level-technical-symposium-20260901-040857-58300'];
+    return eventPersistenceDb.getUserSavedSlugs(userId);
   });
 
   const [likedEvents, setLikedEvents] = useState<string[]>(() => {
-    const saved = localStorage.getItem('ace_liked_events');
-    return saved ? JSON.parse(saved) : ['hackverse-2-0-20260901-051234'];
+    return eventPersistenceDb.getUserLikedSlugs(userId);
   });
 
   const [registeredEvents, setRegisteredEvents] = useState<string[]>(() => {
-    const saved = localStorage.getItem('ace_registered_events');
-    return saved ? JSON.parse(saved) : ['hackverse-2-0-20260901-051234'];
+    return eventPersistenceDb.getUserRegistrations(userId).map(r => r.eventSlug);
   });
 
   const [referralInvitations, setReferralInvitations] = useState<ReferralInvitation[]>(() => {
-    const saved = localStorage.getItem('ace_referrals');
+    const saved = typeof localStorage !== 'undefined' ? localStorage.getItem(`ace_referrals_${userId}`) : null;
     return saved ? JSON.parse(saved) : sampleReferralInvitations;
   });
 
-  const [notifications, setNotifications] = useState<NotificationItem[]>([
-    {
-      id: 'notif-1',
-      title: 'Registration Closing Soon',
-      message: 'Registration closes in 48 hours for NEXORA 2K26 Technical Symposium.',
-      type: 'DEADLINE',
-      timestamp: '10 mins ago',
-      isRead: false,
-      link: '/events/nexora-2k26-a-national-level-technical-symposium-20260901-040857-58300'
-    },
-    {
-      id: 'notif-2',
-      title: 'New AI Recommendation',
-      message: 'We discovered 3 new Hackathons matching your Computer Science interests.',
-      type: 'RECOMMENDATION',
-      timestamp: '2 hours ago',
-      isRead: false,
-      link: '/events'
-    },
-    {
-      id: 'notif-3',
-      title: 'Referral Points Credited',
-      message: '+10 ACE Reward Points awarded for successful referral join.',
-      type: 'REWARD',
-      timestamp: '1 day ago',
-      isRead: true,
-      link: '/referral'
-    }
-  ]);
+  const [notifications, setNotifications] = useState<NotificationItem[]>(() => {
+    const dbNotifs = notificationDb.getNotificationsByUser(userId);
+    return dbNotifs.map(n => ({
+      id: n.id,
+      title: n.title,
+      message: n.message,
+      type: n.type as any,
+      timestamp: new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      isRead: n.isRead,
+      link: n.link
+    }));
+  });
 
   useEffect(() => {
-    localStorage.setItem('ace_theme', theme);
+    settingsDb.updatePreferences(userId, { theme });
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('ace_theme', theme);
+    }
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
-  }, [theme]);
+  }, [theme, userId]);
 
   const toggleTheme = () => {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
   };
 
-  useEffect(() => {
-    localStorage.setItem('ace_user_profile', JSON.stringify(user));
-  }, [user]);
-
-  useEffect(() => {
-    localStorage.setItem('ace_saved_events', JSON.stringify(savedEvents));
-  }, [savedEvents]);
-
-  useEffect(() => {
-    localStorage.setItem('ace_liked_events', JSON.stringify(likedEvents));
-  }, [likedEvents]);
-
-  useEffect(() => {
-    localStorage.setItem('ace_registered_events', JSON.stringify(registeredEvents));
-  }, [registeredEvents]);
-
-  useEffect(() => {
-    localStorage.setItem('ace_referrals', JSON.stringify(referralInvitations));
-  }, [referralInvitations]);
-
-  const loadAllEvents = async () => {
+  const loadAllEvents = useCallback(async () => {
     setIsLoadingEvents(true);
     try {
       const data = await fetchEvents();
-      if (data.events.length > 0) {
-        setEvents(data.events);
+      const persistentList = eventPersistenceDb.getPublishedEvents();
+
+      // Merge persistent DB events into feed
+      const mappedPersistent: EventItem[] = persistentList.map((p, idx) => ({
+        identity: `ident-${p.id}`,
+        id: Date.now() + idx,
+        orgIdentity: p.organizerId,
+        title: p.title,
+        slug: p.slug,
+        description: p.description,
+        publishedAt: p.createdAt,
+        createdAt: p.createdAt,
+        updatedAt: p.updatedAt,
+        status: 'APPROVED',
+        bannerImages: p.bannerImage ? [p.bannerImage] : ['https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1200'],
+        mode: p.mode,
+        viewCount: p.registeredCount * 3 + 120,
+        likeCount: p.likeCount,
+        shareCount: 25,
+        isPaid: p.ticketPrice > 0,
+        tags: p.tags,
+        aiQualityScore: p.qualityScore,
+        location: {
+          id: 1,
+          city: p.city,
+          state: p.state,
+          country: 'India',
+          venue: p.venue
+        },
+        org: {
+          identity: p.organizerId,
+          id: 101,
+          organizationName: p.organizerName || p.college,
+          city: p.city,
+          state: p.state,
+          country: 'India',
+          isVerified: true
+        }
+      }));
+
+      const combined = [...mappedPersistent];
+      data.events.forEach(e => {
+        if (!combined.some(c => c.slug === e.slug || c.title.toLowerCase() === e.title.toLowerCase())) {
+          combined.push(e);
+        }
+      });
+
+      if (combined.length > 0) {
+        setEvents(combined);
       }
+    } catch (err) {
+      console.error('[AppContext] Failed to load events:', err);
     } finally {
       setIsLoadingEvents(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadAllEvents();
-  }, []);
+  }, [loadAllEvents]);
 
   const toggleSaveEvent = (slug: string) => {
-    setSavedEvents(prev => prev.includes(slug) ? prev.filter(s => s !== slug) : [...prev, slug]);
+    eventPersistenceDb.toggleSaveEvent(userId, slug);
+    setSavedEvents(eventPersistenceDb.getUserSavedSlugs(userId));
   };
 
   const toggleLikeEvent = (slug: string) => {
-    setLikedEvents(prev => prev.includes(slug) ? prev.filter(s => s !== slug) : [...prev, slug]);
+    eventPersistenceDb.toggleLikeEvent(userId, slug);
+    setLikedEvents(eventPersistenceDb.getUserLikedSlugs(userId));
   };
 
   const registerForEvent = (slug: string) => {
-    if (!registeredEvents.includes(slug)) {
-      setRegisteredEvents(prev => [...prev, slug]);
-    }
+    const evt = events.find(e => e.slug === slug);
+    if (!evt) return;
+
+    eventPersistenceDb.registerUserForEvent({
+      eventId: String(evt.id),
+      eventSlug: evt.slug,
+      eventTitle: evt.title,
+      userId,
+      userName: user.name,
+      userEmail: user.email,
+      userCollege: user.college
+    });
+
+    setRegisteredEvents(eventPersistenceDb.getUserRegistrations(userId).map(r => r.eventSlug));
   };
 
   const sendReferralInvites = (emails: string[]) => {
@@ -163,14 +207,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       status: 'PENDING'
     }));
 
-    setReferralInvitations(prev => [...newInvites, ...prev]);
+    const updated = [...newInvites, ...referralInvitations];
+    setReferralInvitations(updated);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(`ace_referrals_${userId}`, JSON.stringify(updated));
+    }
     setUser(prev => ({
       ...prev,
-      pointsEarned: prev.pointsEarned + emails.length * 2
+      pointsEarned: prev.pointsEarned + emails.length * 20
     }));
   };
 
   const markNotificationAsRead = (id: string) => {
+    notificationDb.markAsRead(id);
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
   };
 
