@@ -137,6 +137,7 @@ import { VerifyPhonePage } from './pages/auth/VerifyPhonePage';
 // Profile Pages
 import { PublicProfilePage } from './pages/profile/PublicProfilePage';
 import { ProfileGalleryPage } from './pages/profile/ProfileGalleryPage';
+import { EditProfilePage } from './pages/profile/EditProfilePage';
 
 // Settings Pages Suite
 import { SettingsLayout } from './pages/settings/SettingsLayout';
@@ -333,6 +334,7 @@ export function App() {
 
                               {/* Live Public & Self Profile Ecosystem */}
                               <Route path="/profile" element={<PublicProfilePage />} />
+                              <Route path="/profile/edit" element={<EditProfilePage />} />
                               <Route path="/profile/:username" element={<PublicProfilePage />} />
                               <Route path="/u/:username" element={<PublicProfilePage />} />
                               <Route path="/profile/gallery" element={<ProfileGalleryPage />} />

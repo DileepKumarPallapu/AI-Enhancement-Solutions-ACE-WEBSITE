@@ -28,6 +28,7 @@ import {
   Image as ImageIcon,
   LogOut,
   LogIn,
+  Edit3,
   UserPlus,
   RefreshCw,
   Award,
@@ -325,6 +326,11 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                           <Link to={`/profile/${currentUser.username}`} onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
                             <User className="w-4 h-4 text-indigo-500" />
                             <span>View Public Profile</span>
+                          </Link>
+
+                          <Link to="/profile/edit" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                            <Edit3 className="w-4 h-4 text-emerald-500" />
+                            <span>Edit Profile Studio</span>
                           </Link>
 
                           <Link to="/settings/profile" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">

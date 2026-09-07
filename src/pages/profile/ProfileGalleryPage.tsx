@@ -1,72 +1,110 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Link } from 'react-router-dom';
-import { Image as ImageIcon, Plus, Trash2, ArrowLeft, Eye, Heart, Sparkles } from 'lucide-react';
+import { Link, useParams } from 'react-router-dom';
+import { accountDb } from '../../services/db/accountDatabase';
+import { GalleryImage } from '../../types/account';
+import {
+  Image as ImageIcon, Plus, Trash2, ArrowLeft, Sparkles, X,
+  ChevronLeft, ChevronRight, Download, UserCheck, ShieldCheck, Check
+} from 'lucide-react';
 
 export const ProfileGalleryPage: React.FC = () => {
-  const { currentUser, deleteGalleryImage, addGalleryImage } = useAuth();
+  const { username } = useParams<{ username?: string }>();
+  const { currentUser, deleteGalleryImage, addGalleryImage, updateProfile, refreshUser } = useAuth();
   const [selectedAlbum, setSelectedAlbum] = useState<string>('all');
   const [showAddModal, setShowAddModal] = useState(false);
   const [newUrl, setNewUrl] = useState('');
   const [newCaption, setNewCaption] = useState('');
   const [newAlbum, setNewAlbum] = useState('Events');
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [toastMsg, setToastMsg] = useState('');
 
-  if (!currentUser) {
-    return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-center p-6">
-        <p className="text-slate-400 mb-4">Please log in to manage your gallery.</p>
-        <Link to="/login" className="px-6 py-2.5 rounded-xl bg-indigo-600 text-white font-medium">Log In</Link>
-      </div>
-    );
-  }
+  // Target user gallery
+  const targetUser = username
+    ? accountDb.getAccountByUsername(username.replace('@', '')) || currentUser
+    : currentUser;
 
-  const gallery = currentUser.gallery || [];
+  const isOwner = currentUser && targetUser && currentUser.id === targetUser.id;
+  const gallery = targetUser ? accountDb.getGalleryImages(targetUser.id) : [];
+
   const filtered = selectedAlbum === 'all'
     ? gallery
     : gallery.filter((img) => (img.albumId || 'Events').toLowerCase() === selectedAlbum.toLowerCase());
 
   const handleAddPhoto = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newUrl.trim()) return;
+    if (!newUrl.trim() || !currentUser) return;
     addGalleryImage({
       url: newUrl.trim(),
-      caption: newCaption.trim() || 'ACE Photo',
+      caption: newCaption.trim() || 'ACE Event Photo',
       albumId: newAlbum,
       visibility: 'PUBLIC'
     });
     setNewUrl('');
     setNewCaption('');
     setShowAddModal(false);
+    setToastMsg('Photo added to your gallery!');
+    setTimeout(() => setToastMsg(''), 3000);
   };
 
+  const handleSetAsAvatar = async (url: string) => {
+    if (!currentUser) return;
+    await updateProfile({ avatarUrl: url });
+    refreshUser();
+    setToastMsg('Profile avatar updated!');
+    setTimeout(() => setToastMsg(''), 3000);
+  };
+
+  const handleSetAsCover = async (url: string) => {
+    if (!currentUser) return;
+    await updateProfile({ coverPhotoUrl: url });
+    refreshUser();
+    setToastMsg('Cover photo updated!');
+    setTimeout(() => setToastMsg(''), 3000);
+  };
+
+  const activeImage = lightboxIndex !== null && filtered[lightboxIndex] ? filtered[lightboxIndex] : null;
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 py-10 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
       <div className="max-w-6xl mx-auto space-y-8">
-        
+        {/* Toast Notification */}
+        {toastMsg && (
+          <div className="fixed top-6 right-6 z-50 p-4 rounded-2xl bg-emerald-600 text-white shadow-xl flex items-center gap-2 text-sm font-semibold animate-fade-in">
+            <Check className="w-4 h-4" /> {toastMsg}
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <Link to="/profile" className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 font-medium mb-2">
-              <ArrowLeft className="w-3.5 h-3.5" /> Back to Profile
+            <Link
+              to={targetUser ? `/profile/@${targetUser.username}` : '/profile'}
+              className="inline-flex items-center gap-1.5 text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-semibold mb-2"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" /> Back to @{targetUser?.username || 'Profile'}
             </Link>
-            <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
-              <ImageIcon className="w-8 h-8 text-indigo-400" />
+            <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+              <ImageIcon className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
               Photo Studio & Gallery
             </h1>
-            <p className="text-slate-400 text-sm">
-              Showcase your event memories, hackathons, campus presentations, and certifications.
+            <p className="text-slate-500 dark:text-slate-400 text-sm">
+              Showcasing campus presentations, hackathon wins, team collaborations, and event highlights.
             </p>
           </div>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium hover:from-indigo-600 hover:to-purple-700 shadow-lg shadow-indigo-500/25 transition"
-          >
-            <Plus className="w-5 h-5" /> Add New Photo
-          </button>
+
+          {isOwner && (
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm shadow-lg shadow-indigo-600/25 transition"
+            >
+              <Plus className="w-4 h-4" /> Add New Photo
+            </button>
+          )}
         </div>
 
         {/* Album Filters */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-800">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-200 dark:border-slate-800">
           {['all', 'Events', 'Hackathons', 'Campus', 'Projects', 'Awards'].map((album) => (
             <button
               key={album}
@@ -74,7 +112,7 @@ export const ProfileGalleryPage: React.FC = () => {
               className={`px-4 py-2 rounded-xl text-xs font-semibold capitalize transition ${
                 selectedAlbum === album
                   ? 'bg-indigo-600 text-white shadow-md'
-                  : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
+                  : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
               {album}
@@ -84,115 +122,210 @@ export const ProfileGalleryPage: React.FC = () => {
 
         {/* Gallery Grid */}
         {filtered.length === 0 ? (
-          <div className="p-12 text-center bg-slate-900/40 border border-slate-800 rounded-3xl space-y-4">
-            <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto">
+          <div className="p-12 text-center bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-3xl space-y-4 shadow-sm">
+            <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto">
               <Sparkles className="w-8 h-8" />
             </div>
-            <h3 className="text-lg font-bold text-white">No photos in this album</h3>
-            <p className="text-sm text-slate-400 max-w-sm mx-auto">
-              Upload photos from your recent workshops, project demos, or campus gatherings.
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">No photos in this album</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+              {isOwner
+                ? 'Upload photos from your recent workshops, project demos, or campus gatherings.'
+                : 'This user has not uploaded any photos in this category yet.'}
             </p>
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-medium"
-            >
-              Upload Photo
-            </button>
+            {isOwner && (
+              <button
+                onClick={() => setShowAddModal(true)}
+                className="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 transition"
+              >
+                Upload Photo
+              </button>
+            )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filtered.map((item) => (
-              <div key={item.id} className="group relative bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl flex flex-col">
-                <div className="relative aspect-video w-full overflow-hidden bg-slate-950">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {filtered.map((img, idx) => (
+              <div
+                key={img.id}
+                className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition"
+              >
+                <div
+                  onClick={() => setLightboxIndex(idx)}
+                  className="relative h-48 w-full cursor-pointer overflow-hidden bg-slate-100 dark:bg-slate-800"
+                >
                   <img
-                    src={item.url}
-                    alt={item.caption}
+                    src={img.thumbnailUrl || img.url}
+                    alt={img.caption}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   />
-                  <div className="absolute top-2 right-2">
-                    <button
-                      onClick={() => deleteGalleryImage(item.id)}
-                      className="p-1.5 rounded-lg bg-slate-900/80 text-rose-400 hover:bg-rose-500 hover:text-white backdrop-blur-md transition shadow"
-                      title="Delete Photo"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition flex items-end p-3">
+                    <p className="text-xs text-white font-medium line-clamp-2">{img.caption}</p>
                   </div>
                 </div>
-                <div className="p-4 flex-1 flex flex-col justify-between space-y-2">
-                  <p className="text-sm font-medium text-white truncate">{item.caption}</p>
-                  <div className="flex items-center justify-between text-[11px] text-slate-500 font-mono">
-                    <span className="px-2 py-0.5 rounded-md bg-slate-800 text-indigo-400">{item.albumId}</span>
-                    <span>{item.visibility}</span>
-                  </div>
+
+                <div className="p-3 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/80">
+                  <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                    {img.albumId || 'Events'}
+                  </span>
+
+                  {isOwner && (
+                    <button
+                      onClick={() => deleteGalleryImage(img.id)}
+                      className="p-1 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition"
+                      title="Delete photo"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
           </div>
         )}
 
-      </div>
+        {/* Lightbox Modal */}
+        {activeImage && lightboxIndex !== null && (
+          <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
+            <button
+              onClick={() => setLightboxIndex(null)}
+              className="absolute top-6 right-6 p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition z-10"
+            >
+              <X className="w-6 h-6" />
+            </button>
 
-      {/* Add Photo Modal */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
-            <h3 className="text-xl font-bold text-white">Add Photo to Gallery</h3>
-            <form onSubmit={handleAddPhoto} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Image URL</label>
-                <input
-                  type="url"
-                  required
-                  placeholder="https://images.unsplash.com/..."
-                  value={newUrl}
-                  onChange={(e) => setNewUrl(e.target.value)}
-                  className="w-full py-2.5 px-3.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
+            {/* Prev Button */}
+            {lightboxIndex > 0 && (
+              <button
+                onClick={() => setLightboxIndex(lightboxIndex - 1)}
+                className="absolute left-6 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition z-10 hidden sm:block"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+            )}
+
+            {/* Next Button */}
+            {lightboxIndex < filtered.length - 1 && (
+              <button
+                onClick={() => setLightboxIndex(lightboxIndex + 1)}
+                className="absolute right-6 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition z-10 hidden sm:block"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            )}
+
+            <div className="max-w-4xl w-full max-h-[85vh] flex flex-col items-center">
+              <img
+                src={activeImage.url}
+                alt={activeImage.caption}
+                className="max-h-[65vh] w-auto max-w-full object-contain rounded-2xl shadow-2xl mb-4"
+              />
+
+              <div className="bg-slate-900/90 border border-white/10 rounded-2xl p-4 w-full text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                  <h4 className="font-bold text-sm">{activeImage.caption}</h4>
+                  <div className="text-xs text-slate-400 mt-0.5">Album: {activeImage.albumId || 'Events'}</div>
+                </div>
+
+                {isOwner && (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleSetAsAvatar(activeImage.url)}
+                      className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-xs font-semibold text-white transition flex items-center gap-1.5"
+                    >
+                      <UserCheck className="w-3.5 h-3.5" /> Set as Avatar
+                    </button>
+                    <button
+                      onClick={() => handleSetAsCover(activeImage.url)}
+                      className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-white/10 text-xs font-semibold text-white transition flex items-center gap-1.5"
+                    >
+                      <ImageIcon className="w-3.5 h-3.5" /> Set as Cover
+                    </button>
+                  </div>
+                )}
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Caption / Title</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Winner at Hackathon 2026"
-                  value={newCaption}
-                  onChange={(e) => setNewCaption(e.target.value)}
-                  className="w-full py-2.5 px-3.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Album</label>
-                <select
-                  value={newAlbum}
-                  onChange={(e) => setNewAlbum(e.target.value)}
-                  className="w-full py-2.5 px-3.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                >
-                  <option value="Events">Events</option>
-                  <option value="Hackathons">Hackathons</option>
-                  <option value="Campus">Campus</option>
-                  <option value="Projects">Projects</option>
-                  <option value="Awards">Awards</option>
-                </select>
-              </div>
-              <div className="flex items-center gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowAddModal(false)}
-                  className="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-sm transition"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition"
-                >
-                  Save Photo
-                </button>
-              </div>
-            </form>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Add Photo Modal */}
+        {showAddModal && (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                <h3 className="font-bold text-base text-slate-900 dark:text-white">Add Photo to Gallery</h3>
+                <button
+                  onClick={() => setShowAddModal(false)}
+                  className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <form onSubmit={handleAddPhoto} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                    Image Direct URL
+                  </label>
+                  <input
+                    type="url"
+                    required
+                    value={newUrl}
+                    onChange={e => setNewUrl(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-mono"
+                    placeholder="https://images.unsplash.com/..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                    Caption / Description
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={newCaption}
+                    onChange={e => setNewCaption(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-sm"
+                    placeholder="e.g., Presenting our AI platform at Hackfest 2026"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                    Album Category
+                  </label>
+                  <select
+                    value={newAlbum}
+                    onChange={e => setNewAlbum(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-sm"
+                  >
+                    <option value="Events">Events</option>
+                    <option value="Hackathons">Hackathons</option>
+                    <option value="Campus">Campus</option>
+                    <option value="Projects">Projects</option>
+                    <option value="Awards">Awards</option>
+                  </select>
+                </div>
+
+                <div className="pt-2 flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddModal(false)}
+                    className="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-md shadow-indigo-600/20 transition"
+                  >
+                    Save Photo
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
