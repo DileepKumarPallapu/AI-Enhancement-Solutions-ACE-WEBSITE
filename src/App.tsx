@@ -1,3 +1,6 @@
+// ACE 160X Universal Dashboard Hub & Multi-Workspace OS
+import { UniversalWorkspaceHubPage } from './pages/workspaces/UniversalWorkspaceHubPage';
+import { AdminWorkspaceManagementPage } from './pages/admin/AdminWorkspaceManagementPage';
 // ACE 150X The Ultimate ACE Super Platform
 import { UniversalHomePage } from './pages/home/UniversalHomePage';
 import { UniversalCommandCenterPage } from './pages/command/UniversalCommandCenterPage';
@@ -719,6 +722,10 @@ export function App() {
                                 <Route path="/projects/lab" element={<StudentProjectLabPage />} />
                                 <Route path="/activity" element={<UniversalActivityCenterPage />} />
                                 <Route path="/admin/ai/usage" element={<RequireRole allowedRoles={['ADMIN']}><AICostCenterPage /></RequireRole>} />
+
+                                                                {/* ACE 160X Universal Dashboard Hub & Multi-Workspace OS */}
+                                <Route path="/workspaces" element={<UniversalWorkspaceHubPage />} />
+                                <Route path="/admin/workspaces" element={<RequireRole allowedRoles={['ADMIN', 'SUPER_ADMIN']}><AdminWorkspaceManagementPage /></RequireRole>} />
 
                                 {/* Catch-all 404 handler */}
                               <Route path="*" element={<NotFoundPage />} />

@@ -581,6 +581,30 @@ export const ENTITY_COVERAGE_INVENTORY: EntityCoverageItem[] = [
     allowedRoles: ['ADMIN'],
     capabilities: { create: false, read: true, update: true, deleteOrArchive: false, export: true },
     coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-universal-workspace-hub-160x',
+    entityName: 'Universal Workspace Hub & Multi-Dashboard OS (160X)',
+    category: 'CORE_IDENTITY',
+    databaseService: 'universalWorkspaceDatabase.ts',
+    primaryApiRoute: '/api/v1/workspaces',
+    frontendRoute: '/workspaces',
+    frontendComponent: 'UniversalWorkspaceHubPage.tsx',
+    allowedRoles: ['ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: true, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-admin-workspace-governance-160x',
+    entityName: 'Admin Workspace Governance & Role Provisioning (160X)',
+    category: 'SECURITY_TRUST',
+    databaseService: 'universalWorkspaceDatabase.ts',
+    primaryApiRoute: '/api/v1/admin/workspaces',
+    frontendRoute: '/admin/workspaces',
+    frontendComponent: 'AdminWorkspaceManagementPage.tsx',
+    allowedRoles: ['ADMIN'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: true, export: true },
+    coverageStatus: 'FULL_COVERAGE'
   }
 ];
 

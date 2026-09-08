@@ -4,7 +4,10 @@ export type AccountRole =
   | 'ORGANIZER'
   | 'ADMIN'
   | 'COLLEGE'
-  | 'MENTOR';
+  | 'MENTOR'
+  | 'RECRUITER'
+  | 'JUDGE'
+  | 'SUPER_ADMIN';
 
 export type AccountStatus = 
   | 'ACTIVE'

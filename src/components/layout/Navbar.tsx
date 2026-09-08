@@ -114,6 +114,9 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                 <Link to="/events" className={navItemClass('/events')}>
                   Discover
                 </Link>
+                <Link to="/workspaces" className={navItemClass('/workspaces')}>
+                  💼 Workspaces
+                </Link>
                 <Link to="/campus" className={navItemClass('/campus')}>
                   🏫 Campus
                 </Link>
@@ -380,6 +383,17 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                             {activeRole === ws.role && <Check className="w-4 h-4 flex-shrink-0" />}
                           </button>
                         ))}
+                      </div>
+
+                      <div className="mt-2.5 pt-2.5 border-t border-slate-100 dark:border-slate-800">
+                        <Link
+                          to="/workspaces"
+                          onClick={() => setShowWorkspaceSwitcher(false)}
+                          className="flex items-center justify-center gap-1.5 w-full py-2 px-3 bg-purple-50 dark:bg-purple-950/50 hover:bg-purple-100 dark:hover:bg-purple-900/50 text-purple-600 dark:text-purple-400 font-bold text-xs rounded-xl transition-colors"
+                        >
+                          <Layers className="w-3.5 h-3.5" />
+                          <span>Open All Workspaces Hub →</span>
+                        </Link>
                       </div>
                     </div>
                   )}
