@@ -42,6 +42,8 @@ import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
 import { BRAND } from '../../config/brand';
 import { CommandPalette } from '../common/CommandPalette';
+import { DemoModeBanner } from '../common/DemoModeBanner';
+import { demoModeDatabase } from '../../services/db/demoModeDatabase';
 import { AccountRole } from '../../types/account';
 
 export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat }) => {
@@ -91,6 +93,7 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
 
   return (
     <>
+      <DemoModeBanner />
       <header className={`sticky top-0 z-40 w-full transition-all duration-300 ${
         isScrolled 
           ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-xs border-b border-slate-200/80 dark:border-slate-800' 
@@ -400,6 +403,18 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                 </div>
               )}
 
+                            {/* Demo Mode 13-Dashboard Quick Switcher */}
+              <div className="relative hidden xl:block">
+                <Link
+                  to="/demo"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-purple-100 dark:bg-purple-950/60 border border-purple-300 dark:border-purple-800 text-purple-800 dark:text-purple-300 text-xs font-black hover:bg-purple-200 dark:hover:bg-purple-900 transition shadow-2xs"
+                  title="Hackathon Demo 13-Step Tour & Dashboard Hub"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                  <span>⚡ DEMO TOUR</span>
+                </Link>
+              </div>
+
               {/* Search Trigger */}
               <button
                 onClick={() => setIsCommandOpen(true)}
@@ -553,6 +568,14 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                             Account & Profile
                           </div>
 
+                          <Link to="/profile/me" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-indigo-950/40 rounded-xl font-bold transition-colors">
+                            <User className="w-4 h-4 text-indigo-500" />
+                            <span>My Profile & Workspaces</span>
+                          </Link>
+                          <Link to="/demo" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-purple-600 dark:text-purple-400 bg-purple-50/70 dark:bg-purple-950/40 rounded-xl font-bold transition-colors">
+                            <Sparkles className="w-4 h-4 text-purple-500" />
+                            <span>⚡ Presentation & 13-Step Tour</span>
+                          </Link>
                           <Link to={`/profile/@${currentUser.username}`} onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
                             <User className="w-4 h-4 text-indigo-500" />
                             <span>View Public Profile</span>

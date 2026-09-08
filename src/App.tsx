@@ -1,3 +1,6 @@
+// ACE Hackathon Demo Mode & Presentation
+import { HackathonDemoPresentationPage } from './pages/demo/HackathonDemoPresentationPage';
+import { MyProfilePage } from './pages/profile/MyProfilePage';
 // ACE 160X Universal Dashboard Hub & Multi-Workspace OS
 import { UniversalWorkspaceHubPage } from './pages/workspaces/UniversalWorkspaceHubPage';
 import { AdminWorkspaceManagementPage } from './pages/admin/AdminWorkspaceManagementPage';
@@ -723,7 +726,11 @@ export function App() {
                                 <Route path="/activity" element={<UniversalActivityCenterPage />} />
                                 <Route path="/admin/ai/usage" element={<RequireRole allowedRoles={['ADMIN']}><AICostCenterPage /></RequireRole>} />
 
-                                                                {/* ACE 160X Universal Dashboard Hub & Multi-Workspace OS */}
+                                                                {/* ACE Hackathon Demo Mode & Dedicated Profile */}
+                                <Route path="/demo" element={<HackathonDemoPresentationPage />} />
+                                <Route path="/profile/me" element={<MyProfilePage />} />
+
+                                {/* ACE 160X Universal Dashboard Hub & Multi-Workspace OS */}
                                 <Route path="/workspaces" element={<UniversalWorkspaceHubPage />} />
                                 <Route path="/admin/workspaces" element={<RequireRole allowedRoles={['ADMIN', 'SUPER_ADMIN']}><AdminWorkspaceManagementPage /></RequireRole>} />
 

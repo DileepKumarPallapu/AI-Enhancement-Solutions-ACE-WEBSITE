@@ -3,6 +3,7 @@ import { Navigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { AccountRole } from '../../types/account';
 import { ShieldAlert, ArrowLeft, Award, GraduationCap, Building2 } from 'lucide-react';
+import { demoModeDatabase } from '../../services/db/demoModeDatabase';
 
 interface RequireRoleProps {
   allowedRoles: AccountRole[];
@@ -16,8 +17,8 @@ export const RequireRole: React.FC<RequireRoleProps> = ({ allowedRoles, children
     return <Navigate to="/login" replace />;
   }
 
-  // Check if current user possesses any of the allowed roles (or is Admin)
-  const isAuthorized = allowedRoles.some(r => hasRoleAccess(r)) || currentUser.role === 'ADMIN' || (currentUser.roles && currentUser.roles.includes('ADMIN'));
+  // Check if current user possesses any of the allowed roles, is Admin, or Demo Mode is active
+  const isAuthorized = demoModeDatabase.isDemoMode() || allowedRoles.some(r => hasRoleAccess(r)) || currentUser.role === 'ADMIN' || (currentUser.roles && currentUser.roles.includes('ADMIN'));
 
   if (!isAuthorized) {
     const roleLabels: Record<string, string> = {
