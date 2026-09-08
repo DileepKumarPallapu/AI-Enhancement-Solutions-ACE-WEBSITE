@@ -114,6 +114,9 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                 <Link to="/events" className={navItemClass('/events')}>
                   Discover
                 </Link>
+                <Link to="/campus" className={navItemClass('/campus')}>
+                  🏫 Campus
+                </Link>
                 <Link to="/hackathons" className={navItemClass('/hackathons')}>
                   Hackathons
                 </Link>
@@ -142,6 +145,21 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
 
                   {showMoreMenu && (
                     <div className="absolute left-0 top-full mt-2 w-72 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-2 z-50 animate-scaleUp max-h-96 overflow-y-auto">
+                      <Link to="/campus" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🏫 Campus Feed & Announcements (90X)</span>
+                      </Link>
+                      <Link to="/connections" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>👥 Student Network & Connections</span>
+                      </Link>
+                      <Link to="/messages" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>💬 Direct & Channel Messaging 2.0</span>
+                      </Link>
+                      <Link to="/deadlines" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>⏰ Unified Campus Deadlines</span>
+                      </Link>
+                      <Link to="/safety" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🛡️ Student Safety & Trust Center</span>
+                      </Link>
                       <Link to="/student" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
                         <span>🚀 Student Home</span>
                       </Link>

@@ -1,3 +1,11 @@
+// ACE 90X Student Life, Campus Network, Social & Collaboration OS
+import { CampusFeedPage } from './pages/campus/CampusFeedPage';
+import { StudentConnectionsPage } from './pages/network/StudentConnectionsPage';
+import { DirectMessagesPage } from './pages/messages/DirectMessagesPage';
+import { StudentSafetyCenterPage } from './pages/safety/StudentSafetyCenterPage';
+import { ModerationReportCenterPage } from './pages/reports/ModerationReportCenterPage';
+import { CampusDeadlineCenterPage } from './pages/deadlines/CampusDeadlineCenterPage';
+
 // ACE 80X Digital Student Passport, Credentials & Portfolio Ecosystem
 import { DigitalStudentPassportPage } from './pages/passport/DigitalStudentPassportPage';
 import { CredentialWalletPage } from './pages/passport/CredentialWalletPage';
@@ -618,6 +626,14 @@ export function App() {
                                 <Route path="/student/resume" element={<ATSResumeBuilderPage />} />
                                 <Route path="/student/portfolio" element={<PortfolioBuilderPage />} />
                                 <Route path="/student/privacy" element={<StudentPrivacyCenterPage />} />
+
+                                {/* ACE 90X Student Life, Campus Network, Social & Collaboration OS */}
+                                <Route path="/campus" element={<CampusFeedPage />} />
+                                <Route path="/connections" element={<StudentConnectionsPage />} />
+                                <Route path="/messages" element={<DirectMessagesPage />} />
+                                <Route path="/safety" element={<StudentSafetyCenterPage />} />
+                                <Route path="/reports" element={<ModerationReportCenterPage />} />
+                                <Route path="/deadlines" element={<CampusDeadlineCenterPage />} />
 
 
 

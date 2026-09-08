@@ -245,6 +245,66 @@ export const ENTITY_COVERAGE_INVENTORY: EntityCoverageItem[] = [
     allowedRoles: ['ADMIN', 'ALL'],
     capabilities: { create: true, read: true, update: true, deleteOrArchive: true, export: true },
     coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-campus-feed-90x',
+    entityName: 'Campus Scoped Feed & Announcements',
+    category: 'ACADEMIC_COLLEGE',
+    databaseService: 'campusFeedDatabase.ts',
+    primaryApiRoute: '/api/v1/campus/feed',
+    frontendRoute: '/campus',
+    frontendComponent: 'CampusFeedPage.tsx',
+    allowedRoles: ['ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: false, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-student-network-90x',
+    entityName: 'Student Networking, Connections & Recommendations',
+    category: 'CORE_IDENTITY',
+    databaseService: 'socialNetworkDatabase.ts',
+    primaryApiRoute: '/api/v1/network/connections',
+    frontendRoute: '/connections',
+    frontendComponent: 'StudentConnectionsPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: true, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-direct-messaging-90x',
+    entityName: 'Direct, Mentor & Team Channels Messaging 2.0',
+    category: 'CORE_IDENTITY',
+    databaseService: 'directMessagingDatabase.ts',
+    primaryApiRoute: '/api/v1/messages',
+    frontendRoute: '/messages',
+    frontendComponent: 'DirectMessagesPage.tsx',
+    allowedRoles: ['STUDENT', 'MENTOR', 'ORGANIZER', 'ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: true, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-student-safety-90x',
+    entityName: 'Student Safety Center, Blocked Accounts & GDPR Export',
+    category: 'SECURITY_TRUST',
+    databaseService: 'studentSafetyDatabase.ts',
+    primaryApiRoute: '/api/v1/safety / /api/v1/reports',
+    frontendRoute: '/safety',
+    frontendComponent: 'StudentSafetyCenterPage.tsx / ModerationReportCenterPage.tsx',
+    allowedRoles: ['ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: true, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-campus-deadlines-90x',
+    entityName: 'Unified Campus Deadlines & Milestones Tracker',
+    category: 'COMPETITIONS_EVENTS',
+    databaseService: 'campusDeadlinesDatabase.ts',
+    primaryApiRoute: '/api/v1/deadlines',
+    frontendRoute: '/deadlines',
+    frontendComponent: 'CampusDeadlineCenterPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: false, export: true },
+    coverageStatus: 'FULL_COVERAGE'
   }
 ];
 
