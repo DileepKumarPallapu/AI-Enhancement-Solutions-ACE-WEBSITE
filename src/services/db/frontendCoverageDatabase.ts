@@ -365,6 +365,66 @@ export const ENTITY_COVERAGE_INVENTORY: EntityCoverageItem[] = [
     allowedRoles: ['STUDENT', 'ALL'],
     capabilities: { create: true, read: true, update: true, deleteOrArchive: true, export: true },
     coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-global-opp-exchange-110x',
+    entityName: 'Global Opportunity Exchange & Multi-Currency Engine',
+    category: 'COMPETITIONS_EVENTS',
+    databaseService: 'globalOpportunityExchangeDatabase.ts',
+    primaryApiRoute: '/api/v1/opportunities',
+    frontendRoute: '/opportunities',
+    frontendComponent: 'GlobalOpportunityExchangePage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: true, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-global-deadlines-110x',
+    entityName: 'Global Opportunities Deadline Center & Urgency Buckets',
+    category: 'COMPETITIONS_EVENTS',
+    databaseService: 'globalOpportunityExchangeDatabase.ts',
+    primaryApiRoute: '/api/v1/opportunities/deadlines',
+    frontendRoute: '/opportunities/deadlines',
+    frontendComponent: 'GlobalOpportunityDeadlinesPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: false, read: true, update: true, deleteOrArchive: false, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-opportunity-compare-110x',
+    entityName: 'Side-by-Side Opportunity Analyzer & Comparison Hub',
+    category: 'COMPETITIONS_EVENTS',
+    databaseService: 'globalOpportunityExchangeDatabase.ts',
+    primaryApiRoute: '/api/v1/opportunities/compare',
+    frontendRoute: '/opportunities/compare',
+    frontendComponent: 'OpportunityComparisonPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: false, read: true, update: false, deleteOrArchive: false, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-marketplace-billing-110x',
+    entityName: 'Marketplace Billing, Invoices & Auditable Refunds',
+    category: 'FINANCIAL_WALLET',
+    databaseService: 'marketplaceBillingDatabase.ts',
+    primaryApiRoute: '/api/v1/billing',
+    frontendRoute: '/billing',
+    frontendComponent: 'GlobalMarketplaceBillingPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: false, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-ai-global-opportunities-110x',
+    entityName: 'Ask ACE Global Opportunity Assistant & Eligibility Reviewer',
+    category: 'CAREER_PLACEMENT',
+    databaseService: 'aiGlobalOpportunityAssistantDatabase.ts',
+    primaryApiRoute: '/api/v1/ai/global-opportunities',
+    frontendRoute: '/ai/global-opportunities',
+    frontendComponent: 'AIGlobalOpportunityAssistantPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: true, read: true, update: false, deleteOrArchive: false, export: false },
+    coverageStatus: 'FULL_COVERAGE'
   }
 ];
 

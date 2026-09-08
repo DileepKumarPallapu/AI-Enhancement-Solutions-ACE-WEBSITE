@@ -157,6 +157,33 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                       <Link to="/interview/ai-coach" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
                         <span>💼 AI Interview Simulator</span>
                       </Link>
+                      <Link to="/opportunities" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🌐 Global Opportunity Exchange (110X)</span>
+                      </Link>
+                      <Link to="/opportunities/deadlines" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>⏰ Global Deadlines Tracker</span>
+                      </Link>
+                      <Link to="/opportunities/compare" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>⚖️ Opportunity Comparison Hub</span>
+                      </Link>
+                      <Link to="/scholarships" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🎓 Scholarships & Grants</span>
+                      </Link>
+                      <Link to="/research" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🔬 Research & Innovation Labs</span>
+                      </Link>
+                      <Link to="/partners/marketplace" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🤝 Global Partner Marketplace</span>
+                      </Link>
+                      <Link to="/billing" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🧾 Billing & Invoices</span>
+                      </Link>
+                      <Link to="/subscriptions" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>✨ Subscriptions Ecosystem</span>
+                      </Link>
+                      <Link to="/ai/global-opportunities" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-yellow-600 dark:text-yellow-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🤖 Ask ACE Global Assistant</span>
+                      </Link>
                       <Link to="/campus" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
                         <span>🏫 Campus Feed & Announcements</span>
                       </Link>

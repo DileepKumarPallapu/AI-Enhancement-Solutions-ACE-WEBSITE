@@ -1,3 +1,15 @@
+// ACE 110X Global Opportunity Exchange & Multi-Currency Platform
+import { GlobalOpportunityExchangePage } from './pages/opportunities/GlobalOpportunityExchangePage';
+import { GlobalOpportunityDeadlinesPage } from './pages/opportunities/GlobalOpportunityDeadlinesPage';
+import { OpportunityComparisonPage } from './pages/opportunities/OpportunityComparisonPage';
+import { ResearchOpportunityPage } from './pages/opportunities/ResearchOpportunityPage';
+import { ScholarshipOpportunityPage } from './pages/opportunities/ScholarshipOpportunityPage';
+import { FellowshipOpportunityPage } from './pages/opportunities/FellowshipOpportunityPage';
+import { VolunteeringOpportunityPage } from './pages/opportunities/VolunteeringOpportunityPage';
+import { GlobalPartnerMarketplacePage } from './pages/partners/GlobalPartnerMarketplacePage';
+import { GlobalMarketplaceBillingPage } from './pages/marketplace/GlobalMarketplaceBillingPage';
+import { GlobalSubscriptionsPage } from './pages/marketplace/GlobalSubscriptionsPage';
+import { AIGlobalOpportunityAssistantPage } from './pages/ai/AIGlobalOpportunityAssistantPage';
 // ACE 100X AI-Native Student Success Engine
 import { AICommandCenterHubPage } from './pages/ai/AICommandCenterHubPage';
 import { AIMemoryCenterPage } from './pages/ai/AIMemoryCenterPage';
@@ -559,7 +571,18 @@ export function App() {
 
                                                                 {/* ACE 20X Global Student Super Platform */}
                                 <Route path="/search" element={<SuperSearchPage />} />
-                                <Route path="/opportunities" element={<OpportunityMarketplacePage />} />
+                                {/* ACE 110X Global Opportunity Exchange & Multi-Currency Ecosystem */}
+                                <Route path="/opportunities" element={<GlobalOpportunityExchangePage />} />
+                                <Route path="/opportunities/deadlines" element={<GlobalOpportunityDeadlinesPage />} />
+                                <Route path="/opportunities/compare" element={<OpportunityComparisonPage />} />
+                                <Route path="/research" element={<ResearchOpportunityPage />} />
+                                <Route path="/scholarships" element={<ScholarshipOpportunityPage />} />
+                                <Route path="/fellowships" element={<FellowshipOpportunityPage />} />
+                                <Route path="/volunteering" element={<VolunteeringOpportunityPage />} />
+                                <Route path="/partners/marketplace" element={<GlobalPartnerMarketplacePage />} />
+                                <Route path="/billing" element={<GlobalMarketplaceBillingPage />} />
+                                <Route path="/subscriptions" element={<GlobalSubscriptionsPage />} />
+                                <Route path="/ai/global-opportunities" element={<AIGlobalOpportunityAssistantPage />} />
                                 <Route path="/passport/:username" element={<PublicPassportPage />} />
                                 <Route path="/verify/:credentialId" element={<PublicVerifyCredentialPage />} />
                                 <Route path="/career/copilot" element={<CareerCopilotPage />} />
