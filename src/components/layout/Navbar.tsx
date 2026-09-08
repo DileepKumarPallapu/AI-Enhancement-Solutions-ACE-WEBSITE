@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Compass, 
@@ -36,13 +36,23 @@ import {
   Users,
   Briefcase,
   Building2,
-  Check
+  Check,
+  MessageSquare,
+  HelpCircle,
+  Activity,
+  Code2,
+  FileText,
+  Calendar,
+  Zap,
+  Globe,
+  DollarSign,
+  ChevronRight,
+  Shield
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
 import { BRAND } from '../../config/brand';
 import { CommandPalette } from '../common/CommandPalette';
-import { DemoModeBanner } from '../common/DemoModeBanner';
 import { demoModeDatabase } from '../../services/db/demoModeDatabase';
 import { AccountRole } from '../../types/account';
 
@@ -51,13 +61,36 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
   const { currentUser, activeRole, availableWorkspaces, switchWorkspace, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
+  const [mobileProfileOpen, setMobileProfileOpen] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [showWorkspaceSwitcher, setShowWorkspaceSwitcher] = useState(false);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
+
+  const profileMenuRef = useRef<HTMLDivElement>(null);
+  const moreMenuRef = useRef<HTMLDivElement>(null);
+  const workspaceSwitcherRef = useRef<HTMLDivElement>(null);
+
+  // Close menus on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (profileMenuRef.current && !profileMenuRef.current.contains(target)) {
+        setShowProfileMenu(false);
+      }
+      if (moreMenuRef.current && !moreMenuRef.current.contains(target)) {
+        setShowMoreMenu(false);
+      }
+      if (workspaceSwitcherRef.current && !workspaceSwitcherRef.current.contains(target)) {
+        setShowWorkspaceSwitcher(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,11 +101,11 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
   }, []);
 
   const closeAll = () => {
-    setShowNotifications(false);
     setShowProfileMenu(false);
     setShowMoreMenu(false);
     setShowWorkspaceSwitcher(false);
     setMobileMenuOpen(false);
+    setMobileProfileOpen(false);
   };
 
   const handleLogout = () => {
@@ -82,38 +115,54 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
   };
 
   const navItemClass = (path: string) => `
-    flex items-center gap-1 px-2.5 py-1.5 text-xs lg:text-sm font-semibold rounded-xl transition-all whitespace-nowrap
-    ${location.pathname === path 
-      ? 'text-brand-600 bg-brand-50/80 dark:bg-purple-950/50 font-bold' 
-      : 'text-slate-700 dark:text-slate-300 hover:text-brand-600 hover:bg-slate-50 dark:hover:bg-slate-800'}
+    flex items-center gap-1 px-2 py-1.5 text-xs font-semibold rounded-lg transition-all whitespace-nowrap
+    ${location.pathname === path || (path !== '/' && location.pathname.startsWith(path))
+      ? 'text-purple-600 dark:text-purple-400 bg-purple-50/90 dark:bg-purple-950/60 font-bold shadow-2xs' 
+      : 'text-slate-700 dark:text-slate-200 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-slate-100/80 dark:hover:bg-slate-800/80'}
   `;
 
-  // Find active workspace object
-  const currentWorkspace = availableWorkspaces.find(w => w.role === activeRole) || availableWorkspaces[0];
+  // 13 canonical workspaces list
+  const all13Workspaces = [
+    { role: 'STUDENT' as AccountRole, label: 'Student', path: '/student/dashboard', icon: '🎓', desc: 'Opportunity & Career OS' },
+    { role: 'COLLEGE_AMBASSADOR' as AccountRole, label: 'Campus Ambassador', path: '/ambassador/dashboard', icon: '📣', desc: 'Outreach & Event Approvals' },
+    { role: 'MENTOR' as AccountRole, label: 'Faculty Mentor', path: '/mentor/dashboard', icon: '👨‍🏫', desc: 'Sprint Reviews & Guidance' },
+    { role: 'MENTOR' as AccountRole, label: 'Mentor', path: '/mentor/dashboard', icon: '🧭', desc: 'Industry Mentorship' },
+    { role: 'ORGANIZER' as AccountRole, label: 'Organizer', path: '/organizer/dashboard', icon: '🎫', desc: 'Event Command & Check-in' },
+    { role: 'COLLEGE' as AccountRole, label: 'College Directorate', path: '/college/dashboard', icon: '🏫', desc: 'Department Governance' },
+    { role: 'RECRUITER' as AccountRole, label: 'Recruiter Hub', path: '/recruiter/dashboard', icon: '💼', desc: 'Verified Talent Radar' },
+    { role: 'JUDGE' as AccountRole, label: 'Judge Arena', path: '/judge/dashboard', icon: '⚖️', desc: 'Evaluation & Rubrics' },
+    { role: 'STUDENT' as AccountRole, label: 'Placement Cell', path: '/placement', icon: '📊', desc: 'Hiring Drives & Stats' },
+    { role: 'STUDENT' as AccountRole, label: 'Club / Chapter', path: '/college/clubs', icon: '👥', desc: 'Student Chapters' },
+    { role: 'STUDENT' as AccountRole, label: 'Training Provider', path: '/provider', icon: '📚', desc: 'Courses & Cohorts' },
+    { role: 'STUDENT' as AccountRole, label: 'Partner Network', path: '/partners', icon: '🤝', desc: 'Sponsorships & Grants' },
+    { role: 'ADMIN' as AccountRole, label: 'Platform Superadmin', path: '/admin/dashboard', icon: '🛡️', desc: 'Security & Operations' }
+  ];
+
+  const currentWorkspaceItem = all13Workspaces.find(w => w.role === activeRole) || all13Workspaces[0];
+  const isDemo = demoModeDatabase.isDemoMode();
 
   return (
     <>
-      <DemoModeBanner />
-      <header className={`sticky top-0 z-40 w-full transition-all duration-300 ${
+      <header className={`sticky top-0 z-50 w-full transition-all duration-200 border-b ${
         isScrolled 
-          ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-xs border-b border-slate-200/80 dark:border-slate-800' 
-          : 'bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800'
+          ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-xs border-slate-200/90 dark:border-slate-800' 
+          : 'bg-white dark:bg-slate-900 border-slate-200/60 dark:border-slate-800'
       }`}>
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14 sm:h-16 gap-2">
+          <div className="flex items-center h-14 sm:h-16 gap-2">
             
-            {/* Left: Brand Logo & Desktop Nav Links */}
-            <div className="flex items-center gap-3 lg:gap-6">
-              <Link to="/" onClick={closeAll} className="flex items-center gap-2 group flex-shrink-0">
+            {/* LEFT GROUP: Brand Logo + Main Navigation */}
+            <div className="flex items-center gap-2 lg:gap-3 flex-shrink-0">
+              <Link to="/" onClick={closeAll} className="flex items-center gap-2 group mr-2 lg:mr-3">
                 <img 
                   src={BRAND.logo} 
                   alt="AllCollegeEvent Logo" 
-                  className="h-9 sm:h-11 w-auto object-contain transition-transform group-hover:scale-105"
+                  className="h-8 sm:h-9.5 w-auto object-contain transition-transform group-hover:scale-105"
                 />
               </Link>
 
               {/* Desktop Nav Items */}
-              <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1">
+              <nav className="hidden lg:flex items-center gap-1">
                 <Link to="/events" className={navItemClass('/events')}>
                   Discover
                 </Link>
@@ -133,595 +182,507 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                   Coding
                 </Link>
                 <Link to="/student/mentorship" className={navItemClass('/student/mentorship')}>
-                  <GraduationCap className="w-3.5 h-3.5 text-indigo-500 flex-shrink-0" /> Mentorship
+                  Mentorship
                 </Link>
-                <Link to="/learn-play" className="flex items-center gap-1 px-2.5 py-1.5 text-xs lg:text-sm font-bold rounded-xl text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-slate-800 transition-colors whitespace-nowrap">
+                <Link to="/learn-play" className="flex items-center gap-1 px-2 py-1.5 text-xs font-bold rounded-lg text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-slate-800 transition-colors whitespace-nowrap">
                   <Sparkles className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" /> Learn & Play
                 </Link>
 
-                {/* More Dropdown */}
-                <div className="relative">
+                {/* More Dropdown Menu */}
+                <div className="relative" ref={moreMenuRef}>
                   <button
-                    onClick={() => setShowMoreMenu(!showMoreMenu)}
-                    className="flex items-center gap-1 px-2.5 py-1.5 text-xs lg:text-sm font-semibold rounded-xl text-slate-700 dark:text-slate-300 hover:text-brand-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    onClick={() => {
+                      setShowMoreMenu(!showMoreMenu);
+                      setShowProfileMenu(false);
+                      setShowWorkspaceSwitcher(false);
+                    }}
+                    className={`flex items-center gap-1 px-2 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+                      showMoreMenu
+                        ? 'text-purple-600 bg-purple-50 dark:bg-purple-950/60 font-bold'
+                        : 'text-slate-700 dark:text-slate-300 hover:text-purple-600 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    }`}
                   >
                     <span>More</span>
                     <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showMoreMenu ? 'rotate-180' : ''}`} />
                   </button>
 
                   {showMoreMenu && (
-                    <div className="absolute left-0 top-full mt-2 w-72 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-2 z-50 animate-scaleUp max-h-96 overflow-y-auto">
-                      <Link to="/home" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-black text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 rounded-xl shadow-xs">
-                        <span>🌟 Universal Home (150X)</span>
-                      </Link>
-                      <Link to="/command-center" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-extrabold text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-indigo-950/30 hover:bg-indigo-100 rounded-xl">
-                        <span>🕹️ Universal Command Center</span>
-                      </Link>
-                      <Link to="/discover" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🔍 Personalized Opportunity Feed</span>
-                      </Link>
-                      <Link to="/applications" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>💼 Unified Application OS</span>
-                      </Link>
-                      <Link to="/skills" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🧠 Dynamic Skill Graph</span>
-                      </Link>
-                      <Link to="/projects/lab" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🧪 Student Project Lab</span>
-                      </Link>
-                      <Link to="/activity" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>⚡ Universal Activity Center</span>
-                      </Link>
-                      <div className="h-px bg-slate-100 dark:bg-slate-800 my-1"></div>
-                      <Link to="/ai" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-extrabold text-purple-600 dark:text-purple-400 bg-purple-50/50 dark:bg-purple-950/30 hover:bg-purple-100 rounded-xl">
-                        <span>✨ AI Student Success Engine (100X)</span>
-                      </Link>
-                      <Link to="/ai/study-coach" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>📖 AI Study Coach</span>
-                      </Link>
-                      <Link to="/ai/project-mentor" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🎯 AI Project Mentor</span>
-                      </Link>
-                      <Link to="/interview/ai-coach" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>💼 AI Interview Simulator</span>
-                      </Link>
-                      <Link to="/workflows" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>⚡ Autonomous Workflow OS (120X)</span>
-                      </Link>
-                      <Link to="/tasks" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>✅ Universal Tasks</span>
-                      </Link>
-                      <Link to="/approvals" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🛡️ Workflow Approval Gates</span>
-                      </Link>
-                      <Link to="/automations" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>✨ Event-Driven Automations</span>
-                      </Link>
-                      <Link to="/ai/actions" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🤖 Gated AI Action Proposals</span>
-                      </Link>
-                      <Link to="/opportunities" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🌐 Global Opportunity Exchange (110X)</span>
-                      </Link>
-                      <Link to="/opportunities/deadlines" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>⏰ Global Deadlines Tracker</span>
-                      </Link>
-                      <Link to="/opportunities/compare" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>⚖️ Opportunity Comparison Hub</span>
-                      </Link>
-                      <Link to="/scholarships" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🎓 Scholarships & Grants</span>
-                      </Link>
-                      <Link to="/research" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🔬 Research & Innovation Labs</span>
-                      </Link>
-                      <Link to="/partners/marketplace" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🤝 Global Partner Marketplace</span>
-                      </Link>
-                      <Link to="/billing" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🧾 Billing & Invoices</span>
-                      </Link>
-                      <Link to="/subscriptions" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>✨ Subscriptions Ecosystem</span>
-                      </Link>
-                      <Link to="/ai/global-opportunities" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-yellow-600 dark:text-yellow-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🤖 Ask ACE Global Assistant</span>
-                      </Link>
-                      <Link to="/campus" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🏫 Campus Feed & Announcements</span>
-                      </Link>
-                      <Link to="/connections" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>👥 Student Network & Connections</span>
-                      </Link>
-                      <Link to="/messages" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>💬 Direct & Channel Messaging 2.0</span>
-                      </Link>
-                      <Link to="/deadlines" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>⏰ Unified Campus Deadlines</span>
-                      </Link>
-                      <Link to="/safety" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🛡️ Student Safety & Trust Center</span>
-                      </Link>
-                      <Link to="/student" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🚀 Student Home</span>
-                      </Link>
-                      <Link to="/student/ai" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🤖 Personal AI Command Center</span>
-                      </Link>
-                      <Link to="/student/goals" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🎯 AI Goals & Action Plans</span>
-                      </Link>
-                      <Link to="/student/today" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>⚡ Today's Actions & Priorities</span>
-                      </Link>
-                      <Link to="/feed" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>📰 Opportunity Feed</span>
-                      </Link>
-                      <Link to="/following" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>👥 Following Network</span>
-                      </Link>
-                      <Link to="/career" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🧭 Career Launchpad</span>
-                      </Link>
-                      <Link to="/interviews" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>📅 Interview Schedule</span>
-                      </Link>
-                      <Link to="/student/passport" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🛡️ Digital Student Passport (80X)</span>
-                      </Link>
-                      <Link to="/student/credentials" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🪪 Credential Wallet</span>
-                      </Link>
-                      <Link to="/student/resume" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>📄 ATS Resume Builder</span>
-                      </Link>
-                      <Link to="/student/portfolio" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🌐 Portfolio Studio</span>
-                      </Link>
-                      <Link to="/student/privacy" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🔒 Student Privacy Center</span>
-                      </Link>
-                      <Link to="/recruiter" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>💼 Recruiter Hub & Talent Radar</span>
-                      </Link>
-                      <Link to="/career/interview" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🤖 AI Interview Lab</span>
-                      </Link>
-                      <Link to="/project-lab" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🔬 Project Lab & Incubator</span>
-                      </Link>
-                      <Link to="/judge" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>⚖️ Judge Evaluation Portal</span>
-                      </Link>
-                      <Link to="/trust" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🛡️ Verified Trust Center</span>
-                      </Link>
-                      <Link to="/reports" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🚨 Trust, Safety & Reports</span>
-                      </Link>
-                      <Link to="/colleges" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🏫 Colleges Directory</span>
-                      </Link>
-                      <Link to="/community" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>💬 Community Feed</span>
-                      </Link>
-                      <Link to="/rewards" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🎁 Rewards & Vouchers</span>
-                      </Link>
-                      <Link to="/certificates" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>📜 Verify Certificate</span>
-                      </Link>
-                      <Link to="/explore" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-brand-600 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl border-t border-slate-100 dark:border-slate-800 mt-1">
-                        <span>🧭 All 50+ Modules</span>
-                      </Link>
+                    <div className="absolute left-0 top-full mt-2 w-[520px] bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-4 z-50 animate-scaleUp grid grid-cols-2 gap-4 max-h-[82vh] overflow-y-auto">
+                      
+                      {/* Section 1: OPPORTUNITIES */}
+                      <div className="space-y-1">
+                        <div className="text-[10px] font-black uppercase tracking-wider text-purple-600 dark:text-purple-400 px-2 py-1 font-mono">
+                          OPPORTUNITIES
+                        </div>
+                        <Link to="/events" onClick={closeAll} className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <span>🎪 Events Directory</span>
+                        </Link>
+                        <Link to="/opportunities" onClick={closeAll} className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <span>🌐 Global Opportunity Exchange</span>
+                        </Link>
+                        <Link to="/scholarships" onClick={closeAll} className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <span>🎓 Scholarships & Grants</span>
+                        </Link>
+                        <Link to="/hackathons" onClick={closeAll} className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <span>⚡ Hackathons Arena</span>
+                        </Link>
+                        <Link to="/competitions" onClick={closeAll} className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <span>🏆 Contests & Competitions</span>
+                        </Link>
+                      </div>
+
+                      {/* Section 2: LEARNING */}
+                      <div className="space-y-1">
+                        <div className="text-[10px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400 px-2 py-1 font-mono">
+                          LEARNING
+                        </div>
+                        <Link to="/learn" onClick={closeAll} className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <span>📚 Courses & Roadmaps</span>
+                        </Link>
+                        <Link to="/skills" onClick={closeAll} className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <span>🧠 Interactive Skill Graph</span>
+                        </Link>
+                        <Link to="/coding" onClick={closeAll} className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <span>💻 Code Practice & Arena</span>
+                        </Link>
+                        <Link to="/projects/lab" onClick={closeAll} className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <span>🧪 Student Project Lab</span>
+                        </Link>
+                        <Link to="/certificates" onClick={closeAll} className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <span>📜 Verified Certificates</span>
+                        </Link>
+                      </div>
+
+                      {/* Section 3: CAREER */}
+                      <div className="space-y-1 border-t border-slate-100 dark:border-slate-800 pt-2">
+                        <div className="text-[10px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400 px-2 py-1 font-mono">
+                          CAREER & APPLICATIONS
+                        </div>
+                        <Link to="/career" onClick={closeAll} className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <span>🎯 Universal Career OS</span>
+                        </Link>
+                        <Link to="/applications" onClick={closeAll} className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <span>💼 Unified Application OS</span>
+                        </Link>
+                        <Link to="/career/interview" onClick={closeAll} className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <span>🤖 AI Interview Lab</span>
+                        </Link>
+                        <Link to="/student/resume" onClick={closeAll} className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <span>📄 ATS Resume Builder</span>
+                        </Link>
+                        <Link to="/student/passport" onClick={closeAll} className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <span>🛡️ Digital Student Passport</span>
+                        </Link>
+                      </div>
+
+                      {/* Section 4: COMMUNITY, PRODUCTIVITY & AI */}
+                      <div className="space-y-1 border-t border-slate-100 dark:border-slate-800 pt-2">
+                        <div className="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400 px-2 py-1 font-mono">
+                          COMMUNITY & WORKFLOWS
+                        </div>
+                        <Link to="/campus" onClick={closeAll} className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <span>🏫 Campus Network</span>
+                        </Link>
+                        <Link to="/messages" onClick={closeAll} className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <span>💬 Messages & Channels</span>
+                        </Link>
+                        <Link to="/tasks" onClick={closeAll} className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <span>✅ Tasks & Deadlines</span>
+                        </Link>
+                        <Link to="/workflows" onClick={closeAll} className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <span>⚡ Autonomous Workflows</span>
+                        </Link>
+                        <Link to="/ai" onClick={closeAll} className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <span>✨ AI Student Success Center</span>
+                        </Link>
+                      </div>
+
                     </div>
                   )}
                 </div>
               </nav>
             </div>
 
-            {/* Right: Actions, Search, Workspace Switcher & User Profile */}
-            <div className="flex items-center gap-1.5 sm:gap-2.5">
+            {/* RIGHT CONTROLS: margin-left: auto */}
+            <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
               
-              {/* Authenticated Workspace Switcher (Strictly for Current User's Enrolled Workspaces) */}
-              {currentUser && (
-                <div className="relative hidden md:block">
-                  {availableWorkspaces.length > 1 ? (
-                    <button
-                      onClick={() => setShowWorkspaceSwitcher(!showWorkspaceSwitcher)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/60 text-indigo-700 dark:text-indigo-300 text-xs font-bold hover:bg-indigo-100 transition shadow-2xs"
-                      title="Switch Workspace Role"
-                    >
-                      <span>{currentWorkspace?.icon || '🎓'}</span>
-                      <span className="truncate max-w-[130px] font-semibold">{currentWorkspace?.label || 'Workspace'}</span>
-                      <ChevronDown className={`w-3 h-3 transition-transform ${showWorkspaceSwitcher ? 'rotate-180' : ''}`} />
-                    </button>
-                  ) : (
-                    <Link
-                      to={currentWorkspace?.path || '/student/dashboard'}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition"
-                      title="Active Workspace"
-                    >
-                      <span>{currentWorkspace?.icon || '🎓'}</span>
-                      <span className="truncate max-w-[130px] font-semibold">{currentWorkspace?.label || 'Student'}</span>
-                    </Link>
-                  )}
+              {/* Workspace Switcher Button */}
+              <div className="relative" ref={workspaceSwitcherRef}>
+                <button
+                  onClick={() => {
+                    setShowWorkspaceSwitcher(!showWorkspaceSwitcher);
+                    setShowProfileMenu(false);
+                    setShowMoreMenu(false);
+                  }}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition shadow-2xs"
+                  title="Switch Workspace Dashboard"
+                >
+                  <span className="text-sm">{currentWorkspaceItem.icon}</span>
+                  <span className="hidden sm:inline font-semibold truncate max-w-[120px]">{currentWorkspaceItem.label}</span>
+                  <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${showWorkspaceSwitcher ? 'rotate-180' : ''}`} />
+                </button>
 
-                  {/* Dropdown for multi-role enrolled users */}
-                  {showWorkspaceSwitcher && availableWorkspaces.length > 1 && (
-                    <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-3 z-50 animate-scaleUp">
-                      <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 mb-2">
-                        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono">
-                          My Active Workspaces
+                {/* Workspace Switcher Dropdown (13 Dashboards) */}
+                {showWorkspaceSwitcher && (
+                  <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-3 z-50 animate-scaleUp">
+                    <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 mb-2 flex items-center justify-between">
+                      <div>
+                        <div className="text-[10px] font-black uppercase tracking-wider text-purple-600 dark:text-purple-400 font-mono">
+                          MY WORKSPACES
                         </div>
-                        <div className="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate mt-0.5">
-                          {currentUser.fullName} (@{currentUser.username})
+                        <div className="text-xs font-bold text-slate-700 dark:text-slate-300 truncate mt-0.5">
+                          {currentUser?.fullName || 'ACE Demo Account'}
                         </div>
                       </div>
+                      {isDemo && (
+                        <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 rounded-md text-[9px] font-black uppercase tracking-wider border border-purple-300/40">
+                          Demo
+                        </span>
+                      )}
+                    </div>
 
-                      <div className="space-y-1.5">
-                        {availableWorkspaces.map((ws) => (
+                    <div className="space-y-1 max-h-80 overflow-y-auto pr-1">
+                      {all13Workspaces.map((ws, idx) => {
+                        const isActive = activeRole === ws.role && (ws.path === location.pathname || idx === 0);
+                        return (
                           <button
-                            key={ws.role}
+                            key={idx}
                             onClick={() => {
                               switchWorkspace(ws.role);
-                              setShowWorkspaceSwitcher(false);
+                              closeAll();
                               navigate(ws.path);
                             }}
-                            className={`w-full text-left p-2.5 rounded-2xl text-xs transition flex items-center justify-between gap-3 ${
-                              activeRole === ws.role
-                                ? 'bg-indigo-600 text-white font-bold shadow-md shadow-indigo-600/20'
+                            className={`w-full text-left px-3 py-2 rounded-xl text-xs transition flex items-center justify-between gap-2.5 ${
+                              isActive
+                                ? 'bg-purple-600 text-white font-bold shadow-xs'
                                 : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
                             }`}
                           >
-                            <div className="flex items-center gap-2.5 overflow-hidden">
-                              <span className="text-lg">{ws.icon}</span>
-                              <div className="overflow-hidden">
+                            <div className="flex items-center gap-2.5 truncate">
+                              <span className="text-base">{ws.icon}</span>
+                              <div className="truncate">
                                 <div className="font-bold truncate">{ws.label}</div>
-                                <div className={`text-[11px] truncate ${activeRole === ws.role ? 'text-indigo-100' : 'text-slate-400'}`}>
+                                <div className={`text-[10px] truncate ${isActive ? 'text-purple-100' : 'text-slate-400'}`}>
                                   {ws.desc}
                                 </div>
                               </div>
                             </div>
-                            {activeRole === ws.role && <Check className="w-4 h-4 flex-shrink-0" />}
+                            {isActive && <Check className="w-3.5 h-3.5 flex-shrink-0" />}
                           </button>
-                        ))}
-                      </div>
-
-                      <div className="mt-2.5 pt-2.5 border-t border-slate-100 dark:border-slate-800">
-                        <Link
-                          to="/workspaces"
-                          onClick={() => setShowWorkspaceSwitcher(false)}
-                          className="flex items-center justify-center gap-1.5 w-full py-2 px-3 bg-purple-50 dark:bg-purple-950/50 hover:bg-purple-100 dark:hover:bg-purple-900/50 text-purple-600 dark:text-purple-400 font-bold text-xs rounded-xl transition-colors"
-                        >
-                          <Layers className="w-3.5 h-3.5" />
-                          <span>Open All Workspaces Hub →</span>
-                        </Link>
-                      </div>
+                        );
+                      })}
                     </div>
-                  )}
-                </div>
-              )}
 
-                            {/* Demo Mode 13-Dashboard Quick Switcher */}
-              <div className="relative hidden xl:block">
-                <Link
-                  to="/demo"
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-purple-100 dark:bg-purple-950/60 border border-purple-300 dark:border-purple-800 text-purple-800 dark:text-purple-300 text-xs font-black hover:bg-purple-200 dark:hover:bg-purple-900 transition shadow-2xs"
-                  title="Hackathon Demo 13-Step Tour & Dashboard Hub"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                  <span>⚡ DEMO TOUR</span>
-                </Link>
+                    <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800">
+                      <Link
+                        to="/workspaces"
+                        onClick={closeAll}
+                        className="flex items-center justify-center gap-1.5 w-full py-2 px-3 bg-purple-50 dark:bg-purple-950/50 hover:bg-purple-100 text-purple-600 dark:text-purple-400 font-bold text-xs rounded-xl transition-colors"
+                      >
+                        <Layers className="w-3.5 h-3.5" />
+                        <span>Open Workspaces Hub →</span>
+                      </Link>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Search Trigger */}
               <button
                 onClick={() => setIsCommandOpen(true)}
-                className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/80 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                 title="Search (Ctrl + K)"
               >
                 <Search className="w-3.5 h-3.5" />
-                <span className="hidden xl:inline">Search</span>
-                <kbd className="text-[9px] font-mono px-1 py-0.5 rounded bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600">Ctrl K</kbd>
+                <span className="hidden md:inline">Search</span>
+                <kbd className="hidden lg:inline text-[9px] font-mono px-1 py-0.2 rounded bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600">Ctrl K</kbd>
+              </button>
+
+              {/* Ask ACE */}
+              <button
+                onClick={onOpenAiChat}
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-bold shadow-2xs hover:opacity-95 transition-all"
+                title="Ask ACE AI Assistant"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                <span className="hidden sm:inline">Ask ACE</span>
               </button>
 
               {/* Theme Toggle */}
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className="p-1.5 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 aria-label="Toggle theme"
+                title="Toggle Theme"
               >
                 {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4 text-amber-400" />}
               </button>
 
-              {/* AI Assistant Quick Pill */}
-              <button
-                onClick={onOpenAiChat}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 text-white text-xs font-bold shadow-xs hover:opacity-95 transition-all hover:scale-102"
+              {/* Notifications Link */}
+              <Link
+                to="/notifications"
+                onClick={closeAll}
+                className="relative p-1.5 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                title="Notifications"
               >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Ask ACE</span>
-              </button>
+                <Bell className="w-4 h-4" />
+                {unreadNotificationCount > 0 && (
+                  <span className="absolute top-1 right-1 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white dark:ring-slate-900" />
+                )}
+              </Link>
 
-              {/* User Profile Pill */}
-              {currentUser ? (
-                <div className="relative">
-                  <button
-                    onClick={() => setShowProfileMenu(!showProfileMenu)}
-                    className="flex items-center gap-1.5 sm:gap-2 pl-1 pr-2 py-1 rounded-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-brand-500 transition-all shadow-2xs group"
-                    aria-label="User Profile Menu"
-                  >
-                    <div className="relative">
-                      <img 
-                        src={currentUser.avatarUrl} 
-                        alt={currentUser.fullName} 
-                        className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover ring-2 ring-brand-500/30 group-hover:ring-brand-500 transition-all" 
-                      />
-                      {currentUser.isVerified && (
-                        <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-indigo-500 border border-white dark:border-slate-900 rounded-full" />
-                      )}
-                    </div>
+              {/* CORE PROFILE BUTTON & DROPDOWN */}
+              <div className="relative" ref={profileMenuRef}>
+                <button
+                  onClick={() => {
+                    setShowProfileMenu(!showProfileMenu);
+                    setShowMoreMenu(false);
+                    setShowWorkspaceSwitcher(false);
+                  }}
+                  className="flex items-center gap-1.5 pl-1 pr-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 hover:border-purple-500 transition-all shadow-2xs group"
+                  aria-label="User Profile Menu"
+                  title="My Profile Menu"
+                >
+                  <div className="relative">
+                    <img 
+                      src={currentUser?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400'} 
+                      alt={currentUser?.fullName || 'User Profile'} 
+                      className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full object-cover ring-2 ring-purple-500/30 group-hover:ring-purple-500 transition-all" 
+                    />
+                    <span className="absolute bottom-0 right-0 w-2 h-2 bg-emerald-500 border border-white dark:border-slate-900 rounded-full" />
+                  </div>
+                  
+                  <span className="hidden xl:inline text-xs font-bold text-slate-800 dark:text-slate-200">
+                    Profile
+                  </span>
+
+                  <ChevronDown className={`w-3 h-3 text-slate-400 group-hover:text-purple-600 transition-transform ${showProfileMenu ? 'rotate-180' : ''}`} />
+                </button>
+
+                {/* Profile Dropdown */}
+                {showProfileMenu && (
+                  <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-3.5 z-50 animate-scaleUp">
                     
-                    <div className="hidden lg:flex flex-col text-left">
-                      <span className="text-[11px] font-bold text-slate-800 dark:text-slate-100 leading-tight flex items-center gap-0.5">
-                        {currentUser.fullName.split(' ')[0]}
-                        {currentUser.isVerified && <CheckCircle2 className="w-2.5 h-2.5 text-indigo-500" />}
-                      </span>
-                      <span className="text-[9px] text-slate-500 dark:text-slate-400 font-mono leading-none">
-                        @{currentUser.username}
-                      </span>
-                    </div>
-
-                    <ChevronDown className={`w-3 h-3 text-slate-400 group-hover:text-brand-600 transition-transform ${showProfileMenu ? 'rotate-180' : ''}`} />
-                  </button>
-
-                  {showProfileMenu && (
-                    <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200/80 dark:border-slate-800 p-3.5 z-50 animate-scaleUp">
-                      
-                      {/* User Summary Card */}
-                      <div className="p-3 bg-gradient-to-br from-indigo-50/80 via-purple-50/50 to-slate-50 dark:from-slate-800 dark:to-slate-800/60 rounded-2xl mb-2.5 flex items-center gap-3 border border-indigo-100/80 dark:border-slate-700">
-                        <img src={currentUser.avatarUrl} alt={currentUser.fullName} className="w-12 h-12 rounded-2xl object-cover ring-2 ring-indigo-500/30 shadow-xs" />
+                    {/* Identity Header Card */}
+                    <div className="p-3 bg-gradient-to-br from-purple-50/90 via-indigo-50/50 to-slate-50 dark:from-slate-800 dark:to-slate-800/60 rounded-2xl mb-2.5 border border-purple-100 dark:border-slate-700">
+                      <div className="flex items-center gap-3">
+                        <img 
+                          src={currentUser?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400'} 
+                          alt={currentUser?.fullName || 'User'} 
+                          className="w-11 h-11 rounded-2xl object-cover ring-2 ring-purple-500/40 shadow-2xs" 
+                        />
                         <div className="overflow-hidden flex-1">
-                          <p className="text-xs font-extrabold text-slate-900 dark:text-white truncate">{currentUser.fullName}</p>
-                          <p className="text-[10px] text-indigo-500 font-mono truncate">@{currentUser.username}</p>
-                          <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">{currentUser.college}</p>
+                          <div className="flex items-center gap-1.5">
+                            <p className="text-xs font-black text-slate-900 dark:text-white truncate">
+                              {currentUser?.fullName || 'Demo Account'}
+                            </p>
+                            {isDemo && (
+                              <span className="px-1.5 py-0.2 bg-purple-200 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded text-[9px] font-black">
+                                DEMO
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[10px] text-purple-600 dark:text-purple-400 font-mono truncate">
+                            @{currentUser?.username || 'ace_demo'}
+                          </p>
+                          <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                            Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology
+                          </p>
                         </div>
                       </div>
-
-                      {/* Mentorship & Workspace Quick Links */}
-                      <div className="space-y-1 text-xs">
-                        <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">
-                          My Workspaces & Tools
-                        </div>
-
-                        {/* Phase 3 Command Center & Opportunity Radar */}
-                        <Link to="/student/os" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-950/60 rounded-xl font-extrabold transition-colors border border-emerald-500/20">
-                          <Sparkles className="w-4 h-4 text-emerald-500" />
-                          <span>Student Command Center</span>
-                        </Link>
-
-                        <Link to="/student/opportunities" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
-                          <Compass className="w-4 h-4 text-emerald-400" />
-                          <span>Opportunity Intelligence</span>
-                        </Link>
-
-                        <Link to="/saved" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
-                          <Bookmark className="w-4 h-4 text-amber-400" />
-                          <span>Saved Bookmarks</span>
-                        </Link>
-
-                        {/* Phase 2 Quick Tools */}
-                        <Link to="/student/passport" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-indigo-950/40 rounded-xl font-bold transition-colors">
-                          <ShieldCheck className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                          <span>Digital Student Passport (80X)</span>
-                        </Link>
-
-                        <Link to="/student/credentials" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
-                          <Award className="w-4 h-4 text-emerald-500" />
-                          <span>Verified Credential Wallet</span>
-                        </Link>
-
-                        <Link to="/student/privacy" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
-                          <ShieldCheck className="w-4 h-4 text-purple-500" />
-                          <span>Student Privacy Center</span>
-                        </Link>
-
-                        <Link to="/student/ace-id" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-emerald-600 dark:text-emerald-400 bg-emerald-50/70 dark:bg-emerald-950/40 rounded-xl font-bold transition-colors">
-                          <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                          <span>Digital Student ID & Pass</span>
-                        </Link>
-
-                        <Link to="/calendar" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
-                          <Clock className="w-4 h-4 text-blue-500" />
-                          <span>Smart ACE Calendar & Deadlines</span>
-                        </Link>
-
-                        <Link to="/career" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
-                          <Briefcase className="w-4 h-4 text-amber-500" />
-                          <span>Career Hub & Resume</span>
-                        </Link>
-
-                        <Link to="/teams" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
-                          <Users className="w-4 h-4 text-purple-500" />
-                          <span>Hackathon Teams & Workspace</span>
-                        </Link>
-
-                        <Link to="/clubs" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
-                          <Building2 className="w-4 h-4 text-cyan-500" />
-                          <span>Campus Tech Clubs</span>
-                        </Link>
-
-                        <Link to="/student/mentor" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-indigo-950/40 rounded-xl font-bold transition-colors">
-                          <GraduationCap className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                          <span>Campus Mentorship Hub</span>
-                        </Link>
-
-                        <Link to="/student/mentors" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
-                          <Search className="w-4 h-4 text-purple-500" />
-                          <span>Browse Faculty Mentors</span>
-                        </Link>
-
-                        {/* Account & Profile */}
-                        <div className="pt-2 border-t border-slate-100 dark:border-slate-800 mt-2 space-y-1">
-                          <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">
-                            Account & Profile
-                          </div>
-
-                          <Link to="/profile/me" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-indigo-950/40 rounded-xl font-bold transition-colors">
-                            <User className="w-4 h-4 text-indigo-500" />
-                            <span>My Profile & Workspaces</span>
-                          </Link>
-                          <Link to="/demo" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-purple-600 dark:text-purple-400 bg-purple-50/70 dark:bg-purple-950/40 rounded-xl font-bold transition-colors">
-                            <Sparkles className="w-4 h-4 text-purple-500" />
-                            <span>⚡ Presentation & 13-Step Tour</span>
-                          </Link>
-                          <Link to={`/profile/@${currentUser.username}`} onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
-                            <User className="w-4 h-4 text-indigo-500" />
-                            <span>View Public Profile</span>
-                          </Link>
-
-                          <Link to="/profile/edit" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
-                            <Edit3 className="w-4 h-4 text-emerald-500" />
-                            <span>Edit Profile Studio</span>
-                          </Link>
-
-                          <Link to="/settings/profile" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
-                            <Settings className="w-4 h-4 text-purple-500" />
-                            <span>Settings & Preferences</span>
-                          </Link>
-                        </div>
-
-                        {/* Opportunities / Apply for New Roles */}
-                        <div className="pt-2 border-t border-slate-100 dark:border-slate-800 mt-2 space-y-1">
-                          <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">
-                            Role Opportunities
-                          </div>
-
-                          {!currentUser.roles?.includes('COLLEGE_AMBASSADOR') && (
-                            <Link to="/ambassador" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-1.5 text-slate-600 dark:text-slate-400 hover:text-indigo-600 text-xs">
-                              <Award className="w-3.5 h-3.5 text-amber-500" /> Apply as Campus Ambassador
-                            </Link>
-                          )}
-                          {!currentUser.roles?.includes('MENTOR') && (
-                            <Link to="/become-mentor" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-1.5 text-slate-600 dark:text-slate-400 hover:text-indigo-600 text-xs">
-                              <GraduationCap className="w-3.5 h-3.5 text-indigo-500" /> Apply as Faculty Mentor
-                            </Link>
-                          )}
-                        </div>
-
-                        {(currentUser.role === 'ADMIN' || currentUser.roles?.includes('ADMIN')) && (
-                          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 mt-2 space-y-1">
-                            <div className="px-3 py-1 text-[10px] font-bold text-amber-500 uppercase tracking-wider font-mono">
-                              Admin Control
-                            </div>
-                            <Link to="/admin/institutions" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-1.5 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 rounded-xl text-xs font-semibold">
-                              <Building2 className="w-3.5 h-3.5" /> Institution Directory Admin
-                            </Link>
-                          </div>
-                        )}
-
-                        {/* Logout */}
-                        <div className="pt-2 border-t border-slate-100 dark:border-slate-800 mt-2">
-                          <button
-                            onClick={handleLogout}
-                            className="w-full flex items-center gap-2.5 px-3 py-2 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl font-semibold transition-colors"
-                          >
-                            <LogOut className="w-4 h-4" />
-                            <span>Sign Out of Account</span>
-                          </button>
-                        </div>
-                      </div>
-
                     </div>
-                  )}
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <Link
-                    to="/login"
-                    className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-                  >
-                    Log In
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md transition"
-                  >
-                    Sign Up
-                  </Link>
-                </div>
-              )}
+
+                    {/* Primary Links */}
+                    <div className="space-y-1 text-xs">
+                      <Link 
+                        to="/profile/me" 
+                        onClick={closeAll} 
+                        className="flex items-center gap-2.5 px-3 py-2 text-slate-800 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-purple-950/40 rounded-xl font-bold transition-colors"
+                      >
+                        <User className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                        <span>My Profile</span>
+                      </Link>
+
+                      <Link 
+                        to="/profile/edit" 
+                        onClick={closeAll} 
+                        className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors"
+                      >
+                        <Edit3 className="w-4 h-4 text-emerald-500" />
+                        <span>Edit Profile</span>
+                      </Link>
+
+                      <Link 
+                        to="/workspaces" 
+                        onClick={closeAll} 
+                        className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors"
+                      >
+                        <Layers className="w-4 h-4 text-indigo-500" />
+                        <span>My Workspaces</span>
+                      </Link>
+
+                      <Link 
+                        to="/notifications" 
+                        onClick={closeAll} 
+                        className="flex items-center justify-between px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <Bell className="w-4 h-4 text-amber-500" />
+                          <span>Notifications</span>
+                        </div>
+                        {unreadNotificationCount > 0 && (
+                          <span className="px-1.5 py-0.5 bg-rose-500 text-white rounded-full text-[10px] font-bold">
+                            {unreadNotificationCount}
+                          </span>
+                        )}
+                      </Link>
+
+                      <Link 
+                        to="/messages" 
+                        onClick={closeAll} 
+                        className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors"
+                      >
+                        <MessageSquare className="w-4 h-4 text-blue-500" />
+                        <span>Messages</span>
+                      </Link>
+
+                      <Link 
+                        to="/settings" 
+                        onClick={closeAll} 
+                        className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors"
+                      >
+                        <Settings className="w-4 h-4 text-slate-500" />
+                        <span>Settings</span>
+                      </Link>
+                    </div>
+
+                    {/* Footer Support & Sign Out */}
+                    <div className="pt-2 border-t border-slate-100 dark:border-slate-800 mt-2 space-y-1">
+                      <Link 
+                        to="/support" 
+                        onClick={closeAll} 
+                        className="flex items-center gap-2.5 px-3 py-1.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-xs font-medium"
+                      >
+                        <HelpCircle className="w-3.5 h-3.5 text-slate-400" />
+                        <span>Help & Support</span>
+                      </Link>
+
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl text-xs font-bold transition-colors"
+                      >
+                        <LogOut className="w-3.5 h-3.5" />
+                        <span>Sign Out</span>
+                      </button>
+                    </div>
+
+                  </div>
+                )}
+              </div>
 
               {/* Mobile Menu Trigger */}
               <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                onClick={() => {
+                  setMobileMenuOpen(!mobileMenuOpen);
+                  setShowProfileMenu(false);
+                  setShowMoreMenu(false);
+                  setShowWorkspaceSwitcher(false);
+                }}
                 className="lg:hidden p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                aria-label="Open Mobile Navigation"
+                aria-label="Open Navigation Menu"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
+
             </div>
 
           </div>
         </div>
 
-        {/* Mobile Nav Menu */}
+        {/* MOBILE SLIDE-DOWN NAVIGATION DRAWER */}
         {mobileMenuOpen && (
           <div className="lg:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 pt-2 pb-6 space-y-3 animate-fadeIn">
-            {currentUser && availableWorkspaces.length > 1 && (
-              <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 rounded-2xl border border-indigo-200 dark:border-indigo-800/60 mb-2">
-                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 font-mono mb-1.5">
-                  My Active Workspace
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {availableWorkspaces.map(ws => (
-                    <button
-                      key={ws.role}
-                      onClick={() => {
-                        switchWorkspace(ws.role);
-                        closeAll();
-                        navigate(ws.path);
-                      }}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition ${
-                        activeRole === ws.role
-                          ? 'bg-indigo-600 text-white font-bold'
-                          : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300'
-                      }`}
-                    >
-                      <span>{ws.icon}</span>
-                      <span>{ws.label.split(' ')[0]}</span>
-                    </button>
-                  ))}
-                </div>
+            
+            {/* Mobile Workspace Quick Switcher */}
+            <div className="p-3 bg-purple-50 dark:bg-purple-950/40 rounded-2xl border border-purple-200 dark:border-purple-800/60">
+              <div className="text-[10px] font-black uppercase tracking-wider text-purple-600 dark:text-purple-400 font-mono mb-2">
+                ACTIVE WORKSPACE: {currentWorkspaceItem.label}
               </div>
-            )}
+              <div className="grid grid-cols-2 gap-1.5 max-h-36 overflow-y-auto">
+                {all13Workspaces.map((ws, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      switchWorkspace(ws.role);
+                      closeAll();
+                      navigate(ws.path);
+                    }}
+                    className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition ${
+                      activeRole === ws.role
+                        ? 'bg-purple-600 text-white font-bold'
+                        : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                    }`}
+                  >
+                    <span>{ws.icon}</span>
+                    <span className="truncate">{ws.label.split(' ')[0]}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
 
-            <div className="grid grid-cols-2 gap-2">
-              <Link to="/events" onClick={closeAll} className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200">
+            {/* Mobile Primary Links */}
+            <div className="grid grid-cols-2 gap-2 text-xs font-bold">
+              <Link to="/events" onClick={closeAll} className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-800 dark:text-slate-200">
                 Discover Events
               </Link>
-              <Link to="/hackathons" onClick={closeAll} className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200">
-                Hackathons
+              <Link to="/workspaces" onClick={closeAll} className="p-2.5 bg-purple-50 dark:bg-purple-950/50 text-purple-600 rounded-xl">
+                💼 Workspaces Hub
               </Link>
-              <Link to="/competitions" onClick={closeAll} className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200">
-                Competitions
+              <Link to="/campus" onClick={closeAll} className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-800 dark:text-slate-200">
+                🏫 Campus Network
               </Link>
-              <Link to="/coding" onClick={closeAll} className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200">
-                Coding Practice
+              <Link to="/hackathons" onClick={closeAll} className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-800 dark:text-slate-200">
+                ⚡ Hackathons
               </Link>
-              <Link to="/mentors" onClick={closeAll} className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-xs font-semibold text-indigo-600 dark:text-indigo-400">
-                Campus Mentors
+              <Link to="/competitions" onClick={closeAll} className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-800 dark:text-slate-200">
+                🏆 Competitions
               </Link>
-              <Link to="/learn-play" onClick={closeAll} className="p-2.5 bg-purple-50 dark:bg-purple-950/40 rounded-xl text-xs font-semibold text-purple-600">
-                Learn & Play
+              <Link to="/coding" onClick={closeAll} className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-800 dark:text-slate-200">
+                💻 Coding Practice
+              </Link>
+              <Link to="/student/mentorship" onClick={closeAll} className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-indigo-600 dark:text-indigo-400">
+                🎓 Mentorship
+              </Link>
+              <Link to="/learn-play" onClick={closeAll} className="p-2.5 bg-purple-50 dark:bg-purple-950/40 rounded-xl text-purple-600">
+                ✨ Learn & Play
               </Link>
             </div>
+
+            {/* Mobile Profile & Account Shortcuts */}
+            <div className="pt-2 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-2 text-xs">
+              <Link to="/profile/me" onClick={closeAll} className="p-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                <User className="w-3.5 h-3.5 text-purple-600" />
+                <span>My Profile</span>
+              </Link>
+              <Link to="/profile/edit" onClick={closeAll} className="p-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                <Edit3 className="w-3.5 h-3.5 text-emerald-500" />
+                <span>Edit Profile</span>
+              </Link>
+              <Link to="/notifications" onClick={closeAll} className="p-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                <Bell className="w-3.5 h-3.5 text-amber-500" />
+                <span>Notifications</span>
+              </Link>
+              <Link to="/settings" onClick={closeAll} className="p-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                <Settings className="w-3.5 h-3.5 text-slate-500" />
+                <span>Settings</span>
+              </Link>
+            </div>
+
           </div>
         )}
       </header>
 
-      {/* Command Palette */}
+      {/* Universal Search Command Palette */}
       <CommandPalette isOpen={isCommandOpen} onClose={() => setIsCommandOpen(false)} />
     </>
   );

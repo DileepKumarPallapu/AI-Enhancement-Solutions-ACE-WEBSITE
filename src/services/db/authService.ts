@@ -49,7 +49,7 @@ export class AuthService {
     const lastName = payload.lastName || names.slice(1).join(' ') || '';
     const phoneNum = payload.phone || payload.phoneNumber || '';
     const userCollege = payload.college || 'Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology';
-    const userLocation = payload.location || 'Coimbatore, Tamil Nadu';
+    const userLocation = payload.location || 'Chennai, Tamil Nadu';
 
     const newAccount: Account = {
       id: 'usr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
@@ -61,7 +61,7 @@ export class AuthService {
       role: payload.role,
       roles: [payload.role],
       activeWorkspace: payload.role,
-      collegeId: payload.collegeId || 'col_psg',
+      collegeId: payload.collegeId || 'inst-vel-tech-rangarajan-avadi',
       status: 'ACTIVE',
       emailVerified: false,
       phoneVerified: false,
@@ -77,7 +77,7 @@ export class AuthService {
       location: userLocation,
       country: 'India',
       state: userLocation.split(',')[1]?.trim() || 'Tamil Nadu',
-      city: userLocation.split(',')[0]?.trim() || 'Coimbatore',
+      city: userLocation.split(',')[0]?.trim() || 'Chennai',
       socialLinks: {},
       skills: { verified: [], interested: payload.interestedDomains || ['AI', 'Web Development'] },
       education: [
