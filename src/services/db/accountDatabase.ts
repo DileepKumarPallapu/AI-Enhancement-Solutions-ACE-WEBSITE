@@ -10,6 +10,7 @@ import {
   CollegeSearchItem,
   UserRoleEnrollment
 } from '../../types/account';
+import { demoModeDatabase } from './demoModeDatabase';
 
 export const VERIFIED_COLLEGES: CollegeSearchItem[] = [
   { id: 'inst-vel-tech-rangarajan-avadi', name: 'Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology', city: 'Chennai', state: 'Tamil Nadu', isVerified: true },
@@ -998,12 +999,15 @@ export class AccountDatabase {
     const user = this.accounts.get(userId);
     if (!user) throw new Error(`User ${userId} not found`);
 
-    const isAuthorized = this.hasActiveEnrollment(userId, role) || user.role === 'ADMIN';
+    const isAuthorized = demoModeDatabase.isDemoMode() || this.hasActiveEnrollment(userId, role) || user.role === 'ADMIN' || (user.roles && user.roles.includes('ADMIN'));
     if (!isAuthorized) {
       throw new Error(`User does not possess an active enrollment for workspace ${role}`);
     }
 
     user.activeWorkspace = role;
+    if (demoModeDatabase.isDemoMode() && (!user.roles || !user.roles.includes(role))) {
+      user.roles = Array.from(new Set([...(user.roles || []), role]));
+    }
     this.accounts.set(userId, user);
     this.logAudit(userId, userId, 'WORKSPACE_SWITCHED', `Switched active workspace to ${role}`);
     this.saveToStorage();

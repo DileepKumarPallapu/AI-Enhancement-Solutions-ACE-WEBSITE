@@ -25,7 +25,7 @@ import {
   Check
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { universalWorkspaceDatabase, WorkspaceItem, RoleAccessRequest, WorkspaceCategory } from '../../services/db/universalWorkspaceDatabase';
+import { dashboardRegistry, WorkspaceDefinition, WorkspaceCategory } from '../../services/db/dashboardRegistry';
 import { demoModeDatabase } from '../../services/db/demoModeDatabase';
 import { AccountRole } from '../../types/account';
 
@@ -34,180 +34,28 @@ export const UniversalWorkspaceHubPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<'ALL' | 'CORE' | 'CAMPUS' | 'PROFESSIONAL' | 'ADMINISTRATION'>('ALL');
+  const [selectedCategory, setSelectedCategory] = useState<'ALL' | WorkspaceCategory>('ALL');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [workspaces, setWorkspaces] = useState<WorkspaceDefinition[]>(() => dashboardRegistry.getAllWorkspaces());
 
-  // 13 Canonical ACE Workspaces
-  const all13Workspaces = [
-    {
-      id: 'ws-student',
-      role: 'STUDENT' as AccountRole,
-      title: 'STUDENT',
-      name: 'Student Dashboard',
-      description: 'Personalized opportunity discovery feed, interactive skill graph, wallet rewards, student project lab, and career simulator.',
-      icon: '🎓',
-      category: 'CORE',
-      route: '/student/dashboard',
-      status: 'Active Core',
-      metrics: '48,500 🪙 • 8 Verified Badges'
-    },
-    {
-      id: 'ws-ambassador',
-      role: 'COLLEGE_AMBASSADOR' as AccountRole,
-      title: 'CAMPUS AMBASSADOR',
-      name: 'Campus Ambassador Dashboard',
-      description: 'Review and approve collegiate event proposals, coordinate student referral trees, and lead departmental outreach.',
-      icon: '📣',
-      category: 'CAMPUS',
-      route: '/ambassador/dashboard',
-      status: 'Authorized',
-      metrics: '3 Approvals • 2,450 Reach'
-    },
-    {
-      id: 'ws-faculty-mentor',
-      role: 'MENTOR' as AccountRole,
-      title: 'FACULTY MENTOR',
-      name: 'Faculty Mentor Dashboard',
-      description: 'Conduct 1-on-1 sprint reviews, sign off student project lab milestones, endorse competencies, and guide research.',
-      icon: '👨‍🏫',
-      category: 'CAMPUS',
-      route: '/mentor/dashboard',
-      status: 'Authorized',
-      metrics: '12 Mentees • 2 Reviews Due'
-    },
-    {
-      id: 'ws-mentor',
-      role: 'MENTOR' as AccountRole,
-      title: 'MENTOR',
-      name: 'Mentor Dashboard',
-      description: 'Industry technical mentorship, career guidance sessions, office hours scheduling, and mentee dossier reviews.',
-      icon: '🧭',
-      category: 'CAMPUS',
-      route: '/mentor/dashboard',
-      status: 'Authorized',
-      metrics: '8 Active Mentees • 4 Sessions'
-    },
-    {
-      id: 'ws-organizer',
-      role: 'ORGANIZER' as AccountRole,
-      title: 'ORGANIZER',
-      name: 'Organizer Dashboard',
-      description: 'End-to-end collegiate hackathon command: multi-track registrations, live QR attendance check-in, and automated certificates.',
-      icon: '🎫',
-      category: 'CORE',
-      route: '/organizer/dashboard',
-      status: 'Authorized',
-      metrics: '620 Registrations • 94% Check-in'
-    },
-    {
-      id: 'ws-college',
-      role: 'COLLEGE' as AccountRole,
-      title: 'COLLEGE',
-      name: 'College Dashboard',
-      description: 'Institution governance: department hierarchy, faculty mentor allocations, institutional NBA/NAAC accreditation stats.',
-      icon: '🏫',
-      category: 'CAMPUS',
-      route: '/college/dashboard',
-      status: 'Directorate',
-      metrics: '8 Departments • 64 Mentors'
-    },
-    {
-      id: 'ws-recruiter',
-      role: 'RECRUITER' as AccountRole,
-      title: 'RECRUITER',
-      name: 'Recruiter Dashboard',
-      description: 'Verified student talent radar filter by proven code evidence, technical interview schedules, and direct job offers pipeline.',
-      icon: '💼',
-      category: 'PROFESSIONAL',
-      route: '/recruiter/dashboard',
-      status: 'Authorized',
-      metrics: '18 Shortlisted • 3 Offers Sent'
-    },
-    {
-      id: 'ws-judge',
-      role: 'JUDGE' as AccountRole,
-      title: 'JUDGE',
-      name: 'Judge Dashboard',
-      description: 'Score assigned hackathon and competition submissions against multi-criteria weighted rubrics with real-time leaderboards.',
-      icon: '⚖️',
-      category: 'PROFESSIONAL',
-      route: '/judge/dashboard',
-      status: 'Authorized',
-      metrics: '8 Teams • 6 Scored'
-    },
-    {
-      id: 'ws-placement',
-      role: 'STUDENT' as AccountRole,
-      title: 'PLACEMENT',
-      name: 'Placement Dashboard',
-      description: 'Campus placement drive manager, automated student eligibility validation engine, corporate coordination, and offer logs.',
-      icon: '📊',
-      category: 'PROFESSIONAL',
-      route: '/placement',
-      status: 'Unlocked',
-      metrics: '42 Companies • 5 Live Drives'
-    },
-    {
-      id: 'ws-club',
-      role: 'STUDENT' as AccountRole,
-      title: 'CLUB',
-      name: 'Club Dashboard',
-      description: 'Manage collegiate technical chapters, student memberships, internal hack nights, budget allocations, and club events.',
-      icon: '👥',
-      category: 'CAMPUS',
-      route: '/college/clubs',
-      status: 'Unlocked',
-      metrics: '145 Members • 2 Events'
-    },
-    {
-      id: 'ws-provider',
-      role: 'STUDENT' as AccountRole,
-      title: 'TRAINING PROVIDER',
-      name: 'Training Provider Dashboard',
-      description: 'Publish certified micro-courses, track student cohort milestones, and issue tamper-proof verifiable digital credentials.',
-      icon: '📚',
-      category: 'PROFESSIONAL',
-      route: '/provider',
-      status: 'Unlocked',
-      metrics: '1,200 Enrolled • 6 Courses'
-    },
-    {
-      id: 'ws-partner',
-      role: 'STUDENT' as AccountRole,
-      title: 'PARTNER',
-      name: 'Partner Dashboard',
-      description: 'Coordinate global sponsorship campaigns, research lab grants, and international opportunity exchange programs.',
-      icon: '🤝',
-      category: 'PROFESSIONAL',
-      route: '/partners',
-      status: 'Unlocked',
-      metrics: '4 Campaigns • ₹12.5L Grants'
-    },
-    {
-      id: 'ws-admin',
-      role: 'ADMIN' as AccountRole,
-      title: 'ADMIN',
-      name: 'Admin Dashboard',
-      description: 'Master platform operations: multi-role governance, AI token usage cost center, workflow failure queues, and system telemetry.',
-      icon: '🛡️',
-      category: 'ADMINISTRATION',
-      route: '/admin/dashboard',
-      status: 'Superadmin',
-      metrics: '100% Health • 13 Workspaces'
-    }
-  ];
+  useEffect(() => {
+    const unsub = dashboardRegistry.subscribe(() => {
+      setWorkspaces(dashboardRegistry.getAllWorkspaces());
+    });
+    return unsub;
+  }, []);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  const handleOpenWorkspace = (ws: typeof all13Workspaces[0]) => {
-    switchWorkspace(ws.role);
+  const handleOpenWorkspace = (ws: WorkspaceDefinition) => {
+    switchWorkspace(ws.role as AccountRole);
     navigate(ws.route);
   };
 
-  const filteredWorkspaces = all13Workspaces.filter(ws => {
+  const filteredWorkspaces = workspaces.filter(ws => {
     const matchesSearch = ws.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           ws.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           ws.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -358,7 +206,7 @@ export const UniversalWorkspaceHubPage: React.FC = () => {
 
                   <div className="mt-4 p-2.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-400">
                     <span>Telemetry:</span>
-                    <span className="font-bold text-slate-900 dark:text-slate-200">{ws.metrics}</span>
+                    <span className="font-bold text-slate-900 dark:text-slate-200">{ws.metricsSummary}</span>
                   </div>
                 </div>
 
@@ -369,7 +217,7 @@ export const UniversalWorkspaceHubPage: React.FC = () => {
 
                   <button
                     onClick={() => handleOpenWorkspace(ws)}
-                    className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-1.5"
+                    className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer"
                   >
                     <span>OPEN DASHBOARD</span>
                     <ArrowRight className="w-3.5 h-3.5" />

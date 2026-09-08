@@ -749,6 +749,7 @@ export function App() {
                                 <Route path="/provider" element={<TrainingProviderPortalPage />} />
                                 <Route path="/partner/dashboard" element={<PartnerNetworkPage />} />
                                 <Route path="/partners" element={<PartnerNetworkPage />} />
+                                <Route path="/judge/dashboard" element={<RequireRole allowedRoles={['JUDGE', 'ADMIN']}><JudgePortalPage /></RequireRole>} />
                                 <Route path="/admin/dashboard" element={<RequireRole allowedRoles={['ADMIN']}><AdminAiRiskCenterPage /></RequireRole>} />
                                 <Route path="/ai/career" element={<UniversalCareerOSPage />} />
                                 <Route path="/ai/learning" element={<AIStudyCoachPage />} />

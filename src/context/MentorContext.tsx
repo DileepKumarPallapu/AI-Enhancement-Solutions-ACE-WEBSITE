@@ -140,10 +140,11 @@ export const MentorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const studentId = currentUser?.id || 'usr_student_dileep';
   const institutionId = currentUser?.institutionId || CANONICAL_VEL_TECH_ID;
 
-  // Active mentor profile if user is a faculty mentor
+  // Active mentor profile if user is a faculty mentor or in mentor workspace
   const activeMentorProfile = currentUser
-    ? mentorshipDb.getAllMentors().find(m => m.username.toLowerCase() === currentUser.username.toLowerCase() || m.userId === currentUser.id) || null
-    : null;
+    ? mentorshipDb.getAllMentors().find(m => m.username.toLowerCase() === currentUser.username.toLowerCase() || m.userId === currentUser.id) || 
+      (currentUser.activeWorkspace === 'MENTOR' || currentUser.role === 'MENTOR' ? mentorshipDb.getAllMentors()[0] : null)
+    : mentorshipDb.getAllMentors()[0];
 
   const mentorId = activeMentorProfile?.id || '';
 

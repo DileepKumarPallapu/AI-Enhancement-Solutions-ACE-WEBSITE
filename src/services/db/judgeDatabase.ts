@@ -98,7 +98,9 @@ class JudgeDatabase {
   }
 
   public getAssignmentsForJudge(judgeUserId: string): JudgeAssignment[] {
-    return Array.from(this.assignments.values()).filter(a => a.judgeUserId === judgeUserId);
+    const list = Array.from(this.assignments.values()).filter(a => a.judgeUserId === judgeUserId);
+    if (list.length > 0) return list;
+    return Array.from(this.assignments.values());
   }
 
   public submitScore(assignmentId: string, rubricScores: { criteriaName: string; score: number; feedback: string }[]): boolean {
