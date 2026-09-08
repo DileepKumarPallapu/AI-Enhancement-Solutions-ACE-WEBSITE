@@ -1,3 +1,15 @@
+// ACE 120X Autonomous Workflow & Agentic Execution OS
+import { WorkflowDashboardPage } from './pages/workflows/WorkflowDashboardPage';
+import { VisualWorkflowBuilderPage } from './pages/workflows/VisualWorkflowBuilderPage';
+import { WorkflowDetailPage } from './pages/workflows/WorkflowDetailPage';
+import { WorkflowRunsPage } from './pages/workflows/WorkflowRunsPage';
+import { UniversalTaskCenterPage } from './pages/tasks/UniversalTaskCenterPage';
+import { WorkflowApprovalCenterPage } from './pages/approvals/WorkflowApprovalCenterPage';
+import { WorkflowAutomationsPage } from './pages/automations/WorkflowAutomationsPage';
+import { AIActionCenterPage } from './pages/ai/AIActionCenterPage';
+import { AdminWorkflowOperationsPage } from './pages/admin/AdminWorkflowOperationsPage';
+import { WorkflowFailureCenterPage } from './pages/admin/WorkflowFailureCenterPage';
+import { UniversalCommandPalette } from './components/common/UniversalCommandPalette';
 // ACE 110X Global Opportunity Exchange & Multi-Currency Platform
 import { GlobalOpportunityExchangePage } from './pages/opportunities/GlobalOpportunityExchangePage';
 import { GlobalOpportunityDeadlinesPage } from './pages/opportunities/GlobalOpportunityDeadlinesPage';
@@ -572,6 +584,19 @@ export function App() {
                                                                 {/* ACE 20X Global Student Super Platform */}
                                 <Route path="/search" element={<SuperSearchPage />} />
                                 {/* ACE 110X Global Opportunity Exchange & Multi-Currency Ecosystem */}
+                                {/* ACE 120X Autonomous Workflow & Agentic Execution OS */}
+                                <Route path="/workflows" element={<WorkflowDashboardPage />} />
+                                <Route path="/workflows/new" element={<VisualWorkflowBuilderPage />} />
+                                <Route path="/workflows/:id" element={<WorkflowDetailPage />} />
+                                <Route path="/workflows/:id/edit" element={<VisualWorkflowBuilderPage />} />
+                                <Route path="/workflows/:id/runs" element={<WorkflowRunsPage />} />
+                                <Route path="/tasks" element={<UniversalTaskCenterPage />} />
+                                <Route path="/approvals" element={<WorkflowApprovalCenterPage />} />
+                                <Route path="/automations" element={<WorkflowAutomationsPage />} />
+                                <Route path="/ai/actions" element={<AIActionCenterPage />} />
+                                <Route path="/admin/workflows" element={<AdminWorkflowOperationsPage />} />
+                                <Route path="/admin/workflows/failures" element={<WorkflowFailureCenterPage />} />
+                                
                                 <Route path="/opportunities" element={<GlobalOpportunityExchangePage />} />
                                 <Route path="/opportunities/deadlines" element={<GlobalOpportunityDeadlinesPage />} />
                                 <Route path="/opportunities/compare" element={<OpportunityComparisonPage />} />
@@ -679,6 +704,7 @@ export function App() {
                             </Routes>
                           </main>
 
+                          <UniversalCommandPalette />
                           <Footer />
                           <MobileBottomNav />
                           <AceAiAssistant isOpen={isAiDrawerOpen} onClose={() => setIsAiDrawerOpen(false)} />

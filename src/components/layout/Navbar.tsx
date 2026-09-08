@@ -157,6 +157,21 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                       <Link to="/interview/ai-coach" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
                         <span>💼 AI Interview Simulator</span>
                       </Link>
+                      <Link to="/workflows" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>⚡ Autonomous Workflow OS (120X)</span>
+                      </Link>
+                      <Link to="/tasks" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>✅ Universal Tasks</span>
+                      </Link>
+                      <Link to="/approvals" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🛡️ Workflow Approval Gates</span>
+                      </Link>
+                      <Link to="/automations" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>✨ Event-Driven Automations</span>
+                      </Link>
+                      <Link to="/ai/actions" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🤖 Gated AI Action Proposals</span>
+                      </Link>
                       <Link to="/opportunities" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-xl">
                         <span>🌐 Global Opportunity Exchange (110X)</span>
                       </Link>

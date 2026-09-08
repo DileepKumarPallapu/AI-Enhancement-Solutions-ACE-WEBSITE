@@ -425,6 +425,54 @@ export const ENTITY_COVERAGE_INVENTORY: EntityCoverageItem[] = [
     allowedRoles: ['STUDENT', 'ALL'],
     capabilities: { create: true, read: true, update: false, deleteOrArchive: false, export: false },
     coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-workflow-os-120x',
+    entityName: 'Autonomous Workflow OS & Visual Builder',
+    category: 'DEVELOPER_API',
+    databaseService: 'workflowEngineDatabase.ts',
+    primaryApiRoute: '/api/v1/workflows',
+    frontendRoute: '/workflows',
+    frontendComponent: 'WorkflowDashboardPage.tsx / VisualWorkflowBuilderPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: true, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-universal-tasks-120x',
+    entityName: 'Universal Task Command Center & Prioritization',
+    category: 'CORE_IDENTITY',
+    databaseService: 'workflowEngineDatabase.ts',
+    primaryApiRoute: '/api/v1/tasks',
+    frontendRoute: '/tasks',
+    frontendComponent: 'UniversalTaskCenterPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: true, export: false },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-approvals-center-120x',
+    entityName: 'Workflow Approvals Center & Human-In-The-Loop Gates',
+    category: 'SECURITY_TRUST',
+    databaseService: 'workflowEngineDatabase.ts',
+    primaryApiRoute: '/api/v1/approvals',
+    frontendRoute: '/approvals',
+    frontendComponent: 'WorkflowApprovalCenterPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: false, read: true, update: true, deleteOrArchive: false, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-ai-action-proposals-120x',
+    entityName: 'Gated AI Tool Proposals & Permission Barriers',
+    category: 'SECURITY_TRUST',
+    databaseService: 'aiWorkflowAgentDatabase.ts',
+    primaryApiRoute: '/api/v1/ai/actions',
+    frontendRoute: '/ai/actions',
+    frontendComponent: 'AIActionCenterPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: false, export: false },
+    coverageStatus: 'FULL_COVERAGE'
   }
 ];
 
