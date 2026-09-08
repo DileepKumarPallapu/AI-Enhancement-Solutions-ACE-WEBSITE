@@ -166,8 +166,20 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                       <Link to="/interviews" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
                         <span>📅 Interview Schedule</span>
                       </Link>
-                      <Link to="/student/passport" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🛡️ Verified Student Passport</span>
+                      <Link to="/student/passport" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🛡️ Digital Student Passport (80X)</span>
+                      </Link>
+                      <Link to="/student/credentials" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🪪 Credential Wallet</span>
+                      </Link>
+                      <Link to="/student/resume" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>📄 ATS Resume Builder</span>
+                      </Link>
+                      <Link to="/student/portfolio" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🌐 Portfolio Studio</span>
+                      </Link>
+                      <Link to="/student/privacy" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🔒 Student Privacy Center</span>
                       </Link>
                       <Link to="/recruiter" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
                         <span>💼 Recruiter Hub & Talent Radar</span>
@@ -377,6 +389,21 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                         </Link>
 
                         {/* Phase 2 Quick Tools */}
+                        <Link to="/student/passport" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-indigo-950/40 rounded-xl font-bold transition-colors">
+                          <ShieldCheck className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                          <span>Digital Student Passport (80X)</span>
+                        </Link>
+
+                        <Link to="/student/credentials" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <Award className="w-4 h-4 text-emerald-500" />
+                          <span>Verified Credential Wallet</span>
+                        </Link>
+
+                        <Link to="/student/privacy" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors">
+                          <ShieldCheck className="w-4 h-4 text-purple-500" />
+                          <span>Student Privacy Center</span>
+                        </Link>
+
                         <Link to="/student/ace-id" onClick={closeAll} className="flex items-center gap-2.5 px-3 py-2 text-emerald-600 dark:text-emerald-400 bg-emerald-50/70 dark:bg-emerald-950/40 rounded-xl font-bold transition-colors">
                           <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                           <span>Digital Student ID & Pass</span>

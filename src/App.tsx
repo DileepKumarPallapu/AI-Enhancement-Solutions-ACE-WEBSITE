@@ -1,3 +1,11 @@
+// ACE 80X Digital Student Passport, Credentials & Portfolio Ecosystem
+import { DigitalStudentPassportPage } from './pages/passport/DigitalStudentPassportPage';
+import { CredentialWalletPage } from './pages/passport/CredentialWalletPage';
+import { CredentialVerificationPage } from './pages/verify/CredentialVerificationPage';
+import { ResumeBuilderPage as ATSResumeBuilderPage } from './pages/resume/ResumeBuilderPage';
+import { PortfolioBuilderPage } from './pages/portfolio/PortfolioBuilderPage';
+import { StudentPrivacyCenterPage } from './pages/settings/StudentPrivacyCenterPage';
+
 import { AdminFrontendCoveragePage } from './pages/admin/AdminFrontendCoveragePage';
 // ACE 70X Global Student, Institution, Career & Opportunity Ecosystem
 import { CollegeOSPage } from './pages/college/CollegeOSPage';
@@ -602,6 +610,14 @@ export function App() {
                                 <Route path="/marketplace" element={<MarketplaceHubPage />} />
                                 <Route path="/partners" element={<PartnerNetworkPage />} />
                                 <Route path="/creators" element={<CreatorEcosystemPage />} />
+
+                                {/* ACE 80X Digital Student Passport, Credentials & Portfolio Ecosystem */}
+                                <Route path="/student/passport" element={<DigitalStudentPassportPage />} />
+                                <Route path="/student/credentials" element={<CredentialWalletPage />} />
+                                <Route path="/credentials/:credentialId" element={<CredentialVerificationPage />} />
+                                <Route path="/student/resume" element={<ATSResumeBuilderPage />} />
+                                <Route path="/student/portfolio" element={<PortfolioBuilderPage />} />
+                                <Route path="/student/privacy" element={<StudentPrivacyCenterPage />} />
 
 
 
