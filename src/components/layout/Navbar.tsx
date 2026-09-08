@@ -145,8 +145,20 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
 
                   {showMoreMenu && (
                     <div className="absolute left-0 top-full mt-2 w-72 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-2 z-50 animate-scaleUp max-h-96 overflow-y-auto">
+                      <Link to="/ai" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-extrabold text-purple-600 dark:text-purple-400 bg-purple-50/50 dark:bg-purple-950/30 hover:bg-purple-100 rounded-xl">
+                        <span>✨ AI Student Success Engine (100X)</span>
+                      </Link>
+                      <Link to="/ai/study-coach" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>📖 AI Study Coach</span>
+                      </Link>
+                      <Link to="/ai/project-mentor" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🎯 AI Project Mentor</span>
+                      </Link>
+                      <Link to="/interview/ai-coach" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>💼 AI Interview Simulator</span>
+                      </Link>
                       <Link to="/campus" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
-                        <span>🏫 Campus Feed & Announcements (90X)</span>
+                        <span>🏫 Campus Feed & Announcements</span>
                       </Link>
                       <Link to="/connections" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
                         <span>👥 Student Network & Connections</span>

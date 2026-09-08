@@ -1,3 +1,10 @@
+// ACE 100X AI-Native Student Success Engine
+import { AICommandCenterHubPage } from './pages/ai/AICommandCenterHubPage';
+import { AIMemoryCenterPage } from './pages/ai/AIMemoryCenterPage';
+import { AIStudyCoachPage } from './pages/ai/AIStudyCoachPage';
+import { AIProjectMentorPage } from './pages/ai/AIProjectMentorPage';
+import { AIInterviewCoachPage } from './pages/career/AIInterviewCoachPage';
+
 // ACE 90X Student Life, Campus Network, Social & Collaboration OS
 import { CampusFeedPage } from './pages/campus/CampusFeedPage';
 import { StudentConnectionsPage } from './pages/network/StudentConnectionsPage';
@@ -634,6 +641,13 @@ export function App() {
                                 <Route path="/safety" element={<StudentSafetyCenterPage />} />
                                 <Route path="/reports" element={<ModerationReportCenterPage />} />
                                 <Route path="/deadlines" element={<CampusDeadlineCenterPage />} />
+
+                                {/* ACE 100X AI-Native Student Success & Opportunity Intelligence */}
+                                <Route path="/ai" element={<AICommandCenterHubPage />} />
+                                <Route path="/ai/memory" element={<AIMemoryCenterPage />} />
+                                <Route path="/ai/study-coach" element={<AIStudyCoachPage />} />
+                                <Route path="/ai/project-mentor" element={<AIProjectMentorPage />} />
+                                <Route path="/interview/ai-coach" element={<AIInterviewCoachPage />} />
 
 
 

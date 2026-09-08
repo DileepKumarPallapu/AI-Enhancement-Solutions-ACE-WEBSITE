@@ -305,6 +305,66 @@ export const ENTITY_COVERAGE_INVENTORY: EntityCoverageItem[] = [
     allowedRoles: ['STUDENT', 'ALL'],
     capabilities: { create: true, read: true, update: true, deleteOrArchive: false, export: true },
     coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-ai-command-center-100x',
+    entityName: 'AI Student Success Engine & Grounded Command Center',
+    category: 'CORE_IDENTITY',
+    databaseService: 'aiCommandCenterDatabase.ts',
+    primaryApiRoute: '/api/v1/ai/command',
+    frontendRoute: '/ai',
+    frontendComponent: 'AICommandCenterHubPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: true, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-ai-memory-100x',
+    entityName: 'AI Consented Memory & Personalization Settings',
+    category: 'CORE_IDENTITY',
+    databaseService: 'aiMemoryDatabase.ts',
+    primaryApiRoute: '/api/v1/ai/memory',
+    frontendRoute: '/ai/memory',
+    frontendComponent: 'AIMemoryCenterPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: true, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-ai-study-coach-100x',
+    entityName: 'AI Adaptive Study Coach & Validated Quizzes',
+    category: 'LEARNING_SKILLS',
+    databaseService: 'aiStudyCoachDatabase.ts',
+    primaryApiRoute: '/api/v1/ai/study',
+    frontendRoute: '/ai/study-coach',
+    frontendComponent: 'AIStudyCoachPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: false, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-ai-project-mentor-100x',
+    entityName: 'AI Project Architecture Mentor & Blueprint Generator',
+    category: 'LEARNING_SKILLS',
+    databaseService: 'aiProjectMentorDatabase.ts',
+    primaryApiRoute: '/api/v1/ai/project',
+    frontendRoute: '/ai/project-mentor',
+    frontendComponent: 'AIProjectMentorPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: false, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-ai-interview-coach-100x',
+    entityName: 'AI Technical Mock Interview Simulator & Rubrics',
+    category: 'CAREER_PLACEMENT',
+    databaseService: 'aiInterviewCoachDatabase.ts',
+    primaryApiRoute: '/api/v1/interview/ai-coach',
+    frontendRoute: '/interview/ai-coach',
+    frontendComponent: 'AIInterviewCoachPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: true, export: true },
+    coverageStatus: 'FULL_COVERAGE'
   }
 ];
 
