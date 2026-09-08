@@ -145,6 +145,28 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
 
                   {showMoreMenu && (
                     <div className="absolute left-0 top-full mt-2 w-72 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-2 z-50 animate-scaleUp max-h-96 overflow-y-auto">
+                      <Link to="/home" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-black text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 rounded-xl shadow-xs">
+                        <span>🌟 Universal Home (150X)</span>
+                      </Link>
+                      <Link to="/command-center" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-extrabold text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-indigo-950/30 hover:bg-indigo-100 rounded-xl">
+                        <span>🕹️ Universal Command Center</span>
+                      </Link>
+                      <Link to="/discover" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🔍 Personalized Opportunity Feed</span>
+                      </Link>
+                      <Link to="/applications" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>💼 Unified Application OS</span>
+                      </Link>
+                      <Link to="/skills" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🧠 Dynamic Skill Graph</span>
+                      </Link>
+                      <Link to="/projects/lab" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>🧪 Student Project Lab</span>
+                      </Link>
+                      <Link to="/activity" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-xl">
+                        <span>⚡ Universal Activity Center</span>
+                      </Link>
+                      <div className="h-px bg-slate-100 dark:bg-slate-800 my-1"></div>
                       <Link to="/ai" onClick={closeAll} className="flex items-center gap-2 px-3 py-2 text-xs font-extrabold text-purple-600 dark:text-purple-400 bg-purple-50/50 dark:bg-purple-950/30 hover:bg-purple-100 rounded-xl">
                         <span>✨ AI Student Success Engine (100X)</span>
                       </Link>

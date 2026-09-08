@@ -473,6 +473,114 @@ export const ENTITY_COVERAGE_INVENTORY: EntityCoverageItem[] = [
     allowedRoles: ['STUDENT', 'ALL'],
     capabilities: { create: true, read: true, update: true, deleteOrArchive: false, export: false },
     coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-universal-home-150x',
+    entityName: 'Universal Home Operating Hub (150X)',
+    category: 'CORE_IDENTITY',
+    databaseService: 'aceSuperPlatformDatabase.ts',
+    primaryApiRoute: '/api/v1/home/feed',
+    frontendRoute: '/home',
+    frontendComponent: 'UniversalHomePage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: true, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-universal-command-center-150x',
+    entityName: 'Universal Command Center Matrix (150X)',
+    category: 'CORE_IDENTITY',
+    databaseService: 'aceSuperPlatformDatabase.ts',
+    primaryApiRoute: '/api/v1/command/matrix',
+    frontendRoute: '/command-center',
+    frontendComponent: 'UniversalCommandCenterPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: true, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-personalized-discover-150x',
+    entityName: 'Explainable Opportunity Recommendation Feed (150X)',
+    category: 'COMPETITIONS_EVENTS',
+    databaseService: 'aceSuperPlatformDatabase.ts',
+    primaryApiRoute: '/api/v1/opportunities/discover',
+    frontendRoute: '/discover',
+    frontendComponent: 'PersonalOpportunityFeedPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: false, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-unified-applications-150x',
+    entityName: 'Unified Multi-Category Application OS (150X)',
+    category: 'CAREER_PLACEMENT',
+    databaseService: 'aceSuperPlatformDatabase.ts',
+    primaryApiRoute: '/api/v1/applications/unified',
+    frontendRoute: '/applications',
+    frontendComponent: 'UnifiedApplicationOSPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: true, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-universal-career-os-150x',
+    entityName: 'Universal Career OS & Simulation Sandbox (150X)',
+    category: 'CAREER_PLACEMENT',
+    databaseService: 'aceSuperPlatformDatabase.ts',
+    primaryApiRoute: '/api/v1/career/simulation',
+    frontendRoute: '/career',
+    frontendComponent: 'UniversalCareerOSPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: false, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-dynamic-skill-graph-150x',
+    entityName: 'Interactive Dynamic Skill Graph (150X)',
+    category: 'LEARNING_SKILLS',
+    databaseService: 'aceSuperPlatformDatabase.ts',
+    primaryApiRoute: '/api/v1/skills/graph',
+    frontendRoute: '/skills',
+    frontendComponent: 'InteractiveSkillGraphPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: false, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-project-lab-os-150x',
+    entityName: 'Student Project Lab & Repository Manager (150X)',
+    category: 'LEARNING_SKILLS',
+    databaseService: 'aceSuperPlatformDatabase.ts',
+    primaryApiRoute: '/api/v1/projects/lab',
+    frontendRoute: '/projects/lab',
+    frontendComponent: 'StudentProjectLabPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: true, read: true, update: true, deleteOrArchive: true, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-activity-center-150x',
+    entityName: 'Universal Activity & Audit Timeline (150X)',
+    category: 'CORE_IDENTITY',
+    databaseService: 'aceSuperPlatformDatabase.ts',
+    primaryApiRoute: '/api/v1/activity/timeline',
+    frontendRoute: '/activity',
+    frontendComponent: 'UniversalActivityCenterPage.tsx',
+    allowedRoles: ['STUDENT', 'ALL'],
+    capabilities: { create: false, read: true, update: false, deleteOrArchive: false, export: true },
+    coverageStatus: 'FULL_COVERAGE'
+  },
+  {
+    id: 'cov-ai-cost-center-150x',
+    entityName: 'AI Cost Center & Token Governance (150X)',
+    category: 'SECURITY_TRUST',
+    databaseService: 'aceSuperPlatformDatabase.ts',
+    primaryApiRoute: '/api/v1/admin/ai/usage',
+    frontendRoute: '/admin/ai/usage',
+    frontendComponent: 'AICostCenterPage.tsx',
+    allowedRoles: ['ADMIN'],
+    capabilities: { create: false, read: true, update: true, deleteOrArchive: false, export: true },
+    coverageStatus: 'FULL_COVERAGE'
   }
 ];
 

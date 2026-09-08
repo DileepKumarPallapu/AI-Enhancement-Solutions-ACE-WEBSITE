@@ -1,3 +1,13 @@
+// ACE 150X The Ultimate ACE Super Platform
+import { UniversalHomePage } from './pages/home/UniversalHomePage';
+import { UniversalCommandCenterPage } from './pages/command/UniversalCommandCenterPage';
+import { PersonalOpportunityFeedPage } from './pages/discover/PersonalOpportunityFeedPage';
+import { UnifiedApplicationOSPage } from './pages/applications/UnifiedApplicationOSPage';
+import { UniversalCareerOSPage } from './pages/career/UniversalCareerOSPage';
+import { InteractiveSkillGraphPage } from './pages/skills/InteractiveSkillGraphPage';
+import { StudentProjectLabPage } from './pages/projects/StudentProjectLabPage';
+import { UniversalActivityCenterPage } from './pages/activity/UniversalActivityCenterPage';
+import { AICostCenterPage } from './pages/admin/AICostCenterPage';
 // ACE 120X Autonomous Workflow & Agentic Execution OS
 import { WorkflowDashboardPage } from './pages/workflows/WorkflowDashboardPage';
 import { VisualWorkflowBuilderPage } from './pages/workflows/VisualWorkflowBuilderPage';
@@ -698,6 +708,17 @@ export function App() {
                                 <Route path="/interview/ai-coach" element={<AIInterviewCoachPage />} />
 
 
+
+                                                                {/* ACE 150X The Ultimate ACE Super Platform */}
+                                <Route path="/home" element={<UniversalHomePage />} />
+                                <Route path="/command-center" element={<UniversalCommandCenterPage />} />
+                                <Route path="/discover" element={<PersonalOpportunityFeedPage />} />
+                                <Route path="/applications" element={<UnifiedApplicationOSPage />} />
+                                <Route path="/career" element={<UniversalCareerOSPage />} />
+                                <Route path="/skills" element={<InteractiveSkillGraphPage />} />
+                                <Route path="/projects/lab" element={<StudentProjectLabPage />} />
+                                <Route path="/activity" element={<UniversalActivityCenterPage />} />
+                                <Route path="/admin/ai/usage" element={<RequireRole allowedRoles={['ADMIN']}><AICostCenterPage /></RequireRole>} />
 
                                 {/* Catch-all 404 handler */}
                               <Route path="*" element={<NotFoundPage />} />
