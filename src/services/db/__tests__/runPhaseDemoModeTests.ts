@@ -56,11 +56,11 @@ export function runPhaseDemoModeTests(): boolean {
     assert(routes.includes('/judge/dashboard'), 'Judge dashboard route is registered');
     assert(routes.includes('/admin/dashboard'), 'Admin dashboard route is registered');
 
-    // 5. Verify 13-step guided tour
+    // 5. Verify 15-step guided tour
     const tourSteps = demoModeDatabase.getTourSteps();
-    assert(tourSteps.length === 13, `Guided presentation tour has exactly 13 steps (found ${tourSteps.length})`);
-    assert(tourSteps[0].step === 1 && tourSteps[0].roleName === 'Student', 'Tour step 1 starts with Student OS');
-    assert(tourSteps[12].step === 13 && tourSteps[12].roleName === 'Superadmin', 'Tour step 13 concludes with Platform Governance Admin');
+    assert(tourSteps.length === 15, `Guided presentation tour has exactly 15 steps (found ${tourSteps.length})`);
+    assert(tourSteps[0].step === 1 && tourSteps[0].roleName === 'Student OS', 'Tour step 1 starts with Student OS');
+    assert(tourSteps[14].step === 15 && tourSteps[14].roleName === 'Analytics', 'Tour step 15 concludes with Unified Analytics');
 
     // 6. Test reset controller
     student.walletBalanceCoins = 1000;

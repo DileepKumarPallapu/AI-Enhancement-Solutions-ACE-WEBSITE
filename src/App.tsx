@@ -734,6 +734,27 @@ export function App() {
                                 <Route path="/workspaces" element={<UniversalWorkspaceHubPage />} />
                                 <Route path="/admin/workspaces" element={<RequireRole allowedRoles={['ADMIN', 'SUPER_ADMIN']}><AdminWorkspaceManagementPage /></RequireRole>} />
 
+                                
+                                {/* Hackathon Showcase Route Aliases */}
+                                <Route path="/mentorship" element={<MentorsLandingPage />} />
+                                <Route path="/institutions" element={<CollegesPage />} />
+                                <Route path="/learning" element={<LearningHubPage />} />
+                                <Route path="/student-id" element={<DigitalIdPage />} />
+                                <Route path="/resume" element={<ATSResumeBuilderPage />} />
+                                <Route path="/portfolio" element={<PortfolioBuilderPage />} />
+                                <Route path="/placement/dashboard" element={<PlacementCellOSPage />} />
+                                <Route path="/placement" element={<PlacementCellOSPage />} />
+                                <Route path="/club/dashboard" element={<CollegeClubsPage />} />
+                                <Route path="/provider/dashboard" element={<TrainingProviderPortalPage />} />
+                                <Route path="/provider" element={<TrainingProviderPortalPage />} />
+                                <Route path="/partner/dashboard" element={<PartnerNetworkPage />} />
+                                <Route path="/partners" element={<PartnerNetworkPage />} />
+                                <Route path="/admin/dashboard" element={<RequireRole allowedRoles={['ADMIN']}><AdminAiRiskCenterPage /></RequireRole>} />
+                                <Route path="/ai/career" element={<UniversalCareerOSPage />} />
+                                <Route path="/ai/learning" element={<AIStudyCoachPage />} />
+                                <Route path="/ai/application" element={<UnifiedApplicationOSPage />} />
+                                <Route path="/trust" element={<TrustCenterPage />} />
+
                                 {/* Catch-all 404 handler */}
                               <Route path="*" element={<NotFoundPage />} />
                             </Routes>

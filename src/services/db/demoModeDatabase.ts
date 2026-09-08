@@ -1,5 +1,5 @@
 // ACE Hackathon Demo Mode Database Service
-// Provides isolated demo dataset, all 13 workspace routes, guided tour steps, and reset controllers
+// Provides isolated demo dataset, all 13 workspace routes, 15-step guided tour, and reset controllers
 
 import { AccountRole } from '../../types/account';
 
@@ -79,8 +79,8 @@ class DemoModeDatabase {
     {
       id: 'demo-ws-student',
       role: 'STUDENT',
-      title: 'Student Operating System',
-      name: '🎓 Student Dashboard',
+      title: 'STUDENT',
+      name: 'Student Dashboard',
       description: 'Explore personalized opportunity discovery, learn & play arcade, skill graph, career simulator, project lab, and digital passport.',
       icon: '🎓',
       category: 'PERSONAL',
@@ -92,8 +92,8 @@ class DemoModeDatabase {
     {
       id: 'demo-ws-ambassador',
       role: 'COLLEGE_AMBASSADOR',
-      title: 'Campus Ambassador Directorate',
-      name: '📣 Campus Ambassador Dashboard',
+      title: 'CAMPUS AMBASSADOR',
+      name: 'Campus Ambassador Dashboard',
       description: 'Review campus event proposals, track student referral campaigns, manage departmental outreach, and coordinate college initiatives.',
       icon: '📣',
       category: 'CAMPUS',
@@ -105,8 +105,8 @@ class DemoModeDatabase {
     {
       id: 'demo-ws-faculty-mentor',
       role: 'MENTOR',
-      title: 'Faculty Mentorship Hub',
-      name: '👨‍🏫 Faculty Mentor Dashboard',
+      title: 'FACULTY MENTOR',
+      name: 'Faculty Mentor Dashboard',
       description: 'Conduct 1-on-1 sprint reviews, verify project lab milestones, endorse competencies, schedule guidance sessions, and track research.',
       icon: '👨‍🏫',
       category: 'CAMPUS',
@@ -116,10 +116,23 @@ class DemoModeDatabase {
       metrics: [{ label: 'Assigned Mentees', value: 12 }, { label: 'Reviews Due', value: 2 }, { label: 'Projects Signed', value: 5 }]
     },
     {
+      id: 'demo-ws-mentor',
+      role: 'MENTOR',
+      title: 'MENTOR',
+      name: 'Mentor Dashboard',
+      description: 'Industry technical mentorship, career guidance sessions, office hours scheduling, and mentee dossier reviews.',
+      icon: '🧭',
+      category: 'CAMPUS',
+      route: '/mentor/dashboard',
+      badge: 'Industry Mentor',
+      keyFeatures: ['Office Hours Booking', 'Career Advice Plans', 'Skill Review Matrix', 'Direct Messaging'],
+      metrics: [{ label: 'Active Mentees', value: 8 }, { label: 'Office Hours', value: '4/wk' }, { label: 'Rating', value: '4.9 ★' }]
+    },
+    {
       id: 'demo-ws-organizer',
       role: 'ORGANIZER',
-      title: 'Event Organizer Command',
-      name: '🎫 Event Organizer Dashboard',
+      title: 'ORGANIZER',
+      name: 'Event Organizer Dashboard',
       description: 'Launch collegiate hackathons, manage multi-track registrations, attendance QR check-ins, automate certificates, and run workflows.',
       icon: '🎫',
       category: 'ORGANIZATION',
@@ -131,8 +144,8 @@ class DemoModeDatabase {
     {
       id: 'demo-ws-college',
       role: 'COLLEGE',
-      title: 'Institution Directorate OS',
-      name: '🏫 College / Institution Dashboard',
+      title: 'COLLEGE',
+      name: 'College Dashboard',
       description: 'Comprehensive college governance: department hierarchy, faculty mentor allocations, institutional accreditation telemetry, and drives.',
       icon: '🏫',
       category: 'ORGANIZATION',
@@ -144,8 +157,8 @@ class DemoModeDatabase {
     {
       id: 'demo-ws-recruiter',
       role: 'RECRUITER',
-      title: 'Recruiter & Talent Radar',
-      name: '💼 Recruiter Dashboard',
+      title: 'RECRUITER',
+      name: 'Recruiter Dashboard',
       description: 'Filter verified candidate profiles by verified skill evidence, post high-impact fellowships, schedule interviews, and issue offers.',
       icon: '💼',
       category: 'PROFESSIONAL',
@@ -157,8 +170,8 @@ class DemoModeDatabase {
     {
       id: 'demo-ws-judge',
       role: 'JUDGE',
-      title: 'Judge & Competition Arena',
-      name: '⚖️ Judge Dashboard',
+      title: 'JUDGE',
+      name: 'Judge Dashboard',
       description: 'Score assigned hackathon submissions against multi-criteria rubrics, provide feedback, flag violations, and update leaderboards.',
       icon: '⚖️',
       category: 'PROFESSIONAL',
@@ -170,8 +183,8 @@ class DemoModeDatabase {
     {
       id: 'demo-ws-placement',
       role: 'STUDENT',
-      title: 'Placement Cell OS',
-      name: '📊 Placement Dashboard',
+      title: 'PLACEMENT',
+      name: 'Placement Dashboard',
       description: 'Campus hiring drive manager, eligibility validation engine, shortlists, company coordination, and institutional statistics.',
       icon: '📊',
       category: 'PROFESSIONAL',
@@ -183,8 +196,8 @@ class DemoModeDatabase {
     {
       id: 'demo-ws-club',
       role: 'STUDENT',
-      title: 'Club & Chapter Command',
-      name: '👥 Club / Chapter Dashboard',
+      title: 'CLUB',
+      name: 'Club Dashboard',
       description: 'Manage collegiate technical chapters, student memberships, internal hack nights, budget requests, and community milestones.',
       icon: '👥',
       category: 'ORGANIZATION',
@@ -196,8 +209,8 @@ class DemoModeDatabase {
     {
       id: 'demo-ws-provider',
       role: 'STUDENT',
-      title: 'Training Provider Portal',
-      name: '📚 Training Provider Dashboard',
+      title: 'TRAINING PROVIDER',
+      name: 'Training Provider Dashboard',
       description: 'Publish certified micro-courses, manage student cohorts, track completion milestones, and issue verifiable digital credentials.',
       icon: '📚',
       category: 'PROFESSIONAL',
@@ -209,8 +222,8 @@ class DemoModeDatabase {
     {
       id: 'demo-ws-partner',
       role: 'STUDENT',
-      title: 'Global Partner Network',
-      name: '🤝 Partner Dashboard',
+      title: 'PARTNER',
+      name: 'Partner Dashboard',
       description: 'Coordinate global sponsorship campaigns, research lab grants, and international opportunity exchange programs.',
       icon: '🤝',
       category: 'ORGANIZATION',
@@ -222,8 +235,8 @@ class DemoModeDatabase {
     {
       id: 'demo-ws-admin',
       role: 'ADMIN',
-      title: 'Platform Governance & Security',
-      name: '🛡️ Superadmin Dashboard',
+      title: 'ADMIN',
+      name: 'Admin Dashboard',
       description: 'Master platform operations: multi-role governance, AI token usage cost center, workflow failure queues, and system health telemetry.',
       icon: '🛡️',
       category: 'ADMINISTRATION',
@@ -234,20 +247,21 @@ class DemoModeDatabase {
     }
   ];
 
+  // 15-Step Complete Judge Tour
   private tourSteps: DemoTourStep[] = [
     {
       step: 1,
-      title: 'Student Operating System & Hub',
-      roleName: 'Student',
+      title: 'Student Operating System & Unified Hub',
+      roleName: 'Student OS',
       icon: '🎓',
       route: '/student/dashboard',
-      description: 'The unified student command center connecting personalized priorities, wallet balances, urgent deadlines, and daily action roadmap.',
+      description: 'The unified student command center connecting personalized priorities, 48,500 coin wallet balance, urgent deadlines, and daily action roadmap.',
       keyHighlights: ['Personalized Priorities', '48,500 ACE Coins Wallet', 'High Priority Action Radar']
     },
     {
       step: 2,
       title: 'Personalized Opportunity Discover Feed',
-      roleName: 'Opportunity Engine',
+      roleName: 'Opportunities',
       icon: '🔍',
       route: '/discover',
       description: 'AI-grounded matching engine recommending international fellowships, competitions, and internships with explicit explainability rationale.',
@@ -255,24 +269,51 @@ class DemoModeDatabase {
     },
     {
       step: 3,
-      title: 'Interactive Dynamic Skill Graph',
-      roleName: 'Skills & Learning',
+      title: 'Interactive Learning Hub & Pathways',
+      roleName: 'Learning',
+      icon: '📚',
+      route: '/learning',
+      description: 'Interactive curricula, coding practice, micro-tasks, and skill progression paths mapped directly to industry roles.',
+      keyHighlights: ['Structured Learning Pathways', 'Coding Challenges', 'XP & Coins Rewards']
+    },
+    {
+      step: 4,
+      title: 'Dynamic Skill Graph & Competencies',
+      roleName: 'Skills',
       icon: '🧠',
       route: '/skills',
       description: 'Visual node-and-edge competency graph showing verified skills, prerequisite pathways, and target industry role readiness.',
       keyHighlights: ['Verified Level 7 Competencies', 'Prerequisite Edge Visualizer', 'Repository Evidence Links']
     },
     {
-      step: 4,
+      step: 5,
+      title: 'Campus & Faculty Mentorship Hub',
+      roleName: 'Mentorship',
+      icon: '👨‍🏫',
+      route: '/mentorship',
+      description: 'Campus mentorship portal connecting students with faculty mentors for 1-on-1 sprint reviews, research guidance, and goals.',
+      keyHighlights: ['Mentee Progress Tracking', 'Sprint Sign-Offs', 'Office Hours Calendar']
+    },
+    {
+      step: 6,
+      title: 'Student Project Lab & Incubation',
+      roleName: 'Projects',
+      icon: '🧪',
+      route: '/projects',
+      description: 'Collaborative code repository hub tracking sprint milestones, peer collaborations, and faculty mentor endorsements.',
+      keyHighlights: ['Faculty Mentor Sign-Off', 'Peer Collaborator Roster', 'Verified Portfolio Badges']
+    },
+    {
+      step: 7,
       title: 'Universal Career OS & Simulator',
-      roleName: 'Career OS',
+      roleName: 'Career',
       icon: '🎯',
       route: '/career',
-      description: 'Simulates readiness against target industry benchmarks (e.g. Senior Fullstack AI Engineer) and computes exact skill gaps.',
+      description: 'Simulates readiness against target industry benchmarks (Senior Fullstack AI Engineer) and computes exact skill gaps.',
       keyHighlights: ['Benchmark Radar', 'Mathematical Gap Evaluation', 'Curated Next Best Action Plan']
     },
     {
-      step: 5,
+      step: 8,
       title: 'Unified Application OS',
       roleName: 'Applications',
       icon: '💼',
@@ -281,53 +322,17 @@ class DemoModeDatabase {
       keyHighlights: ['Multi-Category Pipeline', 'Stage Audit Logs', 'Copilot Application Checklist']
     },
     {
-      step: 6,
-      title: 'Student Project Lab & Incubation',
-      roleName: 'Project Lab',
-      icon: '🧪',
-      route: '/projects/lab',
-      description: 'Collaborative code repository hub tracking sprint milestones, peer collaborations, and faculty mentor endorsements.',
-      keyHighlights: ['Faculty Mentor Sign-Off', 'Peer Collaborator Roster', 'Verified Portfolio Badges']
-    },
-    {
-      step: 7,
-      title: 'Campus Ambassador Directorate',
-      roleName: 'Ambassador',
-      icon: '📣',
-      route: '/ambassador/dashboard',
-      description: 'Student leader portal to review collegiate event proposals, coordinate promotional campaigns, and track student referral trees.',
-      keyHighlights: ['Event Approval Gate', 'Campus Campaign Analytics', 'Departmental Outreach']
-    },
-    {
-      step: 8,
-      title: 'Faculty Mentorship Hub',
-      roleName: 'Mentor',
-      icon: '👨‍🏫',
-      route: '/mentor/dashboard',
-      description: 'Faculty command center providing research guidance, project milestone approvals, 1-on-1 sprint reviews, and skill endorsements.',
-      keyHighlights: ['Mentee Progress Tracking', 'Project Sign-Offs', 'Session Booking Calendar']
-    },
-    {
       step: 9,
-      title: 'Event Organizer Command',
-      roleName: 'Organizer',
-      icon: '🎫',
-      route: '/organizer/dashboard',
-      description: 'End-to-end event management suite with QR check-in scanning, certificate automation, and participant analytics.',
-      keyHighlights: ['Registration Pipeline', 'QR Ticket Validation', 'Verifiable Certificate Issuance']
+      title: 'Collegiate Campus Network & Clubs',
+      roleName: 'Campus',
+      icon: '🏫',
+      route: '/campus',
+      description: 'Institution community connecting departments, student chapters, announcements, and campus hack nights.',
+      keyHighlights: ['Department Announcements', 'Tech Clubs Roster', 'Collegiate Community']
     },
     {
       step: 10,
-      title: 'College & Institution Directorate',
-      roleName: 'Institution',
-      icon: '🏫',
-      route: '/college/dashboard',
-      description: 'Comprehensive institutional operations managing department hierarchies, faculty allocations, and placement drive governance.',
-      keyHighlights: ['Department Breakdown', 'Placement Cell Radar', 'NBA/NAAC Accreditation Telemetry']
-    },
-    {
-      step: 11,
-      title: 'Recruiter & Talent Radar',
+      title: 'Recruiter Hub & Talent Radar',
       roleName: 'Recruiter',
       icon: '💼',
       route: '/recruiter/dashboard',
@@ -335,7 +340,7 @@ class DemoModeDatabase {
       keyHighlights: ['Verified Evidence Filter', 'Interview Scheduler', 'Offer Management Pipeline']
     },
     {
-      step: 12,
+      step: 11,
       title: 'Competition Judge Arena',
       roleName: 'Judge',
       icon: '⚖️',
@@ -344,13 +349,40 @@ class DemoModeDatabase {
       keyHighlights: ['Multi-Criterion Grading Rubric', 'Live Leaderboard Sync', 'Evaluator Feedback Notes']
     },
     {
-      step: 13,
-      title: 'Platform Governance & Security Admin',
-      roleName: 'Superadmin',
+      step: 12,
+      title: 'Platform Governance & Superadmin',
+      roleName: 'Admin',
       icon: '🛡️',
       route: '/admin/dashboard',
       description: 'Central platform directorate monitoring multi-role workspace governance, AI token cost center, workflow failure queues, and uptime.',
       keyHighlights: ['Workspace Governance Console', 'AI Token Cost Breakdown', '100% Platform Health Audit']
+    },
+    {
+      step: 13,
+      title: 'Autonomous AI Student Success Engine',
+      roleName: 'AI Engine',
+      icon: '✨',
+      route: '/ai',
+      description: 'AI Command Center with memory, study coach, project mentor, interview simulator, and grounded recommendations.',
+      keyHighlights: ['Grounded Explainability', 'Interview Simulation Lab', 'Student Persistent Memory']
+    },
+    {
+      step: 14,
+      title: 'Autonomous Workflow OS & Gated Approvals',
+      roleName: 'Workflows',
+      icon: '⚡',
+      route: '/workflows',
+      description: 'Multi-step autonomous workflow execution engine with human-in-the-loop approval gates and task telemetry.',
+      keyHighlights: ['Multi-Step Visual Execution', 'Human Approval Gates', 'Audit Telemetry']
+    },
+    {
+      step: 15,
+      title: 'Unified Operational Analytics',
+      roleName: 'Analytics',
+      icon: '📊',
+      route: '/student/dashboard',
+      description: 'Comprehensive operational telemetry across student readiness, collegiate engagement, recruiter pipeline, and system health.',
+      keyHighlights: ['Readiness Progression', 'Placement Telemetry', 'Platform Health 100%']
     }
   ];
 
