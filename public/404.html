@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Nexus Campus (NEXUS)</title>
+    <script type="text/javascript">
+      // Single Page Apps for GitHub Pages
+      // https://github.com/rafgraph/spa-github-pages
+      // This script takes the current url and converts the path and query
+      // string into just a query string, and then redirects the browser
+      // to the new url with only a query string and hash fragment
+      var pathSegmentsToKeep = 0;
+      var pathParts = window.location.pathname.split('/').filter(Boolean);
+      // If deployed in a subfolder on github pages (e.g. username.github.io/repo-name)
+      if (pathParts.length > 0 && !['events', 'workspaces', 'demo', 'student', 'mentor', 'ambassador', 'college', 'organizer', 'recruiter', 'judge', 'placement', 'provider', 'partners', 'admin', 'profile', 'coding', 'learn', 'campus', 'hackathons', 'competitions', 'rewards', 'referral'].includes(pathParts[0])) {
+        pathSegmentsToKeep = 1;
+      }
+
+      var l = window.location;
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+        l.pathname.split('/').slice(1 + pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+        l.hash
+      );
+    </script>
+  </head>
+  <body style="background-color: #080C14; color: #FFFFFF; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0;">
+    <div style="text-align: center;">
+      <h2 style="margin-bottom: 8px;">Nexus Campus</h2>
+      <p style="color: #94A3B8; font-size: 14px;">Redirecting to destination...</p>
+    </div>
+  </body>
+</html>
