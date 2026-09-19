@@ -332,6 +332,13 @@ import { AdminModerationQueuePage } from './pages/admin/AdminModerationQueuePage
 import { SecurityCenterPage } from './pages/settings/SecurityCenterPage';
 import { SystemHealthDashboardPage } from './pages/admin/SystemHealthDashboardPage';
 
+function getBasename() {
+  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/AI-Enhancement-Solutions-ACE-WEBSITE')) {
+    return '/AI-Enhancement-Solutions-ACE-WEBSITE';
+  }
+  return '/';
+}
+
 export function App() {
   const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false);
 
@@ -345,7 +352,7 @@ export function App() {
                 <LearnPlayProvider>
                   <ArcadeProvider>
                     <CompetitionProvider>
-                      <Router>
+                      <Router basename={getBasename()}>
                         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">
                           <Navbar onOpenAiChat={() => setIsAiDrawerOpen(true)} />
 
