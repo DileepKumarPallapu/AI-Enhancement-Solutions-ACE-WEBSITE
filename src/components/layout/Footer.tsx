@@ -13,20 +13,20 @@ export const Footer: React.FC = () => {
           <div className="col-span-2 space-y-3">
             <Link to="/" className="flex items-center gap-2">
               <img
-                src={BRAND.logoLight}
+                src={BRAND.logoDark}
                 alt={BRAND.brandName}
-                className="h-9 w-auto object-contain brightness-110"
+                className="h-9 w-auto object-contain"
               />
             </Link>
             <p className="text-xs text-slate-400 max-w-sm leading-relaxed">
-              The Digital Campus Operating System connecting Students, Faculty Mentors, Colleges, Organizers, Recruiters, and Competition Judges in One Unified Platform.
+              The AI-Native Collegiate Operating System connecting Students, Faculty Mentors, Colleges, Organizers, Recruiters, and Competition Judges in One Unified Platform.
             </p>
             <div className="pt-2 flex flex-wrap gap-2">
-              <Link to="/workspaces" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-950/60 text-purple-300 border border-purple-800/60 font-bold hover:bg-purple-900 transition-all">
-                <Layers className="w-3.5 h-3.5 text-purple-400" /> My ACE Workspaces
+              <Link to="/workspaces" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-950/60 text-indigo-300 border border-indigo-800/60 font-bold hover:bg-indigo-900 transition-all">
+                <Layers className="w-3.5 h-3.5 text-indigo-400" /> My Nexus Workspaces
               </Link>
-              <Link to="/student/mentorship" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-950/60 text-indigo-300 border border-indigo-800/60 font-bold hover:bg-indigo-900 transition-all">
-                <GraduationCap className="w-3.5 h-3.5 text-indigo-400" /> Campus Mentorship
+              <Link to="/student/mentorship" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-950/60 text-purple-300 border border-purple-800/60 font-bold hover:bg-purple-900 transition-all">
+                <GraduationCap className="w-3.5 h-3.5 text-purple-400" /> Campus Mentorship
               </Link>
             </div>
           </div>
@@ -72,7 +72,7 @@ export const Footer: React.FC = () => {
             <h4 className="text-white font-black text-xs uppercase tracking-wider mb-3">Platform</h4>
             <ul className="space-y-2 text-slate-400">
               <li><Link to="/workspaces" className="hover:text-purple-400 transition-colors">Universal Workspaces</Link></li>
-              <li><Link to="/about" className="hover:text-purple-400 transition-colors">About ACE</Link></li>
+              <li><Link to="/about" className="hover:text-purple-400 transition-colors">About Nexus</Link></li>
               <li><Link to="/support" className="hover:text-purple-400 transition-colors">Help & Support</Link></li>
               <li><Link to="/privacy" className="hover:text-purple-400 transition-colors">Privacy Policy</Link></li>
               <li><Link to="/contact" className="hover:text-purple-400 transition-colors">Contact Us</Link></li>

@@ -155,8 +155,8 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
             <div className="flex items-center gap-2 lg:gap-3 flex-shrink-0">
               <Link to="/" onClick={closeAll} className="flex items-center gap-2 group mr-2 lg:mr-3">
                 <img 
-                  src={BRAND.logo} 
-                  alt="AllCollegeEvent Logo" 
+                  src={theme === 'dark' ? BRAND.logoDark : BRAND.logoLight} 
+                  alt={`${BRAND.brandName} Logo`} 
                   className="h-8 sm:h-9.5 w-auto object-contain transition-transform group-hover:scale-105"
                 />
               </Link>
@@ -398,14 +398,14 @@ export const Navbar: React.FC<{ onOpenAiChat: () => void }> = ({ onOpenAiChat })
                 <kbd className="hidden lg:inline text-[9px] font-mono px-1 py-0.2 rounded bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600">Ctrl K</kbd>
               </button>
 
-              {/* Ask ACE */}
+              {/* Ask NEXUS */}
               <button
                 onClick={onOpenAiChat}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-bold shadow-2xs hover:opacity-95 transition-all"
-                title="Ask ACE AI Assistant"
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 text-white text-xs font-bold shadow-2xs hover:opacity-95 transition-all"
+                title="Ask Nexus AI Assistant"
               >
-                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                <span className="hidden sm:inline">Ask ACE</span>
+                <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
+                <span className="hidden sm:inline">Ask NEXUS</span>
               </button>
 
               {/* Theme Toggle */}

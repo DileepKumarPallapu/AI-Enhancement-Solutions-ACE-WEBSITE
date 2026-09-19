@@ -148,8 +148,8 @@ export const digitalPassportDatabase = {
     const projects: ProjectPassportItem[] = [
       {
         id: 'proj-ace-os',
-        title: 'All College Events (ACE) Super Platform',
-        description: 'Architected and built full-stack student opportunity ecosystem with 20+ specialized operating systems and cryptographic verification.',
+        title: 'Nexus Campus (NEXUS) Super Platform',
+        description: 'Architected and built full-stack collegiate opportunity ecosystem with 20+ specialized operating systems and cryptographic verification.',
         role: 'Lead Full-Stack Architect',
         technologies: ['TypeScript', 'React', 'Node.js', 'PostgreSQL', 'Tailwind CSS'],
         skills: ['TypeScript', 'React', 'Node.js', 'System Design'],

@@ -1,12 +1,12 @@
 /**
- * ACE 40X Central Design Tokens
+ * NEXUS CAMPUS Central Design Tokens
  * Single source of truth for color, surfaces, typography, radius, spacing, and shadows
  */
 
 :root {
   /* Surfaces & Backgrounds */
-  --ace-bg: #FAF8FF;
-  --ace-bg-secondary: #F3EEFF;
+  --ace-bg: #F8FAFC;
+  --ace-bg-secondary: #F1F5F9;
   --ace-surface: #FFFFFF;
   --ace-surface-elevated: #FFFFFF;
   --ace-surface-hover: #F8FAFC;

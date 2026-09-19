@@ -88,7 +88,7 @@ export const ReferralPage: React.FC = () => {
             Refer & Earn Dashboard
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Invite your friends to All College Event and unlock exciting reward points & perks!
+            Invite your friends to Nexus Campus and unlock exciting reward points & perks!
           </p>
         </div>
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-50 border border-purple-200 text-xs font-bold text-brand-700">

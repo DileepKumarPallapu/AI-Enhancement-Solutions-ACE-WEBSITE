@@ -15,7 +15,7 @@ export const PublicVerifyCredentialPage: React.FC = () => {
     title: 'Certified React & TypeScript Full-Stack Engineering Master',
     recipientName: 'Dileep Kumar Pallapu',
     institutionName: 'Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology',
-    issuer: 'All College Events (ACE) & Credential Authority',
+    issuer: 'Nexus Campus (NEXUS) & Credential Authority',
     issueDate: '2026-01-15T10:00:00Z',
     sha256Hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
   };

@@ -9,21 +9,23 @@ export default {
     extend: {
       colors: {
         brand: {
-          50: '#FAF5FF',
-          100: '#F3E8FF',
-          200: '#E9D5FF',
-          300: '#D8B4FE',
-          400: '#C084FC',
-          500: '#7F00FF', // ACE Primary Brand
-          600: '#6B00D7',
-          700: '#5800B0',
-          800: '#46008C',
-          900: '#320064',
-          glow: '#A855F7',
+          50: '#EEF2FF',
+          100: '#E0E7FF',
+          200: '#C7D2FE',
+          300: '#A5B4FC',
+          400: '#818CF8',
+          500: '#6366F1', // Nexus Primary Brand
+          600: '#4F46E5',
+          700: '#4338CA',
+          800: '#3730A3',
+          900: '#312E81',
+          cyan: '#06B6D4',
+          violet: '#8B5CF6',
+          glow: '#818CF8',
         },
         dark: {
-          bg: '#0B0F19',
-          card: '#131B2E',
+          bg: '#080C14',
+          card: '#0F172A',
           surface: '#1E293B',
           border: '#334155'
         }

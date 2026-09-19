@@ -4,8 +4,8 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary: #FAF8FF;
-  --bg-secondary: #F3EEFF;
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #F1F5F9;
   --surface: #FFFFFF;
   --surface-elevated: #FFFFFF;
   --text-primary: #0F172A;
@@ -16,6 +16,8 @@
   --accent: #6366F1;
   --accent-hover: #4F46E5;
   --accent-light: #EEF2FF;
+  --nexus-cyan: #06B6D4;
+  --nexus-violet: #8B5CF6;
   --success: #10B981;
   --success-bg: #ECFDF5;
   --warning: #F59E0B;
@@ -23,12 +25,12 @@
   --danger: #EF4444;
   --danger-bg: #FEF2F2;
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08);
 }
 
 .dark {
-  --bg-primary: #020617;
+  --bg-primary: #080C14;
   --bg-secondary: #0F172A;
   --surface: #0F172A;
   --surface-elevated: #1E293B;
@@ -40,6 +42,8 @@
   --accent: #6366F1;
   --accent-hover: #818CF8;
   --accent-light: #1E1B4B;
+  --nexus-cyan: #38BDF8;
+  --nexus-violet: #A855F7;
   --success: #10B981;
   --success-bg: #064E3B;
   --warning: #F59E0B;

@@ -92,7 +92,7 @@ export const studentCareerProfileDatabase = {
         title: 'Production Projects',
         status: 'COMPLETE',
         evidenceCount: 2,
-        evidenceDetails: ['All College Events (ACE) Super Platform (Active)', 'Distributed Task Queue in Go']
+        evidenceDetails: ['Nexus Campus (NEXUS) Super Platform (Active)', 'Distributed Task Queue in Go']
       },
       {
         category: 'CERTIFICATES',

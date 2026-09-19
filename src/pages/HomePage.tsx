@@ -91,40 +91,40 @@ export const HomePage: React.FC<{ onOpenAiAssistant: () => void }> = ({ onOpenAi
         <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center relative z-10 space-y-6">
           
           {/* Eyebrow */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white dark:bg-slate-800 border border-purple-200/80 dark:border-slate-700 shadow-xs text-xs font-bold text-purple-700 dark:text-purple-300">
-            <Sparkles className="w-4 h-4 text-purple-600 animate-pulse" />
-            <span>AI-POWERED STUDENT OPPORTUNITY ECOSYSTEM</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white dark:bg-slate-800 border border-indigo-200/80 dark:border-slate-700 shadow-xs text-xs font-bold text-indigo-700 dark:text-indigo-300">
+            <Sparkles className="w-4 h-4 text-indigo-600 animate-pulse" />
+            <span>AI-POWERED COLLEGIATE OPPORTUNITY & CAREER OS</span>
           </div>
 
           {/* Main Headline */}
           <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.12]">
             Discover. Learn.{' '}
-            <span className="bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-500 bg-clip-text text-transparent">
               Connect. Grow.
             </span>
           </h1>
 
           {/* Subtitle */}
           <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto font-medium leading-relaxed">
-            ACE — The AI-powered student opportunity ecosystem. Connect your campus, skills, mentors, projects, and career opportunities in one unified operating system.
+            Nexus Campus — The AI-native collegiate opportunity & career operating system. Connect your campus, verified skills, mentors, student lab projects, and talent pipelines in one unified platform.
           </p>
 
           {/* Action CTAs */}
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <Link
               to="/events"
-              className="px-6 py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-black text-sm rounded-2xl shadow-xl shadow-purple-600/25 transition transform hover:scale-105 flex items-center gap-2"
+              className="px-6 py-3.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 hover:from-indigo-700 hover:to-purple-700 text-white font-black text-sm rounded-2xl shadow-xl shadow-indigo-600/25 transition transform hover:scale-105 flex items-center gap-2"
             >
-              <span>EXPLORE ACE</span>
+              <span>EXPLORE NEXUS</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
 
             <Link
               to="/demo"
-              className="px-6 py-3.5 bg-purple-100 dark:bg-purple-950/80 hover:bg-purple-200 dark:hover:bg-purple-900 text-purple-800 dark:text-purple-300 border border-purple-300 dark:border-purple-800 font-black text-sm rounded-2xl transition flex items-center gap-2"
+              className="px-6 py-3.5 bg-indigo-100 dark:bg-indigo-950/80 hover:bg-indigo-200 dark:hover:bg-indigo-900 text-indigo-800 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-800 font-black text-sm rounded-2xl transition flex items-center gap-2"
             >
               <Zap className="w-4 h-4 text-amber-500" />
-              <span>START HACKATHON DEMO</span>
+              <span>START PRESENTATION TOUR</span>
             </Link>
 
             <Link
@@ -135,7 +135,7 @@ export const HomePage: React.FC<{ onOpenAiAssistant: () => void }> = ({ onOpenAi
             </Link>
           </div>
 
-          {/* Large AI Search Box ("Ask ACE anything...") */}
+          {/* Large AI Search Box ("Ask Nexus anything...") */}
           <div className="max-w-3xl mx-auto pt-4">
             <form onSubmit={handleAiSearchSubmit} className="relative group">
               <div className="flex items-center bg-white dark:bg-slate-800 rounded-3xl p-2.5 sm:p-3 shadow-xl border border-slate-200 dark:border-slate-700 group-hover:border-purple-400 transition-all">
@@ -146,11 +146,11 @@ export const HomePage: React.FC<{ onOpenAiAssistant: () => void }> = ({ onOpenAi
                   type="text"
                   value={aiSearchInput}
                   onChange={(e) => setAiSearchInput(e.target.value)}
-                  placeholder="Ask ACE anything... (e.g. Free hackathons in Chennai, Python workshops for beginners)"
+                  placeholder="Ask Nexus anything... (e.g. Free hackathons in Chennai, Python workshops for beginners)"
                   className="flex-1 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 bg-transparent outline-none pr-2 font-medium"
                 />
                 <Button type="submit" variant="ai" size="md" disabled={isDetectingIntent}>
-                  {isDetectingIntent ? 'Understanding...' : 'Ask ACE'}
+                  {isDetectingIntent ? 'Understanding...' : 'Ask NEXUS'}
                 </Button>
               </div>
             </form>

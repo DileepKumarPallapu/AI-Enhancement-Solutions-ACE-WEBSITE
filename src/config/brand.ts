@@ -24,26 +24,26 @@ export interface BrandConfig {
 }
 
 export const BRAND: BrandConfig = {
-  brandName: "AllCollegeEvent",
-  shortName: "ACE",
-  tagline: "Discover. Engage. Trust. Return. Advocate.",
-  description: "AI-Powered Student Opportunity Ecosystem connecting students with verified hackathons, symposiums, workshops, research conferences, cultural fests, and career opportunities.",
-  logo: "/brand/logo.png",
-  logoLight: "/brand/logo-light.png",
-  logoDark: "/brand/logo-dark.png",
-  logoIcon: "/brand/logo-icon.png",
-  favicon: "/favicon.png",
-  primaryColor: "#7F00FF",
-  accentColor: "#9333EA",
+  brandName: "Nexus Campus",
+  shortName: "NEXUS",
+  tagline: "The Global Collegiate Opportunity & Career Operating System",
+  description: "AI-Native Collegiate Operating System connecting students with verified hackathons, symposiums, research conferences, talent radars, and career opportunities.",
+  logo: "/brand/logo.svg",
+  logoLight: "/brand/logo-light.svg",
+  logoDark: "/brand/logo-dark.svg",
+  logoIcon: "/brand/logo-icon.svg",
+  favicon: "/favicon.svg",
+  primaryColor: "#6366F1",
+  accentColor: "#8B5CF6",
   socialLinks: {
-    linkedin: "https://www.linkedin.com/company/allcollegeevent",
-    instagram: "https://www.instagram.com/allcollegeevent",
-    youtube: "https://www.youtube.com/@allcollegeevent",
-    twitter: "https://twitter.com/allcollegeevent",
-    github: "https://github.com/allcollegeevent",
-    whatsapp: "https://chat.whatsapp.com/I7WpyVCSy7nIenuJTduwig"
+    linkedin: "https://www.linkedin.com/company/nexuscampus",
+    instagram: "https://www.instagram.com/nexuscampus",
+    youtube: "https://www.youtube.com/@nexuscampus",
+    twitter: "https://twitter.com/nexuscampus",
+    github: "https://github.com/nexuscampus",
+    whatsapp: "https://chat.whatsapp.com/nexuscampus"
   },
-  contactEmail: "support@allcollegeevent.com",
-  supportEmail: "support@allcollegeevent.com",
+  contactEmail: "support@nexuscampus.io",
+  supportEmail: "support@nexuscampus.io",
   currentYear: 2026
 };

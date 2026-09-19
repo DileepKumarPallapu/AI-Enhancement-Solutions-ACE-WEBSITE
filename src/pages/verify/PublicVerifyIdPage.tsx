@@ -119,7 +119,7 @@ export const PublicVerifyIdPage: React.FC = () => {
         )}
 
         <div className="pt-4 border-t border-slate-800 text-center text-[11px] text-slate-500">
-          Powered by ACE Canonical Academic Identity Network • All College Events
+          Powered by Nexus Canonical Academic Identity Network • Nexus Campus
         </div>
       </div>
     </div>

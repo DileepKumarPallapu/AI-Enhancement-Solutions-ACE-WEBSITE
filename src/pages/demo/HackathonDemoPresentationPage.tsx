@@ -84,7 +84,7 @@ export const HackathonDemoPresentationPage: React.FC = () => {
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white leading-tight">
-            ACE — <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-indigo-300 to-pink-400">AI-Powered Student Opportunity Ecosystem</span>
+            Nexus Campus — <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-300 to-cyan-400">Autonomous Collegiate Operating System</span>
           </h1>
 
           <p className="text-lg sm:text-xl text-slate-300 font-bold leading-relaxed">

@@ -181,9 +181,9 @@ class StudentPassportDatabase {
           {
             id: 'pass_ach_01',
             title: 'Verified Digital Scholar & Campus Ambassador Lead',
-            subtitle: 'Issued by All College Events',
+            subtitle: 'Issued by Nexus Campus Directorate',
             verificationState: 'VERIFIED',
-            verifiedBy: 'ACE Student Council',
+            verifiedBy: 'Nexus Student Council',
             verifiedAt: '2025-09-10T11:00:00Z'
           }
         ],

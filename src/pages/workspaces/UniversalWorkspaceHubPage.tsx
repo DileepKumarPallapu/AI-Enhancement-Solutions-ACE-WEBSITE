@@ -78,12 +78,12 @@ export const UniversalWorkspaceHubPage: React.FC = () => {
         {/* Navigation Breadcrumb */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
-            <Link to="/" className="hover:text-purple-600 flex items-center gap-1">
+            <Link to="/" className="hover:text-indigo-600 flex items-center gap-1">
               <Home className="w-3.5 h-3.5" />
-              <span>ACE Super Platform</span>
+              <span>Nexus Campus</span>
             </Link>
             <span>/</span>
-            <span className="text-purple-600 dark:text-purple-400 font-bold">My ACE Workspaces</span>
+            <span className="text-indigo-600 dark:text-indigo-400 font-bold">Nexus Workspaces</span>
           </div>
 
           <Link
@@ -95,18 +95,18 @@ export const UniversalWorkspaceHubPage: React.FC = () => {
         </div>
 
         {/* User Identity Hero Banner */}
-        <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden border border-purple-500/20">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="bg-gradient-to-r from-indigo-900 via-slate-900 to-indigo-950 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden border border-indigo-500/20">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
           
           <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="flex items-center gap-5">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-purple-600/30 border-2 border-purple-400/40 flex items-center justify-center text-3xl font-black text-white shadow-inner flex-shrink-0">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-indigo-600/30 border-2 border-indigo-400/40 flex items-center justify-center text-3xl font-black text-white shadow-inner flex-shrink-0">
                 🎓
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
-                    My ACE Workspaces
+                    Nexus Workspaces
                   </h1>
                   <span className="px-2.5 py-0.5 bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 rounded-full text-xs font-bold">
                     ✓ All 13 Dashboards Unlocked
