@@ -20,7 +20,7 @@ Please ensure all interactions adhere to professional and inclusive academic sta
    ```
 4. Run the master test runner:
    ```bash
-   npx tsx scratch/run_all_test_suites.ts
+   npm test
    ```
 5. Commit your changes with semantic commit messages (`feat:`, `fix:`, `docs:`).
 6. Push to your branch and open a Pull Request.

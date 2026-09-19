@@ -38,7 +38,7 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Run Master Test Suite
-        run: npx tsx scratch/run_all_test_suites.ts
+        run: npm test
 
       - name: Build Production Bundle
         run: npm run build

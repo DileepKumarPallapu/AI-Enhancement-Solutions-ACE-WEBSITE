@@ -110,7 +110,7 @@ Nexus Campus comes with comprehensive test suites verifying domain events, permi
 
 ```bash
 # Run all 184 test assertions across all test suites
-npx tsx scratch/run_all_test_suites.ts
+npm test
 
 # Run TypeScript typechecks
 npx tsc --noEmit

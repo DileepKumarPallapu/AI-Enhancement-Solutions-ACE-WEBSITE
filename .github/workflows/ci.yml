@@ -27,7 +27,7 @@ jobs:
       run: npx tsc --noEmit
 
     - name: Execute Master Test Suite
-      run: npx tsx scratch/run_all_test_suites.ts
+      run: npm test
 
     - name: Build Production Assets
       run: npm run build

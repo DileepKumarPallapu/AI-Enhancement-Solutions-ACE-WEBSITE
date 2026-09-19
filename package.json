@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx src/tests/run_all_test_suites.ts",
+    "test:ci": "tsx scripts/run-all-tests.ts",
+    "validate": "npm run typecheck && npm run test && npm run build"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -26,6 +30,7 @@
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.2",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.19.3",
     "typescript": "^5.7.3",
     "vite": "^6.1.0"
   },
