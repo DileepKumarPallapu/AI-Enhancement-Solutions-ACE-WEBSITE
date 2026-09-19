@@ -1,0 +1,33 @@
+name: Nexus Campus CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+
+    - name: Install Dependencies
+      run: npm ci
+
+    - name: Run TypeScript Typecheck
+      run: npx tsc --noEmit
+
+    - name: Execute Master Test Suite
+      run: npx tsx scratch/run_all_test_suites.ts
+
+    - name: Build Production Assets
+      run: npm run build
